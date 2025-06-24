@@ -1,7 +1,7 @@
 const bodyProduct = document.querySelector(".main-products");
 const tituloProductos = document.querySelector("#producto h2");
 export const baseApiUrl =
-  import.meta.env.VITE_API_URL || "https://pagina-back-oki.onrender.com";
+  import.meta.env.VITE_API_URL;
 let productosCargados = [];
 let carrusel = [];
 
@@ -141,7 +141,7 @@ function renderProductos(productos) {
               data-index="${index}" 
               data-rotacionactiva='${JSON.stringify(imagenesRotacion)}'
             />
-            <button class="quick-buy" onclick='AbrirProductoComprarDesdeCarrusel(${JSON.stringify(p)})'>COMPRAR</button>
+            <button class="quick-buy" data-producto='${JSON.stringify(p)}'>COMPRAR</button>
           </div>
           <div class="product-info">
             <div class="product-name">${p.nombre}</div> 

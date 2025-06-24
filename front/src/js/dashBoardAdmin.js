@@ -1,6 +1,6 @@
 // Archivo: adminProducts.js
 export const baseApiUrl =
-  import.meta.env.VITE_API_URL || "https://pagina-back-oki.onrender.com";
+  import.meta.env.VITE_API_URL;
 
 let productosCargados = [];
 let formularioId = 0;
