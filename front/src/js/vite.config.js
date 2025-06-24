@@ -6,7 +6,7 @@ export default defineConfig({
     port: 5174,
     proxy: {
       '/admin': {
-        target: 'http://localhost:3900',
+        target: 'https://backend-oki-web.onrender.com',
         changeOrigin: true,
         secure: false,
       },
