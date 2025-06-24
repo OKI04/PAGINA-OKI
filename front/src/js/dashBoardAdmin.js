@@ -42,7 +42,7 @@ window.loadProducts = async function loadProducts() {
       return;
     }
 
-    const baseApiUrl = "https://pagina-back-oki.onrender.com";
+    const baseApiUrl = "https://backend-oki-web.onrender.com";
     const productos = await res.json();
 
     productosCargados = productos.map(prod => {
