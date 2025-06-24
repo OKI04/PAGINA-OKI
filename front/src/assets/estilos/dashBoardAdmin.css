@@ -1,0 +1,490 @@
+/*ADMINISTRADO*/
+:root {
+  /* Variables para colores principales reutilizables en todo el archivo */
+
+  --main-bg-color: #929990;         /* Color de fondo principal (gris verdoso oscuro) */
+  --main-text-color: #6F6259;       /* Color principal para textos (marrón suave/dorado envejecido) */
+  --main-text2-color: #718472;      /* Segundo color para textos o acentos (verde oliva suave) */
+  --main-contenedor-color: #B58355;     /* Color de fondo de contenedores primarios (marrón claro) */
+  --main-contenedor2-color: #929990;    /* Segundo color para contenedores (gris verdoso) */
+  --main-contenedor3-color: #D1D4D0;    /* Tercer color para contenedores (gris claro) */
+  --main-contenedor4-color: white;      /* Color de fondo blanco para secciones limpias */
+}
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente legible y moderna */
+  margin: 0;                     /* Elimina el margen predeterminado del navegador */
+  background-color: #f8f9fa;     /* Fondo claro para toda la página */
+}
+header {
+  background-color: #1D504B;     /* Color de fondo oscuro (verde azulado) */
+  color: white;                  /* Texto blanco dentro del header */
+  padding: 1rem;                 /* Espaciado interno en todos los lados */
+  display: flex;                 /* Usa Flexbox para organizar contenido horizontalmente */
+  justify-content: space-between; /* Distribuye elementos con espacio entre ellos (izquierda/derecha) */
+  align-items: center;           /* Centra verticalmente los elementos en el header */
+}
+
+.header-titles {
+  /*transform: translateX(-50%);  Ajusta el elemento para centrarlo visualmente */
+  width: 142px;
+  text-align: center; /* Centra el contenido interno del elemento */
+  display: flex;                /* Usa Flexbox para los elementos internos */
+  flex-direction: column;       /* Apila los elementos (título y eslogan) verticalmente */
+  align-items: center;          /* Centra el título y eslogan horizontalmente */
+  justify-content: flex-start;
+  /* Si se prefiere uno al lado del otro: */
+  /* flex-direction: row; align-items: baseline; gap: 10px; */
+  margin: 0 10px;               /* Margen horizontal para separar del logo y del botón menú */
+  margin-inline: 10px;               /* Permite que este contenedor crezca para ocupar espacio disponible */
+  text-align: center;           /* Centra el texto internamente */
+}
+
+.logo {
+  width: 142px;                  /* Ancho del logo (reducido) */
+  height: 142px;                 /* Alto igual al ancho para que el border-radius 50% lo haga círculo */
+  border-radius: 50%;           /* Hace la imagen circular */
+  display: block;               /* Evita posible espacio extra debajo de la imagen */
+  flex-shrink: 0;               /* Evita que el logo se encoja si falta espacio en el header */
+}
+/* --- Eslogan (Dentro del Header) --- */
+.eslogan {
+  font-size: 0.9em;             /* Tamaño de fuente relativo (más pequeño que el texto normal) */
+  margin: 0;                    /* Elimina márgenes */
+  color: #f5d6a3;              /* Color de texto (heredado o específico) */
+  font-weight: normal;          /* Peso normal para diferenciarlo del título */
+  line-height:1.1;             /* Ajusta interlineado */
+}
+
+.navbar {
+  height: 80px; /* Establece la altura fija de la barra de navegación en 80 píxeles */
+}
+
+button {
+  border: none;             /* Elimina el borde predeterminado del botón */
+  padding: 0.5rem 1rem;     /* Espaciado interno: 0.5rem arriba/abajo, 1rem izquierda/derecha */
+  cursor: pointer;          /* Muestra una mano al pasar el mouse: indica que se puede hacer clic */
+  border-radius: 5px;       /* Bordes redondeados de 5 píxeles */
+  font-size: 1rem;          /* Tamaño de letra estándar (aproximadamente 16px en la mayoría de los navegadores) */
+}
+
+  
+  /* .btn-primary {
+    background-color: blue;
+    color: #0a192f;
+  } */
+  
+  .btn-danger {
+  background-color: while;                  /* ❌ Error tipográfico: debería ser 'white' (blanco) */
+  color: var(--main-bg-color);             /* Usa la variable definida para el color principal de fondo */
+}
+.btn-view {
+  background-color: #1f6feb;               /* Azul predeterminado */
+  border: none;                            /* Sin borde */
+}
+
+.btn-view:hover {
+  background-color: #388bfd;               /* Azul más claro al hacer hover */
+}
+.modal {
+  display: none;                           /* Oculto por defecto */
+  position: fixed;                         /* Posicionamiento fijo sobre toda la pantalla */
+  top: 0;
+  left: 0;
+  width: 100vw;                            /* Ocupa todo el ancho de la ventana */
+  height: 100vh;                           /* Ocupa toda la altura de la ventana */
+  background: rgba(0, 0, 0, 0.5);          /* Fondo semi-transparente negro */
+  justify-content: center;                /* Centra horizontalmente el contenido */
+  align-items: center;                    /* Centra verticalmente el contenido */
+}
+.modal-content {
+  background: white;                      /* Fondo blanco del modal */
+  padding: 2rem;                          /* Espaciado interno */
+  border-radius: 10px;                    /* Bordes redondeados */
+  width: 950px;                           /* Ancho fijo del modal */
+}
+.ajusteAncho {
+  margin-left: auto;                      /* Empuja hacia la derecha */
+  margin-right: auto;                     /* Empuja hacia la izquierda: centra horizontalmente */
+}
+.ml-200 {
+  margin-left: 200px;                     /* Aplica un margen izquierdo de 200 píxeles */
+}
+table {
+  width: 100%;                            /* Ocupa el 100% del ancho disponible */
+  border-collapse: collapse;              /* Fusiona los bordes de celdas adyacentes */
+  margin-top: 2rem;                       /* Espaciado superior de 2 rems */
+}
+
+.loader {
+  width: 48px;                            /* Ancho del loader */
+  height: 48px;                           /* Altura del loader */
+  border: 5px solid #1D504B;              /* Borde de 5px con color */
+  border-bottom-color: transparent;       /* El borde inferior es transparente para crear efecto de giro */
+  border-radius: 50%;                     /* Borde redondo: forma circular */
+  display: inline-block;                  /* Elemento en línea tipo bloque */
+  box-sizing: border-box;                 /* Incluye bordes y padding en las dimensiones */
+  animation: rotation 1s linear infinite; /* Animación de rotación continua */
+  margin-top: 100px;                      /* Margen superior de 100px */
+  margin-left: 660px                      /* Margen izquierdo de 660px */
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);              /* Rotación inicial */
+  }
+  100% {
+    transform: rotate(360deg);            /* Rotación completa */
+  }
+}
+
+th, td {
+  border: 1px solid #ccc;                 /* Borde gris claro alrededor de celdas */
+  padding: 1rem;                          /* Espaciado interno */
+  text-align: left;                       /* Alineación del texto a la izquierda */
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;              /* Fila par con fondo gris claro */
+}
+
+.scroll-container {
+  max-height: 500px;                      /* Altura máxima del contenedor */
+  overflow-y: auto;                       /* Scroll vertical si se desborda */
+}
+
+.navbar {
+  background-color: var(--main-bg-color); /* Color de fondo usando variable CSS */
+}
+
+.navbar-brand, .nav-link, .btn {
+  color: #f0f6fc !important;              /* Texto blanco azulado (sobrescribe estilos previos) */
+  justify-content: center;                /* Centra contenido horizontalmente */
+}
+
+.btn-create {
+  background-color: var(--main-bg-color); /* Mismo color que navbar */
+  color: var(--main-text-color);          /* Texto con color definido en variable */
+}
+
+.btn-create:hover {
+  background-color: var(--main-bg-color); /* Conserva color al pasar mouse */
+}
+
+.table-wrapper {
+  max-height: 500px;                      /* Altura máxima de la tabla */
+  overflow-y: auto;                       /* Habilita scroll vertical */
+}
+
+.form-control:focus {
+  border-color: #1f6feb;                  /* Borde azul al enfocar */
+  box-shadow: 0 0 0 0.2rem rgba(31, 111, 235, 0.25); /* Sombra azul difusa */
+}
+
+.modalEliminar {
+  background-color: white;                /* Color de modal */
+}
+/* Contenedor principal del modal */
+.plantilla {
+  width: 850px;                          /* Ancho fijo para uniformidad */
+  border: 1px solid #ddd;               /* Borde gris claro */
+  background: #fff;                     /* Fondo blanco */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Sombra sutil para efecto de elevación */
+  overflow: hidden;                     /* Oculta contenido que se desborde */
+  border-radius: 6px;                   /* Bordes redondeados */
+  position: relative;                   /* Necesario para posicionar elementos hijos como el botón */
+}
+
+.plantilla-container {
+  display: flex;                        /* Flexbox para alinear los elementos horizontalmente */
+  gap: 30px;                            /* Espacio entre los elementos */
+  align-items: flex-start;             /* Alineación superior de los elementos */
+  flex-wrap: wrap;                     /* En pantallas pequeñas se apilan */
+}
+
+/* Imagen principal centrada */
+.imagen-principal {
+  position: relative;                  /* Contexto para posicionar elementos hijos si es necesario */
+  width: 100%;                         /* Ocupa todo el ancho del contenedor padre */
+  height: 450px;                       /* Altura fija para evitar cambios de tamaño al rotar imágenes */
+  overflow: hidden;                    /* Oculta cualquier contenido que sobresalga del contenedor */
+}
+
+/* Imagen grande */
+.imagen-principal img {
+  width: 100%;                         /* La imagen ocupa el 100% del ancho del contenedor */
+  height: 100%;                        /* La imagen ocupa el 100% de la altura del contenedor */
+  object-fit: cover;                   /* Escala la imagen para cubrir todo el contenedor sin deformar, recortando si es necesario */
+  display: block;                      /* Evita espacios en blanco bajo la imagen (por ser inline por defecto) */
+  transition: transform 0.4s ease;     /* Transición suave para transformaciones (como zoom) */
+}
+
+.quick-buy {
+  position: absolute;                 /* Posición relativa a .imagen-principal */
+  bottom: 10px;                       /* 10px desde abajo */
+  right: 10px;                        /* 10px desde la derecha */
+  background-color: black;           /* Fondo negro */
+  color: white;                      /* Texto blanco */
+  border: none;                      /* Sin borde */
+  padding: 8px 12px;                 /* Relleno interno */
+  font-size: 12px;                   /* Tamaño de fuente pequeño */
+  cursor: pointer;                   /* Cursor tipo puntero */
+  border-radius: 4px;                /* Bordes ligeramente redondeados */
+  opacity: 0.9;                      /* Opacidad inicial */
+  transition: 0.3s;                  /* Transición suave */
+}
+
+.quick-buy:hover {
+  opacity: 1;                         /* Opacidad completa al hacer hover */
+}
+
+.imagenes-secundarias {
+  display: flex;                      /* Flexbox para las miniaturas */
+  flex-direction: column;            /* Alineación en columna */
+  gap: 10px;                          /* Espaciado entre miniaturas */
+}
+
+.imagen-y-miniaturas {
+  display: flex;                      /* Flexbox para juntar imagen principal y miniaturas */
+  gap: 10px;                          /* Espacio entre ambas secciones */
+  align-items: flex-start;           /* Alineación superior */
+  flex-direction: row;               /* En fila */
+  flex: 1 1 50%;                     /* Ocupa hasta 50% con posibilidad de expansión */
+  margin-bottom: 20px;               /* Margen inferior */
+}
+
+.imagenes-secundarias img {
+  width: 80px;                        /* Ancho fijo */
+  height: 80px;                       /* Alto fijo */
+  object-fit: cover;                 /* Cubre el contenedor sin deformar */
+  border-radius: 5px;                /* Bordes redondeados */
+  cursor: pointer;                   /* Puntero al pasar el mouse */
+  border: 1px solid #ddd;            /* Borde gris claro */
+  transition: transform 0.2s ease;   /* Suaviza la transición */
+}
+
+.imagenes-secundarias img:hover {
+  transform: scale(1.05);            /* Aumenta ligeramente el tamaño al pasar el mouse */
+}
+
+/* Nombre del modelo */
+.nombre-modelo {
+  font-size: 22px;                   /* Tamaño de fuente grande */
+  font-weight: bold;                /* Texto en negrita */
+  margin-top: 10px;                 /* Margen superior */
+}
+
+/* Bloque de detalles */
+.detalles-producto {
+  flex: 1 1 45%;                     /* Toma hasta el 45% con posibilidad de expansión */
+  padding: 15px;                    /* Relleno interno */
+  max-width: 500px;                 /* Máximo ancho */
+}
+
+/* Referencia */
+.referencia {
+  font-size: 14px;                  /* Tamaño de fuente más pequeño */
+  color: #888;                      /* Color gris */
+  margin-bottom: 8px;              /* Espacio inferior */
+}
+
+/* Precio */
+.precio {
+  font-size: 18px;                  /* Tamaño de fuente mediano */
+  font-weight: bold;               /* Texto en negrita */
+  color: #d10000;                  /* Rojo oscuro para destacar */
+  margin-bottom: 15px;             /* Margen inferior */
+}
+
+/* Colores y estampados */
+.colores, .estampados {
+  display: flex;                /* Distribuye los puntos de color en fila */
+  flex-wrap: wrap;              /* Permite que los puntos pasen a la siguiente línea si no caben */
+  gap: 0px;                     /* Espacio entre cada punto */
+  margin-bottom: 5px;           /* Separación inferior respecto a otros elementos */
+  cursor: pointer;              /* Puntero tipo mano */
+}
+
+.colores-container {
+  display: flex;                /* Elementos en fila */
+  flex-wrap: nowrap;            /* No permite salto de línea */
+  gap: 5px;                    /* Espacio entre items */
+  overflow-x: auto;             /* Scroll horizontal si excede el ancho */
+  padding: 2px;                 /* Espaciado interno del contenedor */
+}
+
+.color-item {
+  display: flex;                /* Permite usar flex para distribuir elementos */
+  align-items: center;          /* Centrado horizontal */
+  flex: 0 0 auto;               /* No permite crecer ni reducirse, mantiene tamaño fijo */
+
+}
+
+.color-imagen {
+  width: 30px;                  /* Ancho fijo de la imagen */
+  height: 30px;                 /* Alto fijo */
+  object-fit: cover;            /* Mantiene proporciones, recortando si es necesario */
+  border-radius: 50%;           /* Forma perfectamente circular */
+  border: 1px solid #ccc;       /* Borde gris claro */
+  transition: transform 0.2s;   /* Suaviza la animación al hacer hover */
+}
+
+.color-codigo {
+  font-size: 10px;           /* Define un tamaño de fuente pequeño para mostrar el código */
+  text-align: center;        /* Centra el texto horizontalmente */
+  margin-top: 2px;           /* Agrega un pequeño margen superior para separación */
+  color: #444;               /* Color de texto gris oscuro (#444) para buena legibilidad */
+}
+
+
+/* Tallas */
+.talla {
+  
+  display: flex;                  /* Utiliza flexbox para alinear los elementos hijos (tallas) */
+  gap: 10px;                      /* Deja un espacio de 10px entre cada talla */
+  flex-wrap: wrap;               /* Permite que los elementos bajen a la siguiente línea si no caben */
+  margin-top: 10px;              /* Añade un margen superior de 10px para separar de otros elementos */
+}
+.talla div {
+  border: 1px solid #ccc;            /* Borde gris claro */
+  padding: 6px 12px;                 /* Relleno interno */
+  border-radius: 10%;                /* Bordes ligeramente redondeados */
+  cursor: default;                   /* Cursor por defecto (no clicable) */
+}
+
+.modal-footer {
+  width: 100%;                       /* Ocupa todo el ancho */
+  display: flex;                     /* Flexbox para alinear contenido */
+  justify-content: flex-end;        /* Contenido alineado a la derecha */
+  padding: 15px 20px;                /* Espaciado interior */
+  border-top: 1px solid #ddd;        /* Borde superior gris claro */
+  margin-top: 20px;                  /* Separación del contenido anterior */
+}
+
+.custom-row {
+  display: grid;                     /* Usamos grid layout */
+  grid-template-columns: repeat(3, 1fr); /* Tres columnas iguales */
+}
+
+.divItemsCarrusel {
+  min-width: 110px;                  /* Ancho mínimo del ítem */
+  margin: 10px;                      /* Margen exterior */
+}
+
+.divItemsAdd {
+  min-width: 330px;                  /* Ancho mínimo más amplio para el formulario */
+  height: 370px;                     /* Altura fija del contenedor */
+  margin: 10px;                      /* Margen externo */
+  padding-bottom: 15px;              /* Espacio inferior interno */
+}
+
+.ref {
+  padding-top: 5px;                  /* Separación superior */
+}
+
+.ref-highlight {
+  border: 2px solid #dc3545 !important; /* Borde rojo, importante para sobrescribir estilos */
+  border-radius: 5px;                    /* Bordes redondeados */
+  padding: 10px;                         /* Espaciado interno */
+  background-color: #fff8f8;             /* Fondo ligeramente rosado para destacar */
+}
+
+/* Etiqueta especial para imagenRef */
+.ref-label::after {
+  content: " (IMAGEN REFERENCIA - ORDEN 1)"; /* Texto añadido al final */
+  color: #dc3545;                             /* Rojo */
+  font-weight: bold;                          /* Negrita */
+}
+
+/* Estilos para la grilla de elementos */
+.item-container {
+  display: grid;                    /* Grid layout */
+  /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */ /* Comentado: columnas automáticas */
+  gap: 15px;                        /* Espacio entre ítems */
+  margin-bottom: 20px;             /* Separación inferior */
+}
+
+/* Para el carrusel específicamente */
+#formContainer {
+  display: flex;                   /* Flexbox */
+  flex-wrap: wrap;                /* Permite múltiples líneas */
+  gap: 15px;                      /* Espacio entre elementos */
+}
+
+#formContainer > div {
+  flex: 1 1 calc(33.333% - 15px); /* 3 columnas considerando el espacio */
+  min-width: 250px;               /* Mínimo para evitar colapsos en pantallas pequeñas */
+}
+
+/* Animación para suavizar la reorganización */
+.item-container > div, #formContainer > div {
+  transition: all 0.3s ease;      /* Transición suave para cambios */
+}
+
+/* Descripcion del producto */
+.descripcion-container {
+  font-size: 0.95rem;             /* Tamaño de fuente ligeramente reducido */
+  line-height: 1.4;               /* Altura de línea para buena legibilidad */
+  color: #333;                    /* Gris oscuro para el texto */
+}
+
+.descripcion-container .lista-colores {
+  font-weight: bold;             /* Negrita para destacar los colores */
+  margin-bottom: 0.25rem;        /* Separación inferior */
+}
+
+.descripcion {
+  white-space: pre-wrap;         /* Respeta saltos de línea y espacios */
+}
+
+/* Mensaje de alerta */
+/* Modal de Alerta */
+.modal-alerta {
+  display: none;                  /* Oculto por defecto */
+  position: fixed;               /* Fijo en toda la pantalla */
+  z-index: 9999;                 /* Muy encima de otros elementos */
+  left: 0;
+  top: 0;
+  width: 100vw;                  /* Ancho completo de la ventana */
+  height: 100vh;                 /* Alto completo de la ventana */
+  overflow: auto;                /* Permite scroll si es necesario */
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+  justify-content: center;       /* Centrado horizontal */
+  align-items: center;           /* Centrado vertical */
+}
+
+.modal-alerta-content {
+  background-color: white;        /* Fondo blanco */
+  padding: 20px 30px;             /* Espaciado interno */
+  border: 2px solid var(--main-text-color); /* Borde personalizado con variable */
+  border-radius: 10px;            /* Bordes redondeados */
+  max-width: 90%;                 /* Máximo 90% del ancho */
+  width: 400px;                   /* Ancho fijo */
+  text-align: center;             /* Centrado de texto */
+  position: relative;             /* Para ubicar el botón de cierre */
+  animation: fadeIn 0.3s ease-out; /* Animación de entrada */
+}
+
+.close-alert {
+  position: absolute;             /* Posicionado respecto a su contenedor */
+  top: 10px;
+  right: 15px;
+  color: #aaa;                    /* Color gris claro */
+  font-size: 24px;                /* Tamaño grande para el ícono */
+  font-weight: bold;             /* Negrita */
+  cursor: pointer;               /* Cursor tipo puntero */
+}
+
+.close-alert:hover {
+  color: var(--main-contenedor-color); /* Color al pasar el cursor */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;                   /* Comienza invisible */
+    transform: scale(0.95);       /* Ligero zoom-out */
+  }
+  to {
+    opacity: 1;                   /* Termina totalmente visible */
+    transform: scale(1);          /* Tamaño normal */
+  }
+}

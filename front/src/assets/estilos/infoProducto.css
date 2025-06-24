@@ -1,0 +1,222 @@
+/* ==========================================================================
+   CONTENEDOR DE LOS PRODUCTOS
+   ========================================================================== */
+
+:root {
+  /* Variables para colores principales reutilizables en todo el archivo */
+
+  --main-bg-color: #929990;         /* Color de fondo principal (gris verdoso oscuro) */
+  --main-text-color: #6F6259;       /* Color principal para textos (marrón suave/dorado envejecido) */
+  --main-text2-color: #718472;      /* Segundo color para textos o acentos (verde oliva suave) */
+  --main-contenedor-color: #B58355;     /* Color de fondo de contenedores primarios (marrón claro) */
+  --main-contenedor2-color: #929990;    /* Segundo color para contenedores (gris verdoso) */
+  --main-contenedor3-color: #D1D4D0;    /* Tercer color para contenedores (gris claro) */
+  --main-contenedor4-color: white;      /* Color de fondo blanco para secciones limpias */
+}
+/* SECCIÓN DE PRODUCTOS */
+.prudcto {
+  margin: 10px; /* Espacio externo alrededor del contenedor de productos */
+  padding: 10px 10px 0 10px; /* Quitamos padding inferior */
+  background-color: transparent; /* Fondo transparente para que se integre con el fondo general de la página */
+  border-radius: 10px; /* Bordes redondeados para dar un estilo más moderno */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave para dar efecto de elevación y profundidad */
+}
+
+.prudcto h2 {
+  margin-bottom: 0px; /* Espacio más pequeño debajo del título */
+  font-size: 2rem; /* Tamaño del texto del título, relativo al tamaño raíz */
+  text-align: center; /* Centra el texto horizontalmente */
+  font-weight: bold; /* Texto en negrita para mayor énfasis */
+  text-transform: uppercase; /* Convierte todo el texto del título a mayúsculas */
+  background-size: 200%; /* Define el tamaño del fondo (útil si se usa fondo degradado con animaciones) */
+  color: var(--main-text2-color) ; /* Color del texto definido por la variable CSS global */
+  animation: shine 5s linear infinite; /* Aplica una animación llamada 'shine' con duración de 5*/
+}
+/* Opcional: reducir el espacio superior de .main-products si hace falta */
+.main-products {
+  margin-top: 0px;
+}
+/*Contendero para el producto*/
+.spanLoader {
+  display: block;               /* Hace que el span actúe como un bloque, ocupando todo el ancho disponible */
+  width: 40px;                  /* Ancho del loader */
+  height: 40px;                 /* Alto del loader */
+  margin: 50px auto;            /* Centra vertical y horizontalmente con márgenes */
+  border: 5px solid #ccc;       /* Borde circular gris claro */
+  border-top: 5px solid var(--main-contenedor3-color);   /* El borde superior será oscuro, para generar el efecto de giro */
+  border-radius: 50%;           /* Convierte el cuadrado en un círculo */
+  animation: spin 1s linear infinite; /* Aplica una animación de giro continua */
+}
+/*Animacion*/
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+/*Mostrador de productos */
+.main-products {
+  display: grid; /* Utiliza el sistema de diseño CSS Grid para organizar los elementos en filas y columnas */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Crea tantas columnas como quepan en el contenedor, con un ancho mínimo de 250px.Cada columna puede crecer hasta ocupar el espacio disponible (1fr). Esto permite que el diseño se adapte automáticamente a pantallas pequeñas y grandes. */
+  gap: 30px; /* Espacio horizontal y vertical entre los productos */
+  width: 100%;  /* Ocupa todo el ancho disponible del contenedor padre */
+  padding: 100px; /* Agrega espacio interno en todos los lados para separar el contenido del borde */
+  box-sizing: border-box; /* Incluye el padding y el borde dentro del ancho y alto definidos para evitar desbordamientos */
+  border-radius: 10px; /* Bordes redondeados para suavizar el diseño */
+
+}
+
+/* IMAGEN DEL PRODUCTO Y EFECTO ZOOM */
+/* Contenedor de la imagen del producto */
+.product-image {
+  position: relative;   /* Contexto para posicionar elementos hijos si es necesario */
+  width: 100%;          /* Ocupa todo el ancho del contenedor padre */
+  height: 550px;        /* Altura fija para evitar cambios de tamaño al rotar imágenes */
+  overflow: hidden;     /* Oculta cualquier contenido que sobresalga del contenedor */
+}
+
+/* Imagen principal del producto */
+.product-image img.main-image {
+  width: 100%;          /* La imagen ocupa el 100% del ancho del contenedor */
+  height: 100%;         /* La imagen ocupa el 100% de la altura del contenedor */
+  object-fit: cover;    /* Escala la imagen para cubrir todo el contenedor sin deformar, recortando si es necesario */
+  display: block;       /* Evita espacios en blanco bajo la imagen (por ser inline por defecto) */
+  transition: transform 0.4s ease; /* Transición suave para transformaciones (como zoom) */
+  cursor: zoom-in;      /* Cursor cambia para indicar que la imagen puede ampliarse */
+}
+
+/* Efecto hover (cuando el cursor está encima de la imagen) */
+.product-image img.main-image:hover {
+  cursor: pointer;      /* Cursor cambia a puntero para indicar interactividad */
+  transform: scale(1.1); /* Escala la imagen a 110%, creando un efecto de zoom suave */
+}
+
+/* BOTÓN "COMPRA RÁPIDA" (APARECE EN HOVER) */
+.quick-buy {
+  position: absolute;                         /* Permite posicionar el botón dentro del contenedor relativo */
+  bottom: 0;                                  /* Lo coloca en la parte inferior del contenedor padre */
+  width: 100%;                                /* El botón ocupa todo el ancho disponible */
+  background: rgba(255, 255, 255, 0.85);       /* Fondo blanco semitransparente */
+  border: none;                               /* Elimina el borde por defecto */
+  font-weight: 600px;                           /* Establece un peso de fuente más fuerte */
+  height: 50px;
+  padding: 12px;                              /* Espaciado interno del botón */
+  cursor: pointer;                            /* Cambia el cursor al pasar sobre el botón */
+  opacity: 0;                                 /* El botón está oculto inicialmente */
+  visibility: hidden;                         /* No visible al cargar la página */
+  transition: opacity 0.3s ease, visibility 0.3s ease; /* Suaviza la aparición del botón */
+}
+.product-image:hover .quick-buy {
+  opacity: 1;               /* Muestra el botón cuando se pasa el cursor por la imagen */
+  visibility: visible;      /* Hace visible el botón */
+}
+.quick-buy:hover {
+  background: rgba(0, 0, 0, 0.8); /* Cambia el fondo del botón a negro semitransparente al hacer hover */
+  color: #fff;                    /* Cambia el color del texto a blanco */
+}
+
+/* INFORMACIÓN DEL PRODUCTO */
+.product-info {
+  position: relative;     /* Permite posicionamiento relativo si se necesitan elementos internos posicionados */
+  padding: 15px;          /* Espaciado interno en todos los lados */
+  width: 100%;            /* Ocupa todo el ancho disponible del contenedor */
+}
+.product-name {
+  font-size: 16px;        /* Tamaño de fuente del nombre del producto */
+  margin-bottom: 10px;    /* Espacio inferior entre el nombre y el siguiente elemento */
+}
+/* SELECCIÓN DE COLORES */
+.product-colors {
+  display: flex;                /* Distribuye los puntos de color en fila */
+  flex-wrap: wrap;              /* Permite que los puntos pasen a la siguiente línea si no caben */
+  gap: 0px;                     /* Espacio entre cada punto */
+  margin-bottom: 5px;           /* Separación inferior respecto a otros elementos */
+  cursor: pointer;              /* Puntero tipo mano */
+
+}
+.colores-container {
+  display: flex;                /* Elementos en fila */
+  flex-wrap: nowrap;            /* No permite salto de línea */
+  gap: 5px;                    /* Espacio entre items */
+  overflow-x: auto;             /* Scroll horizontal si excede el ancho */
+  padding: 2px;                 /* Espaciado interno del contenedor */
+}
+.color-item {
+  display: flex;                /* Permite usar flex para distribuir elementos */
+  align-items: center;          /* Centrado horizontal */
+  flex: 0 0 auto;               /* No permite crecer ni reducirse, mantiene tamaño fijo */
+}
+.color-imagen {
+  width: 25px;                  /* Ancho fijo de la imagen */
+  height: 25px;                 /* Alto fijo */
+  object-fit: cover;            /* Mantiene proporciones, recortando si es necesario */
+  border-radius: 50%;           /* Forma perfectamente circular */
+  border: 1px solid #ccc;       /* Borde gris claro */
+  transition: transform 0.2s;   /* Suaviza la animación al hacer hover */
+}
+.estampado-item {
+  display: flex;                /* Permite usar flex para distribuir elementos */
+  align-items: center;          /* Centrado horizontal */
+  flex: 0 0 auto;               /* No permite crecer ni reducirse, mantiene tamaño fijo */
+}
+.estampado-imagen {
+  width: 25px;                  /* Ancho fijo de la imagen */
+  height: 25px;                 /* Alto fijo */
+  object-fit: cover;            /* Mantiene proporciones, recortando si es necesario */
+  border-radius: 50%;           /* Forma perfectamente circular */
+  border: 1px solid #ccc;       /* Borde gris claro */
+  transition: transform 0.2s;   /* Suaviza la animación al hacer hover */
+}
+/* SELECCIÓN DE TALLAS */
+.product-sizes {
+  border-color: transparent;             /* No tiene efecto visible sin border-style */
+  display: flex;                   /* Utiliza flexbox para alinear los elementos hijos (tallas) */
+  gap: 10px;                       /* Deja un espacio de 10px entre cada talla */
+  flex-wrap: wrap;                /* Permite que los elementos bajen a la siguiente línea si no caben */
+  margin-top: 1px;                /* Margen superior pequeño */
+}
+
+.size-box {
+  background-color: var(--main-contenedor2-color);  /* Fondo transparente */
+  padding: 10px 10px;              /* Espaciado interno */
+  font-size: 14px;                /* Tamaño de fuente */
+  font-weight: 500;               /* Grosor medio */
+  color: black;                   /* Color del texto */
+  border: 1px solid transparent;        /* Borde negro visible */
+  border-radius: 5px;             /* Bordes redondeados */
+}
+
+
+/* PRECIO DEL PRODUCTO */
+.product-price {
+  font-size: 20px; /* Tamaño de fuente para el precio */
+}
+
+.price-value {
+  font-weight: bold; /* Solo el valor en negrilla */
+}
+
+/* TARJETA DE PRODUCTO */
+.product-card {
+  width: 380px;                          /* Ancho fijo para uniformidad */
+  border: 1px solid #ddd;               /* Borde gris claro */
+  background: #fff;                     /* Fondo blanco */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Sombra sutil para efecto de elevación */
+  overflow: hidden;                     /* Oculta contenido que se desborde */
+  border-radius: 6px;                   /* Bordes redondeados */
+  position: relative;                   /* Necesario para posicionar elementos hijos como el botón */
+}
+/* CONTENEDOR DE PRODUCTOS */
+.product-container {
+  display: flex;            /* Usa Flexbox para alinear tarjetas */
+  flex-wrap: wrap;          /* Permite que las tarjetas bajen a la siguiente línea */
+  gap: 10px;                /* Espacio entre tarjetas */
+  justify-content: flex-start; /* Alinea a la izquierda en vez de centrar */
+}
+.color-item.selected {
+  border: 3px solid black; /* color azul Bootstrap, puedes cambiar */
+  border-radius: 50%;
+  padding: 2px; /* para que el borde no achique la imagen */
+}
+.estampado-item.selected {
+  border: 3px solid black; /* color azul Bootstrap, puedes cambiar */
+  border-radius: 50%;
+  padding: 2px; /* para que el borde no achique la imagen */
+}

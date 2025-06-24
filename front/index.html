@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OKI - Vive cada momento con estilo</title>
+
+  <!-- Vinculación de hojas de estilo para cada sección específica del sitio -->
+  <link rel="stylesheet" href="src/assets/estilos/categoria_Principal.css">
+  <link rel="stylesheet" href="src/assets/estilos/infoProducto.css">
+  <link rel="stylesheet" href="src/assets/estilos/comprarProducto.css">
+  <link rel="stylesheet" href="src/assets/estilos/administrador.css">
+  <link rel="stylesheet" href="src/assets/estilos/carrusel.css">
+
+  <!-- Iconos de Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- ==================== ENCABEZADO PRINCIPAL ==================== -->
+  <header class="header">
+    <div class="site-container">
+      <!-- Logo y eslogan -->
+      <div class="header-titles">
+        <img src="src/Imagen_De_Apoyo/logo.png" alt="Logo" class="logo">
+        <p class="eslogan">Vive cada momento con estilo</p>
+      </div>
+
+      <!-- Contenedor de íconos de usuario y carrito -->
+      <div class="icon-buttons">
+
+        <!-- Icono de usuario que abre modal de inicio de sesión -->
+        <div class="user-container">
+          <button id="openModalBtn" class="login-button" >
+            <img class="usuario" src="src/Imagen_De_Apoyo/usuario.png" alt="Usuario" onclick="iniciarModalLogin()">
+          </button>
+        </div>
+
+
+        <!-- Botón del carrito con contador de productos -->
+        <div class="cart-container">
+          <button class="comprar-button" onclick="toggleCarrito()">
+            <img src="src/Imagen_De_Apoyo/Carro.png" alt="Carrito de compras" />
+            <span id="cart-count" class="cart-count">0</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MODAL DEL CARRITO DE COMPRAS ==================== -->
+  <div class="modal-carrito" id="modalCarrito">
+    <div class="modal-header">
+      <h2>MI BOLSA</h2>
+      <span class="close" onclick="toggleCarrito()">×</span>
+    </div>
+    <div class="modal-content">
+      <div id="cart-items"></div> <!-- Aquí se cargarán los productos del carrito -->
+      <div class="footer-carrito">
+        <div class="total" id="cart-total">
+          <p>Total a pagar: $<span id="total-pago">0</span></p>
+        </div>
+        <div class="acciones-carrito">
+        <button class="btn-cotizar" onclick="Contizacion()">Enviar cotización</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ 
+  <!-- ====================MODAL DE COTIZACIÓN  ==================== -->
+  <div id="modalCotizacion">
+    <div class="modal-container">
+      <button class="close-modal-btn" onclick="cerrarCotizacion()" aria-label="Cerrar">&times;</button>
+        <h2>Resumen de cotización</h2>
+      <ul class="product-list">
+        <li class="product-item">
+          <div class="product-info">
+            <span class="product-info-main"><b>Información</b> del producto</span>
+            <span class="product-subtitle">(Una sola fila)</span>
+          </div>
+          <button class="remove-button" aria-label="Eliminar producto">X</button>
+        </li>
+      </ul>
+     <div class="total" id="cart-total">
+          <p>Total a pagar: $<span id="total-pagoFinal">0</span></p>
+      </div>
+        <h3>DATOS PARA FINALIZAR LA COTIZACIÓN</h3>
+      <form class="quote-form" action="#" method="post" onsubmit="event.preventDefault(); alert('Formulario Enviado!'); cerrarCotizacion();">
+        <div class="form-grid">
+          <div class="form-group"><label for="nombre">Nombre</label><input type="text" id="nombre" name="nombre"></div>
+          <div class="form-group"><label for="empresa">Empresa</label><input type="text" id="empresa" name="empresa"></div>
+          <div class="form-group"><label for="direccion">Dirección</label><input type="text" id="direccion" name="direccion"></div>
+          <div class="form-group"><label for="telefono">Teléfono</label><input type="text" id="telefono" name="telefono"></div>
+          <div class="form-group form-group-full"><label for="correo">Correo</label><input type="email" id="correo" name="correo"></div>
+        </div>
+        <div class="whatsapp-container">
+          <a href="#" id="btnEnviarCotizacion" class="whatsapp-link" onclick="enviarCotizacion()">
+            <img src="src/Imagen_De_Apoyo/Icono_WhatsApp.png" alt="Enviar por WhatsApp" class="whatsapp-icon">
+            <span class="whatsapp-text">Enviar</span>
+          </a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+   
+
+
+  <!-- ==================== MODAL DE INICIO DE SESIÓN ==================== -->
+ <div class="modal-overlay" id="loginModal" style="display: none;">
+    <div class="login-modal">
+      <!-- Ícono superior del modal -->
+      <div class="user-icon">
+        <img src="src/Imagen_De_Apoyo/usuario.png" alt="Usuario">
+      </div>
+
+      <!-- Formulario de login -->
+      <form id="loginForm">
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input placeholder="Email ID" id="email" name="email" type="email" required>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input placeholder="Password" id="password" name="password" type="password" required>
+        </div>
+        <button class="login-btn" type="submit">INICIAR</button>
+      </form>
+
+      <!-- Mensaje de error en caso de credenciales inválidas -->
+      <div id="errorMsg" class="error" style="display: none; color: red;"></div>
+
+      <!-- Botón para cerrar el modal -->
+      <button class="close-modal" id="closeModalBtn">&times;</button>
+    </div>
+  </div>
+
+  <!-- ==================== SECCIÓN DE PRODUCTOS MÁS VENDIDOS ==================== -->
+<section id="recomendados" class="recomendados">
+  <h2>PRODUCTOS MÁS VENDIDOS</h2>
+  <div class="carousel-container">
+  <div class="carousel-track" id="carouselTrack">
+  </div>
+</section>
+
+
+  <!-- ==================== SECCIÓN DE CATEGORÍAS ==================== -->
+  <div class="categorias-wrapper">
+    <!-- Flecha izquierda para desplazamiento de categorías -->
+    <button class="flecha-izquierda">
+      <img src="src/Imagen_De_Apoyo/flecha-Izquierda.png" alt="←">
+    </button>
+
+    <!-- Navegación de categorías -->
+    <nav id="categorias" class="categorias">
+      <button class="btn-categoria" data-categoria="todos">MOSTRAR TODOS</button>
+      <button class="btn-categoria" data-categoria="Chalecos y chaquetas">CHALECOS Y CHAQUETAS</button>
+      <button class="btn-categoria" data-categoria="Blusas">BLUSAS</button>
+      <button class="btn-categoria" data-categoria="Pantalones">PANTALONES</button>
+      <button class="btn-categoria" data-categoria="Shorts y Falda Shorts">SHORTS Y FALDAS SHORTS</button>
+      <button class="btn-categoria" data-categoria="Faldas Largas y cortas">FALDAS LARGAS Y CORTAS</button>
+      <button class="btn-categoria" data-categoria="Vestidos">VESTIDOS</button>
+      <button class="btn-categoria" data-categoria="Conjuntos y enterizos">CONJUNTOS - ENTERIZOS</button>
+      <button class="btn-categoria" data-categoria="Referencias nuevas">REFERENCIAS NUEVAS</button>
+      <button class="btn-categoria" data-categoria="otro">OTROS</button>
+    </nav>
+
+    <!-- Flecha derecha para desplazamiento -->
+    <button class="flecha-derecha">
+      <img src="src/Imagen_De_Apoyo/flecha-Derecha.png" alt="→">
+    </button>
+  </div>
+
+  <!-- Botón tipo hamburguesa para mostrar categorías en dispositivos móviles -->
+  <button class="menu-toggle" onclick="toggleCategorias()">☰</button>
+
+  <!-- ==================== SECCIÓN DE TODOS LOS PRODUCTOS ==================== -->
+  <section id="producto" class="prudcto">
+    <h2>TODOS LOS PRODUCTOS</h2>
+    <main class="main-products">
+      <span class="loader spanLoader"></span> <!-- Indicador de carga -->
+    </main>
+  </section>
+
+  <!-- ==================== MODAL DE COMPRA DE PRODUCTO ==================== -->
+  <div class="modal" id="modalProducto" style="display: none;">
+       <div class="modal-body">
+      <button id="btnCerrarCompra">&times;</button>
+    
+        <!-- Galería de imágenes (solo en escritorio) -->
+        <div class="left-column desktop-only">
+          <div class="thumbnail-gallery" id="modal-thumbnails"></div>
+          <div class="main-image">
+            <img id="modal-imagen" src="default.png" alt="Imagen principal">
+            <button class="nav-arrow prev-arrow" aria-label="Anterior">&#10094;</button>
+            <button class="nav-arrow next-arrow" aria-label="Siguiente">&#10095;</button>
+          </div>
+        </div>
+
+        <!-- Detalles del producto -->
+          <div class="right-column">
+          <div class="info-producto">
+            <h2 id="modal-nombre">Nombre del producto</h2>
+            <p class="referencia"><strong>Referencia:</strong> <span id="modal-referencia"></span></p>
+            <p class="precio" id="modal-precio">$000.000</p>
+          </div>
+
+          <!-- Selector de colores -->
+           <div class="info-producto">
+          <strong>COLOR</strong>
+          <div class="color-selector" id="modal-colores"></div>
+          <div class="color-selector" id="modal-estampados"></div>
+          </div>
+
+          <!-- Selector de tallas -->
+            <div class="info-producto">
+          <div class="talla">
+            <strong>TALLA</strong>
+            <div class="tallas" id="modal-tallas"></div>
+          </div>
+          </div>
+
+          <!-- Selector de cantidad -->
+          <strong>CANTIDAD</strong>
+          <div class="cantidad-contenedor">
+            <div class="cantidad">
+              <button id="decrement">−</button>
+              <span id="cantidad">0</span>
+              <button id="increment">+</button>
+            </div>
+
+            <!-- Botón principal -->
+            <button class="btn-comprar" onclick="AgregarCarro()">AGREGAR AL CARRITO</button>
+          </div>
+          <button class="btn-vermas" id="btnOpenDescripcion" data-ref="REF001">VER DETALLES</button>
+        </div>
+      </div>
+    </div>
+   <!-- Confirmacion de compra de producto -->
+        <div id="modalConfirmacion" class="confirmacion-Comprar">
+          <div class="confirmacion-contenido">
+            <span id="btnCerrarConfirmacion" onclick="cerrarModal()">&times;</span>
+            <p>Producto agregado al carrito.</p>
+            <button class="btnSeguirComprando" onclick="cerrarModal()">SEGUIR COMPRANDO</button>
+          </div>
+        </div>
+    <!-- Modal de Error -->
+      <div id="modalError" class="modal-Error">
+  <div class="modal-content">
+    <p id="modalErrorMensaje"></p>
+      <button id="btnCerrarError" onclick="cerrarModalError()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+
+  <!-- ==================== MODAL DESCRIPCIÓN DETALLADA DEL PRODUCTO ==================== -->
+  <div id="descripcionProducto" class="descripcion">
+    <div class="descripcion-content">
+      <span class="close-btn" id="btnClose">&times;</span>
+      <h2 id="nombreProducto">Nombre del Producto</h2>
+      <p id="descripcionProductoTexto">Aquí aparecerá la descripción del producto.</p>
+      <button id="btnCancelar">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- ==================== INCLUSIÓN DE ARCHIVOS JAVASCRIPT ==================== -->
+  <script type="module" src="src/js/script.js"></script> <!-- Scripts generales -->
+  <script type="module" src="src/js/login.js"></script> <!-- Lógica del login -->
+  <script type="module" src="src/js/getProducts.js"></script> <!-- Carga y renderizado de productos -->
+  <script type="module" src="src/js/carrito.js"></script> <!-- Funcionalidad del carrito de compras -->
+  <script  type="module" src="src/js/comprarProducto.js"></script> <!-- Funcionalidad del modal de compra -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</body>
+
+</html>

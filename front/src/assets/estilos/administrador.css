@@ -1,0 +1,139 @@
+
+/* ==========================================================================
+   CONTENEDOR PARA INICIAR SESION DEL ADMINISTRADOR
+   ========================================================================== */
+:root {
+  /* Variables para colores principales reutilizables en todo el archivo */
+  --main-bg-color: #929990;         /* Fondo principal: verde oscuro */
+  --main-text-color: #6F6259;       /* Texto principal: dorado */
+  --main-text2-color: #718472;
+  --main-contenedor-color:#B58355;
+  --main-contenedor2-color: #929990;
+  --main-contenedor3-color: #D1D4D0;
+  --main-contenedor4-color: white;
+
+}
+/*Boton de Usuario Administrador */
+.usuario {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;       /* Mantiene la proporción sin deformar */
+  border-radius: 50%;      /* Opcional: hace la imagen circular */
+}
+/* Círculo azul con ícono de usuario */
+.user-icon {
+  background: var(--main-bg-color); /* Color de fondo del círculo */
+  width: 70px; /* Ancho del círculo */
+  height: 70px; /* Alto del círculo */
+  border-radius: 50%; /* Forma redonda */
+  margin: -70px auto 30px; /* Lo sube encima del modal y lo centra */
+  display: flex; /* Centra el ícono dentro */
+  justify-content: center;
+  align-items: center;
+}
+/* Imagen dentro del círculo del usuario */
+.user-icon img {
+  width: 40px; /* Tamaño del ícono */
+  height: 40px;
+  filter: invert(1); /* Invierte los colores (para hacerlo blanco si es oscuro) */
+  color:var(--main-text-color);  /* Color ícono */
+}
+/* Botón de iniciar sesión */
+.login-button {
+  margin-left: 30px; /* Separación desde el borde izquierdo de la pantalla */
+  background: none; /* Sin color de fondo */
+  border: none; /* Sin borde */
+  color: var(--main-text-color); /* Color de texto (usualmente dorado) */
+  font-size: 1rem; /* Tamaño del texto */
+  font-weight: bold; /* Negrita para el texto */
+  cursor: pointer; /* Muestra una mano al pasar el mouse, indicando que es interactivo */
+  display: flex; /* Flexbox para alinear el ícono con el texto */
+  align-items: center; /* Centrado vertical */
+  justify-content: flex-end; /* Pega los íconos al borde derecho */
+
+}
+/* Efecto al pasar el mouse sobre el botón de iniciar sesión */
+.login-button:hover {
+  text-decoration: underline; /* Subraya el texto cuando se pasa el mouse por encima */
+}
+/* Capa semitransparente con desenfoque */
+.modal-overlay {
+  backdrop-filter: blur(6px);         /* Aplica desenfoque al fondo */
+  width: 100%;                        /* Ocupa todo el ancho de la pantalla */
+  height: 100%;                       /* Ocupa toda la altura de la pantalla */
+  display: flex;                      /* Usa flexbox para centrar el contenido */
+  justify-content: center;           /* Centra horizontalmente */
+  align-items: center;               /* Centra verticalmente */
+  position: fixed;                   /* Fija el modal en la pantalla */
+  top: 0;                            /* Desde el borde superior */
+  left: 0;                           /* Desde el borde izquierdo */
+  z-index: 1000;                     /* Asegura que quede por encima de todo */
+}
+
+.ajuste {
+  margin-left: 200px;
+}
+
+/*Cerrar el modal de iniciar sesion*/
+.close-modal {
+  position: absolute;          /* Posiciona el botón en relación al contenedor más cercano con posición relativa (como el modal) */
+  top: 10px;                   /* Lo sitúa a 10 píxeles desde la parte superior del modal */
+  right: 15px;                 /* Lo sitúa a 15 píxeles desde el borde derecho del modal */
+  background: transparent;     /* Elimina cualquier color de fondo, haciendo el botón invisible salvo por el texto ("X") */
+  border: none;                /* Elimina cualquier borde del botón */
+  font-size: 24px;             /* Aumenta el tamaño de fuente para que la "X" sea bien visible */
+  color: var(--main-text-color); /* Usa una variable CSS para definir el color del texto (se puede reemplazar por un color directo como #fff si no está definida) */
+  cursor: pointer;             /* Cambia el cursor a una mano para indicar que es interactivo */
+}
+/*Efecto al pasar el cursor */
+.close-modal:hover {
+  color: #ccc;                 /* Cambia el color del texto al pasar el cursor para indicar interactividad (tono gris claro) */
+}
+/* Contenedor del modal */
+.login-modal {
+  background: rgba(255, 255, 255, 0.1); /* Fondo blanco transparente */
+  border-radius: 20px; /* Bordes redondeados */
+  padding: 60px 90px; /* Espaciado interior */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Sombra del modal */
+  text-align: center; /* Centra el contenido del texto */
+  width: 300px; /* Ancho fijo del modal */
+  position: relative; /* Permite posicionar elementos internos como el ícono */
+}
+/* Contenedor para cada campo de entrada */
+.input-group {
+  display: flex; /* Ícono y campo en una línea */
+  align-items: center; /* Centrado vertical */
+  background:var(--main-bg-color); /* Fondo oscuro */
+  border-radius: 5px; /* Bordes redondeados */
+  margin-bottom: 15px; /* Espacio entre campos */
+  padding: 10px; /* Relleno interior */
+}
+/* Íconos de usuario y contraseña */
+.input-group i {
+  color: var(--main-text-color); /* Color ícono */
+  margin-right: 10px; /* Espacio a la derecha del ícono */
+}
+/* Campo de texto para email y contraseña */
+.input-group input {
+  border: none; /* Sin borde */
+  background: transparent; /* Fondo transparente */
+  color: var(--main-text-color); /* Texto  */
+  width: 100%; /* Ocupa todo el espacio disponible */
+  outline: none; /* Quita borde al hacer foco */
+}
+/* Botón de login */
+.login-btn {
+  width: 100%; /* Ocupa todo el ancho */
+  padding: 10px; /* Espaciado interno */
+  background:var(--main-bg-color); /* Fondo blanco */
+  border: none; /* Sin borde */
+  border-radius: 20px; /* Bordes redondeados tipo píldora */
+  color: var(--main-text-color); /* Texto oscuro */
+  font-weight: bold; /* Texto en negrita */
+  cursor: pointer; /* Cursor en forma de mano al pasar */
+  transition: 0.3s ease; /* Animación suave al pasar el mouse */
+}
+/* Efecto al pasar el mouse sobre el botón */
+.login-btn:hover {
+  background: #e6e6e6; /* Cambia a gris claro */
+}

@@ -1,0 +1,376 @@
+/* ==========================================================================
+   CONTENEDOR DATOS PRINCIPALES "CATEGORIA Y MENU HAMBURGUESA"
+   ========================================================================== */
+body {
+  font-family: Arial, sans-serif; /* Establece la fuente del texto del cuerpo a Arial o una fuente sans-serif genérica si Arial no está disponible. */
+  margin: 0; /* Elimina el margen predeterminado del cuerpo. */
+  padding: 0; /* Elimina el relleno predeterminado del cuerpo. */
+  background-size: 100%; /* Establece el tamaño del fondo al 500% del tamaño del contenedor, lo que se usará para la animación. */
+  /*animation: fondo 10s linear infinite;  Aplica una animación llamada "fondo" que dura 10 segundos, tiene una velocidad constante (linear) y se repite infinitamente. */
+    background-color: var(--main-contenedor4-color);
+  /* IMPORTANTE: Añade espacio arriba para que el contenido no quede bajo el header fijo */
+  /* Usa la variable de altura del header de escritorio por defecto */
+  padding-top: var(--header-height-desktop);
+}
+/* =========================
+   Estilos del Encabezado
+   ========================= */
+/* --- Encabezado Principal (barra fija superior) --- */
+.site-header {
+  position: fixed;                /* Fija el header en la parte superior */
+  top: 0;
+  left: 0;
+  width: 100%;                    /* Ocupa todo el ancho */
+  height: 80px;                   /* Altura visual reducida */
+  padding: 0 5px;                 /* Relleno lateral mínimo */
+  z-index: 1001;                  /* Prioridad de apilamiento */
+  display: flex;                  /* Flexbox para alinear contenido interno */
+  align-items: center;           /* Centra verticalmente */
+  justify-content: space-between;/* Espacio entre extremos (logo - título - íconos) */
+  box-sizing: border-box;        /* Incluye padding en altura total */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Sombra inferior sutil */
+  overflow: visible;             /* Permite que el logo sobresalga por fuera */
+}
+
+/* --- Contenedor Agrupador para Título y Eslogan --- */
+.header-titles {
+  position: absolute;            /* Posición libre dentro del header */
+  left: 50%;                     /* Centrado horizontal */
+  transform: translateX(-50%);   /* Centrado exacto */
+  display: flex;                 /* Flexbox para texto en una fila */
+  align-items: center;           /* Alinea verticalmente título y eslogan */
+  gap: 6px;                      /* Espacio entre título y eslogan */
+  margin: 0;                     /* Sin márgenes externos */
+  text-align: center;            /* Centra el texto internamente */
+}
+/* --- Título Principal (Nombre de la Empresa con gradiente animado) --- */
+.golden-text {
+  font-size: 2rem;               /* Tamaño de fuente grande */
+  font-weight: bold;            /* Negrita */
+  text-transform: uppercase;    /* Todo en mayúsculas */
+  background-size: 200%;        /* Para la animación de brillo */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;           /* Solo se verá el fondo a través del texto */
+  animation: shine 5s linear infinite; /* Animación continua */
+  margin: 0;
+}
+
+/* --- Estilos Globales del Header (etiqueta <header>) --- */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;                  /* Igual al de .site-header */
+  background-color: var(--main-bg-color);
+  color: var(--main-text-color);
+  padding: 0;
+  z-index: 1000;
+  overflow: visible;            /* Permite sobresalir el logo */
+}
+
+/* --- Contenedor Interno del Header (logo + título) --- */
+.header-container {
+  display: flex;                 /* Flexbox vertical */
+  flex-direction: column;
+  align-items: center;          /* Centrado horizontal */
+  gap: 4px;                     /* Espacio entre logo, título y eslogan */
+}
+
+/* ========================
+   Elementos del Encabezado
+   ======================== */
+
+/* --- Logo Circular --- */
+.logo {
+  width: 142px;                  /* Tamaño grande del logo */
+  height: 142px;
+  border-radius: 50%;           /* Forma redonda */
+  display: block;
+  flex-shrink: 0;               /* No se reduce con el espacio */
+  margin-top: -30px;            /* Hace que sobresalga por encima del header */
+  margin-left: 0;
+}
+
+/* --- Eslogan o subtítulo --- */
+.eslogan {
+  margin: 0;                    /* Sin márgenes */
+  font-size: 1em;               /* Tamaño moderado */
+  color: var(--main-text-color);               /* Dorado claro */
+  font-weight: normal;          /* No en negrita */
+}
+
+/* ============================
+   Botones de Usuario / Iconos
+   ============================ */
+
+/* --- Contenedor de Íconos (Login y Carrito) --- */
+.icon-buttons {
+  display: flex;                /* Alineación horizontal */
+  align-items: center;          /* Centrado vertical */
+  justify-content: flex-end;    /* Pegado a la derecha */
+  gap: 0px;                     /* Sin espacio entre íconos */
+}
+
+/* --- CONTENEDOR PRINCIPAL DE LAS CATEGORÍAS Y FLECHAS --- */
+.categorias-wrapper {
+  position: fixed;                /* Hace que quede fijo en la pantalla */
+  top: 80px;                      /* Justo debajo del header de 50px */
+  left: 0;
+  width: 100%;                    /* Ocupa todo el ancho de la pantalla */
+  display: flex;                  /* Alinea horizontalmente las categorías */
+  align-items: center;           /* Centra verticalmente los elementos */
+  background-color: var(--main-contenedor3-color);       /* Color del fondo*/
+  color: var(--main-bg-color);    /*Color de la letra*/
+  z-index: 1000;                 /* Encima de otros elementos pero debajo del header si este usa 1001 */
+  overflow: hidden;              /* Oculta scrollbars */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra opcional */
+}
+/* --- CONTENEDOR SCROLLEABLE DE BOTONES DE CATEGORÍA --- */
+.categorias {
+  display: flex;                   /* Alinea los botones horizontalmente */
+  flex-wrap: nowrap;              /* Evita que los botones se bajen a otra línea */
+  gap: 0;                          /* Sin espacio entre botones */
+  padding: 0 10px;                /* Espacio horizontal interno de 10px */
+  white-space: nowrap;           /* Previene que el texto se divida en varias líneas */
+  overflow-x: auto;              /* Permite el desplazamiento horizontal si el contenido desborda */
+  scrollbar-width: none;         /* Oculta scrollbar en Firefox */
+  -ms-overflow-style: none;      /* Oculta scrollbar en Internet Explorer */
+  scroll-behavior: smooth;       /* Desplazamiento suave al hacer scroll */
+  flex: 1;                        /* Ocupa el espacio disponible entre las flechas */
+}
+/* --- OCULTAR SCROLLBAR EN CHROME Y SAFARI --- */
+.categorias::-webkit-scrollbar {
+  display: none;                  /* Oculta scrollbar en navegadores WebKit */
+}
+/* --- ESTILO DE LOS BOTONES DE CATEGORÍA --- */
+.btn-categoria {
+  background: none;               /* Sin fondo */
+  color: var(--main-text-color);   /* Usa el color principal para el texto */
+  padding: 10px 12px;            /* Espaciado interno: 10px vertical, 12px horizontal */
+  font-size: 20px;               /* Tamaño de fuente */
+  border: none;                  /* Sin borde exterior */
+  border-right: 1px solid transparent; /* Borde derecho invisible (puede servir para activar efectos después) */
+  white-space: nowrap;           /* Impide que el texto salte de línea */
+  cursor: pointer;               /* Cursor tipo mano al pasar por encima */
+}
+/* --- ESTILO GENERAL DE LAS FLECHAS DE NAVEGACIÓN --- */
+.flecha-izquierda,
+.flecha-derecha {
+  display: none; /* Por defecto, ocultas */
+  position: absolute;            /* Posiciona las flechas dentro del contenedor relativo */
+  top: 50%;                      /* Alinea verticalmente al centro */
+  transform: translateY(-50%);   /* Ajusta la posición exacta centrada */
+  background: transparent;       /* Fondo transparente */
+  border: none;                  /* Sin borde */
+  padding: 5px;                  /* Espaciado interno */
+  border-radius: 50%;            /* Hace que el botón sea circular */
+  box-shadow: 0 0 5px rgba(0,0,0,0.1); /* Sombra suave para resaltar */
+  cursor: pointer;               /* Cursor tipo mano */
+  z-index: 2;                    /* Asegura que las flechas estén sobre el contenido */
+}
+/* --- POSICIÓN DE LA FLECHA IZQUIERDA --- */
+.flecha-izquierda {
+  left: 0;                       /* Pega la flecha al borde izquierdo */
+}
+/* --- POSICIÓN DE LA FLECHA DERECHA --- */
+.flecha-derecha {
+  right: 0;                      /* Pega la flecha al borde derecho */
+}
+/* --- TAMAÑO DE LAS IMÁGENES DE LAS FLECHAS --- */
+.flecha-izquierda img,
+.flecha-derecha img {
+  width: 24px;                   /* Ancho de 24px */
+  height: 24px;                  /* Alto de 24px */
+}
+/* === Estilo del Botón Menú Hamburguesa === */
+.menu-toggle {
+  display: none;             /* Oculta el botón por defecto (se mostrará en pantallas pequeñas). */
+  background-color: var(--main-contenedor-color); /* Color de fondo, igual al de los botones de categoría. */
+  color: var(--main-text-color);           /* Color del icono o texto (ej. '☰'), igual al texto de los botones. */
+  font-size: 24px;           /* Tamaño del icono o texto del botón hamburguesa. */
+  padding: 10px 20px;      /* Relleno interno del botón. */
+  border: none;              /* Quita cualquier borde por defecto. */
+  border-radius: 10px;     /* Redondea las esquinas. */
+  cursor: pointer;         /* Cursor de 'mano' al pasar sobre él. */
+  margin: 10px auto;       /* Margen: 10px arriba/abajo, 'auto' izquierda/derecha para centrarlo horizontalmente si es un bloque. */
+  text-align: center;      /* Centra el texto/icono dentro del botón. */
+}
+/* --- Estilo para el contenedor de categorías cuando está oculto (Opcional/Alternativo) --- */
+/* Nota: En tu media query usas la clase '.mostrar' para hacerlo visible, 
+   por lo que esta clase '.oculto' podría no ser necesaria tal como está implementado abajo. 
+   Originalmente, podrías haberla usado para forzar el ocultamiento. */
+.categorias.oculto {
+  display: none;             /* Oculta completamente el contenedor. */
+  /* Estas reglas se aplicarían si '.oculto' estuviera presente, 
+     pero como display es none, no tendrían efecto visual inmediato. */
+  flex-direction: column;    
+  align-items: center;
+}
+ /* --- Efecto Hover para Botones de Categoría (Vista Escritorio) --- */
+.btn-categoria:hover { 
+  background-color: var(--main-contenedor-color); /* Cambia el fondo a un verde más claro al pasar el mouse. */
+  color: var(--main-contenedor3-color);
+  transform: scale(1.05);    /* Aumenta ligeramente el tamaño (5%). */
+}
+/* ==========================================================================
+   MEDIA QUERIES PARA RESPONSIVE DESIGN (PARA PANTALLAS MÁS PEQUEÑAS)
+   ========================================================================== */
+/*
+   Media query para pantallas con un ancho máximo de 768px (tabletas y dispositivos móviles).
+*/
+@media (max-width: 768px) {
+  /*
+     En pantallas pequeñas, los elementos de la lista de productos ocupan todo el ancho disponible.
+  */
+  .producto-item {
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    max-width: 300px; /* Establece un ancho máximo para evitar que se extiendan demasiado en pantallas grandes */
+  }
+  /*
+     En pantallas pequeñas, el modal ocupa un porcentaje mayor del ancho de la pantalla.
+  */
+  .modal-contenido {
+    width: 95%; /* Ocupa el 95% del ancho de la pantalla */
+  }
+}
+/* --- Botón fijo de WhatsApp --- */
+.whatsapp-button {
+  position: fixed;         /* Lo deja fijo en la pantalla al hacer scroll. */
+  bottom: 20px;            /* Separado 20px del fondo. */
+  right: 20px;             /* Separado 20px del borde derecho. */
+  z-index: 1000;           /* Se asegura de que quede encima de todo. */
+}
+/* --- Estilo del icono dentro del botón --- */
+.icono-wsp {
+  width: 50px;             /* Tamaño del ícono de WhatsApp (ajustable). */
+  height: 50px;
+  border-radius: 50%;      /* Lo hace redondo. */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para que resalte. */
+  transition: transform 0.3s ease;         /* Animación suave al pasar el mouse. */
+}
+.icono-wsp:hover {
+  transform: scale(1.1);   /* Efecto de agrandarse al pasar el mouse. */
+}
+/* RESPONSIVE DESIGN para pantallas medianas */
+@media (max-width: 768px) { /* Aplica estilos solo cuando el ancho de la pantalla es de 768 píxeles o menos (para tablets). */
+  header {padding: 15px; }/* Reduce el relleno del encabezado a 15 píxeles. */
+  .header-container {gap: 4px; }/* Reduce el espacio entre los elementos del encabezado a 5 píxeles. */
+  .golden-text {font-size: 1.2rem;}/* Reduce el tamaño de la fuente del texto dorado a 1.8rem. */
+  body {padding-top: var(--header-height-mobile); }/* Ajusta el padding superior para la altura del header móvil */
+  .site-header {
+      height: var(--header-height-mobile);/* Usa la altura definida para móvil */
+      padding: 0 5px; }/* Reduce el padding horizontal en el header */
+  .logo {
+      width:142px;  /* Reduce más el tamaño del logo */
+      height: 142px;} /* Mantiene la proporción para círculo */
+  .eslogan {
+      font-size: 0.8em; }/* Reduce más el tamaño del eslogan */
+  .menu-toggle {display: block;  } /* Muestra el botón hamburguesa */
+  .icon-buttons {gap: 1px;} /* Espacio horizontal entre el botón de login y el carrito */
+.usuario {
+  width: 10px; /* Reduce más el tamaño del icono*/
+  height: 10px; } /* Mantiene la proporción para círculo */
+  /*Icono del carrito*/
+.comprar-button img {
+  width: 10px;/*Define el ancho de la imagen*/
+  height: 10px; /*Define la altura de la imagen */
+}
+}
+/* RESPONSIVE DESIGN para pantallas pequeñas */
+@media (max-width: 480px) { /* Aplica estilos solo cuando el ancho de la pantalla es de 480 píxeles o menos (para teléfonos). */
+  header {padding: 10px; }/* Aún menos espacio en pantallas muy pequeñas */
+  .golden-text {font-size: 1.5rem; }/* Reducir más el texto */
+  .logo {width: 60px; } /* Reducir aún más el tamaño del logo */
+  .icon-buttons {gap: 1px;} /* Espacio horizontal entre el botón de login y el carrito */
+.usuario {
+  width: 20px; /* Reduce más el tamaño del icono*/
+  height: 20px; } /* Mantiene la proporción para círculo */
+  /*Icono del carrito*/
+.comprar-button img {
+  width: 20px;/*Define el ancho de la imagen*/
+  height: 20px; /*Define la altura de la imagen */
+}
+}
+/* === REGLAS RESPONSIVE (Aplicables en pantallas de 768px o menos) === */
+@media (max-width: 768px) {
+  /* --- Contenedor de Categorías (Menú Lateral - Estado Base Oculto en Móvil) --- */
+  .categorias {
+    /* --- Posicionamiento y Dimensiones --- */
+    position: fixed;           /* Posición fija: Se queda en un lugar de la ventana, aunque se haga scroll. */
+    top: 0;                    /* Pegado a la parte superior de la ventana. */
+    left: 0;                   /* Pegado al lado izquierdo de la ventana. */
+    width: 80%;                /* Ocupa el 80% del ancho de la ventana (ajustable). */
+    max-width: 320px;          /* Ancho máximo de 320px, para no ser demasiado ancho en pantallas intermedias. */
+    height: 100%;              /* Ocupa el 100% de la altura de la ventana. */
+    background-color: var(--main-contenedor4-color); /* Color de fondo blanco para el panel lateral. */
+    z-index: 999;              /* Profundidad en la pila de elementos (menor que el botón de menú). */
+    
+    /* --- Layout Interno (Flexbox para los elementos dentro del menú) --- */
+    display: flex;             /* Habilita Flexbox para organizar los ítems internos. */
+    flex-direction: column;    /* Apila los ítems (botones/links) uno debajo del otro. */
+    align-items: stretch;      /* Estira los ítems para que ocupen todo el ancho del menú. */
+    padding: 60px 0 20px 0;    /* Relleno: 60px arriba (espacio para botón cerrar), 0 izq/der, 20px abajo. */
+                               /* El padding lateral se aplicará a los items internos. */
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2); /* Sombra a la derecha para dar efecto de profundidad. */
+    overflow-y: auto;          /* Añade una barra de scroll vertical si el contenido excede la altura. */
+
+    /* --- Transición para Animación Slide-In --- */
+    transform: translateX(-100%); /* Estado inicial: Totalmente movido a la izquierda (fuera de la pantalla). */
+    transition: transform 0.3s ease-in-out; /* Anima la propiedad 'transform' durante 0.3s con aceleración suave. */
+  }
+  /* --- Contenedor de Categorías (Menú Lateral - Estado Visible en Móvil) --- */
+  /* Esta regla se aplica CUANDO el elemento .categorias TAMBIÉN tiene la clase .mostrar */
+  .categorias.mostrar {
+    transform: translateX(0);    /* Mueve el panel a su posición original (visible en pantalla), activando la animación. */
+  }
+  /* --- Estilo de los "Botones" DENTRO del Menú Lateral Visible --- */
+  /* Modifica cómo se ven los .btn-categoria cuando están dentro del menú abierto */
+  .categorias.mostrar .btn-categoria {
+    background-color: transparent; /* Quita el color de fondo que tenían como botones. */
+    color: #333;                /* Establece un color de texto oscuro (ej. gris oscuro). */
+    padding: 12px 20px;          /* Relleno interno: 12px arriba/abajo, 20px izquierda/derecha. */
+    border-radius: 0;            /* Quita las esquinas redondeadas. */
+    font-weight: normal;         /* Usa un peso de fuente normal (no negrita). */
+    text-align: left;            /* Alinea el texto a la izquierda. */
+    min-width: auto;             /* Permite que el ancho sea determinado por el contenido/padding. */
+    width: 100%;                 /* Hace que el elemento ocupe todo el ancho disponible dentro del menú. */
+    border: none;                /* Asegura que no haya bordes. */
+    border-bottom: 1px solid #eee; /* Añade una línea separadora gris muy clara debajo de cada ítem. */
+    transition: none;            /* Desactiva las transiciones heredadas del estilo de botón base. */
+    cursor: pointer;             /* Mantiene el cursor tipo 'mano' para indicar que es clickeable. */
+  }
+  /* --- Estilo para el Último "Botón" Dentro del Menú --- */
+  /* Selecciona el último .btn-categoria dentro del menú visible */
+  .categorias.mostrar .btn-categoria:last-child {
+       border-bottom: none;       /* Le quita la línea separadora inferior al último elemento. */
+  }
+  /* --- Efecto Hover para los "Botones" Dentro del Menú Lateral --- */
+  /* Define cómo se ven los ítems del menú al pasar el ratón por encima */
+  .categorias.mostrar .btn-categoria:hover {
+      background-color: #dad9d5; /* Cambia el fondo a un gris muy claro (efecto sutil). */
+      color: var(--main-bg-color);           /* Cambia el color del texto al verde original (opcional). */
+      transform: none;           /* Asegura que no haya ninguna transformación (como el scale del botón base). */
+    }
+  /* --- Estilo del Botón Hamburguesa/Cerrar (en Móvil) --- */
+  /* Este botón controla la aparición/desaparición del menú */
+  .menu-toggle {
+    display: block;            /* Hace visible el botón en pantallas pequeñas. */
+    position: fixed;           /* Posición fija respecto a la ventana. */
+    top: 15px;                 /* A 15px del borde superior. */
+    left: 15px;                /* A 15px del borde izquierdo. */
+    z-index: 1000;             /* Profundidad alta para estar SIEMPRE ENCIMA del menú lateral. */
+    margin: 0;                 /* Elimina cualquier margen previo. */
+    /* --- Estilos visuales heredados o reconfirmados --- */
+    background-color: transparent; /* Fondo verde oscuro. */
+    color:var(--main-text-color);;           /* Color dorado/amarillo para el icono (☰ o X). */
+    font-size: 28px;           /* Tamaño del icono. */
+    padding: 10px 15px;        /* Relleno interno. */
+    border: none;              /* Sin borde. */
+    border-radius: 10px;       /* Esquinas redondeadas. */
+    cursor: pointer;           /* Cursor de 'mano'. */
+    text-align: center;        /* Centrado del icono/texto interno. */
+    /* NOTA: Necesitarás JS para cambiar el icono de ☰ a X cuando el menú esté abierto. */
+  }
+}

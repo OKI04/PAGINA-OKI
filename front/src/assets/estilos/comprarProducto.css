@@ -1,0 +1,907 @@
+/* ==========================================================================
+   CONTENEDOR PARA COMPRAR PRODUCTO
+   ========================================================================== */
+:root {
+  /* Variables para colores principales reutilizables en todo el archivo */
+
+  --main-bg-color: #929990;         /* Color de fondo principal (gris verdoso oscuro) */
+  --main-text-color: #6F6259;       /* Color principal para textos (marrón suave/dorado envejecido) */
+  --main-text2-color: #718472;      /* Segundo color para textos o acentos (verde oliva suave) */
+  --main-contenedor-color: #B58355;     /* Color de fondo de contenedores primarios (marrón claro) */
+  --main-contenedor2-color: #929990;    /* Segundo color para contenedores (gris verdoso) */
+  --main-contenedor3-color: #D1D4D0;    /* Tercer color para contenedores (gris claro) */
+  --main-contenedor4-color: white;      /* Color de fondo blanco para secciones limpias */
+}
+
+button {
+  cursor: pointer; /* Cambia el cursor al estilo "mano" cuando pasa sobre un botón */
+}
+.modal {
+  display: flex; /* Usa Flexbox para posicionar contenido */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  position: fixed; /* Posiciona el modal fijo en la ventana */
+  z-index: 1000; /* Lo posiciona encima de otros elementos */
+  left: 0; /* Empieza desde el borde izquierdo */
+  top: 0; /* Empieza desde el borde superior */
+  width: 100vw; /* Ocupa todo el ancho de la ventana */
+  height: 100vh; /* Ocupa todo el alto de la ventana */
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo semitransparente oscuro */
+  padding: 60px; /* Espaciado interior del modal */
+  box-sizing: border-box; /* Incluye padding en el tamaño total */
+  overflow-y: auto; /* Permite scroll vertical si el contenido excede */
+}
+
+#btnCerrarCompra {
+  position: absolute; /* Se posiciona de forma absoluta respecto al contenedor padre */
+  top: 15px; /* Separación desde el borde superior */
+  right: 20px; /* Separación desde el borde derecho */
+  font-size: 28px; /* Tamaño grande para mayor visibilidad */
+  font-weight: bold; /* Texto en negrita para resaltar */
+  cursor: pointer; /* El cursor cambia a una mano para indicar que es clickeable */
+  user-select: none; /* Evita que el texto se seleccione accidentalmente */
+  color: black; /* Color inicial del ícono */
+  transition: color 0.3s ease; /* Transición suave del color al hacer hover */
+  border: none; /* Sin borde */
+  background: transparent; /* Fondo completamente transparente */
+}
+#btnCerrarCompra:hover {
+  color: var(--main-bg-color); /* Cambia el color del ícono al pasar el cursor, usando una variable CSS */
+}
+.modal-body {
+  display: flex; /* Utiliza Flexbox para organizar el contenido del modal horizontalmente */
+  gap: 20px; /* Espacio de 20px entre los elementos hijos dentro del modal */
+  align-items: flex-start; /* Alinea los elementos al inicio vertical del contenedor */
+  width: auto; /* El ancho se adapta al contenido */
+  height: auto; /* La altura se adapta al contenido */
+  max-width: 700px; /* Limita el ancho máximo del modal a 700px */
+  max-height: 700px; /* Limita la altura máxima del modal a 700px */
+  background-color: var(--main-contenedor4-color); /* Color de fondo definido por variable CSS */
+  padding: 50px; /* Espaciado interno de 50px alrededor del contenido */
+  margin: auto; /* Centra el modal horizontal y verticalmente si fuera estático */
+  border-radius: 10px; /* Bordes redondeados de 10px */
+  position: fixed; /* Posiciona el modal de forma fija respecto a la ventana (viewport) */
+  top: 50%; /* Coloca el borde superior del modal al 50% del alto de la ventana */
+  left: 50%; /* Coloca el borde izquierdo del modal al 50% del ancho de la ventana */
+  transform: translate(-50%, -50%); /* Desplaza el modal -50% de su tamaño para centrarlo completamente */
+  overflow-y: auto; /* Activa scroll vertical si el contenido excede la altura */
+  max-height: 90vh; /* Establece un límite de altura máxima del modal al 90% de la altura de la ventana */
+  box-sizing: border-box; /* Incluye padding y border dentro del cálculo total del tamaño */
+  z-index: 1050; /* Coloca el modal por encima de la mayoría de los elementos (valor típico en modales Bootstrap) */
+}
+
+
+.left-column {
+  display: flex; /* Flex para organizar miniaturas */
+  gap: 20px; /* Espacio entre elementos */
+}
+.thumbnail-gallery {
+  display: flex; /* Contenedor de miniaturas */
+  flex-direction: column; /* Orden vertical */
+  gap: 10px; /* Espaciado entre miniaturas */
+  padding-top: 5px; /* Alineación con imagen principal */
+}
+.thumbnail-gallery img {
+  width: 60px; /* Ancho de cada miniatura */
+  height: auto; /* Alto de cada miniatura */
+  cursor: pointer; /* Apunta con el cursor */
+  border-radius: 8px; /* Bordes redondeados */
+  border: 2px solid transparent; /* Borde invisible por defecto */
+  transition: border-color 0.3s; /* Transición suave en hover/active */
+  opacity: 0.7;
+}
+.thumbnail-gallery img.active, .thumbnail-gallery img:hover {
+    opacity: 1;
+    border-color: black; /* Borde negro para activa/hover */
+}
+.thumbnail-gallery img.active,
+.thumbnail-gallery img:hover {
+  border-color: var(--main-bg-color); /* Aplica borde verde oscuro al pasar o seleccionar */
+}
+/* Columna de Imagen Principal */
+.main-image {
+  position: relative; /* Permite posicionar elementos hijos absolutamente dentro de este contenedor */
+  display: flex; /* Usa flexbox para alinear el contenido interno */
+  justify-content: center; /* Centra la imagen horizontalmente */
+  align-items: center; /* Centra la imagen verticalmente */
+  width: 100%; /* Ocupa todo el ancho disponible del contenedor padre */
+}
+
+.main-image img {
+  max-width: 100%; /* Escala la imagen para que no exceda el ancho del contenedor */
+  height: auto; /* La altura se ajusta proporcionalmente al ancho */
+  max-height: 800px; /* Limita la altura máxima de la imagen a 800px */
+  /* border: 1px solid var(--border-color); */ /* Comentado: se usaría para dar borde a la imagen si se descomenta */
+  object-fit: contain; /* Escala la imagen para que quepa dentro del contenedor sin recortarse */
+}
+.right-column {
+  display: flex; /* Flexbox para organizar elementos verticalmente */
+  flex-direction: column; /* Apila los elementos uno debajo del otro */
+  gap: 18px; /* Espacio vertical entre cada sección de detalle */
+  width: 280px; /* Ancho fijo para la columna de detalles */
+}
+.nav-arrow {
+  position: absolute; /* Posiciona este botón en relación al contenedor .main-image */
+  top: 50%; /* Centra verticalmente el botón */
+  transform: translateY(-50%); /* Ajusta exactamente al centro vertical */
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semitransparente */
+  border: 1px solid #ccc; /* Borde gris claro */
+  border-radius: 50%; /* Forma circular */
+  width: 36px; /* Ancho del botón */
+  height: 36px; /* Altura del botón */
+  font-size: 18px; /* Tamaño del ícono o flecha */
+  cursor: pointer; /* Cursor tipo "mano" al pasar sobre el botón */
+  display: flex; /* Flexbox para centrar el contenido (ícono) */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  color: var(--primary-text-color); /* Color del ícono o flecha basado en una variable */
+  transition: background-color 0.2s; /* Transición suave para el fondo al hacer hover */
+}
+.nav-arrow:hover {
+  background-color: var(--white-color); /* Cambia el fondo al blanco puro al pasar el mouse */
+}
+
+.prev-arrow { left: 10px; }
+.next-arrow { right: 10px; }
+.precio {
+  font-size: 1.5em; /* Tamaño del texto de precio */
+  color: var(--main-bg-color); /* Color verde oscuro */
+}
+.color,
+.talla,
+.cantidad {
+  margin: 0; /* Elimina márgenes por defecto */
+}
+.color-selector {
+  display: flex; /* Flexbox para los colores */
+  gap: 20px; /* Espacio entre colores */
+  align-items: center; /* Centra verticalmente */
+}
+.color-option {
+  width: 30px; /* Tamaño circular */
+  height: 30px;
+  border-radius: 50%; /* Forma de círculo */
+  cursor: pointer; /* Puntero tipo mano */
+  transition: all 0.2s ease; /* Transición suave */
+  border: 2px solid transparent; /* Borde por defecto */
+  box-sizing: border-box; /* Incluye bordes en dimensiones */
+}
+.color-option.selected {
+ border: 3px solid black; /* color azul Bootstrap, puedes cambiar */
+  border-radius: 50%;
+  padding: 2px; /* para que el borde no achique la imagen */
+}
+.estampado-selector {
+  display: flex; /* Flexbox para los colores */
+  gap: 20px; /* Espacio entre colores */
+  align-items: center; /* Centra verticalmente */
+}
+.estampado-option {
+  width: 30px; /* Tamaño circular */
+  height: 30px;
+  border-radius: 50%; /* Forma de círculo */
+  cursor: pointer; /* Puntero tipo mano */
+  transition: all 0.2s ease; /* Transición suave */
+  border: 2px solid transparent; /* Borde por defecto */
+  box-sizing: border-box; /* Incluye bordes en dimensiones */
+}
+/* Estilo aplicado cuando un estampado está seleccionado */
+.estampado-option.selected {
+  border: 3px solid black;        /* Borde negro de 3px para destacar el estampado activo */
+  border-radius: 50%;             /* Forma circular */
+  padding: 2px;                   /* Espacio interno para evitar que el borde recorte la imagen */
+}
+
+/* Botón de talla */
+.talla-btn {
+  width: 30px;                    /* Ancho del botón: 30px (forma circular) */
+  height: 30px;                   /* Alto del botón: 30px */
+  margin: 5px;                    /* Separación respecto a otros botones */
+  border: 2px solid var(--main-contenedor3-color);  /* Borde con color definido en variables */
+  background-color: var(--main-contenedor4-color);  /* Fondo blanco u otro según la variable */
+  border-radius: 50%;             /* Hace el botón completamente redondo */
+  cursor: pointer;                /* Cursor en forma de mano al pasar por encima */
+  transition: 0.2s;               /* Transición suave para hover u otros cambios */
+  font-weight: bold;              /* Texto en negrita para mayor legibilidad */
+}
+
+.talla-btn.selected {
+  border-color: black; /* Borde negro cuando está seleccionada */
+  background-color: var(--main-contenedor3-color); /* Fondo dorado */
+  color: var(--main-text-color); /* Texto blanco */
+}
+/* Contenedor principal que agrupa el selector de cantidad y el botón de compra */
+.cantidad-contenedor {
+  margin-bottom: 0px;            /* Elimina el espacio debajo del contenedor para que la línea quede pegada */
+  padding-bottom: 0px;           /* Sin relleno inferior dentro del contenedor */
+  display: flex;               /* Alinea los elementos en una fila */
+  align-items: center;         /* Centra verticalmente los elementos */
+  gap: 15px;                   /* Espacio entre el selector y el botón */
+  margin-top: 10px;            /* Separación del contenido superior */
+}
+/* Estilo del grupo de botones + y - junto al número */
+.cantidad {
+  display: flex;               /* Fila horizontal para los botones y el número */
+  align-items: center;         /* Centra verticalmente los elementos */
+  border: 1px solid var(--main-contenedor4-color);      /* Borde gris claro alrededor del contenedor */
+  height: 40px;                /* MISMA ALTURA que el botón de compra */
+}
+/* Botones de aumentar y disminuir cantidad */
+.cantidad button {
+  width: 25px;                 /* Ancho fijo */
+  height: 30px;                /* Se ajusta a la altura del contenedor padre */
+  font-size: 15px;             /* Tamaño del símbolo + o - */
+  font-weight: bold;          /* Texto en negrilla */
+  border: none;                /* Sin borde adicional */
+  cursor: pointer;             /* Cambia a cursor de clic */
+}
+/* Botón para disminuir cantidad (color gris) */
+#decrement {
+  background-color: #e0e0e0;   /* Fondo gris claro */
+  color: #000;                 /* Texto negro */
+}
+/* Botón para aumentar cantidad (color negro) */
+#increment {
+  background-color: #000;      /* Fondo negro */
+  color: #fff;                 /* Texto blanco */
+}
+/* Número de cantidad mostrado entre los botones */
+#cantidad {
+  padding: 0 5px;             /* Espacio horizontal alrededor del número */
+  font-size: 15px;             /* Tamaño del número */
+  min-width: 5px;             /* Mínimo ancho para evitar salto de línea */
+  text-align: center;          /* Centra el número horizontalmente */
+}
+/* Botón "AÑADIR A MI BOLSA" */
+.btn-comprar {
+  background-color: var(--main-bg-color); /* Usa la variable del root para color de fondo */
+  color: var(--main-text-color);          /* Usa la variable para el color de texto */
+  font-weight: bold;                      /* Texto en negrilla */
+  border-radius: 5px solid black; /* Borde negro sólido de 1px */
+  height: 20px;                  /* MISMA ALTURA que el selector de cantidad */
+  padding: 0 20px;               /* Solo padding horizontal */
+  font-size: 13px;                        /* Texto un poco más grande */
+  height: 35px;                           /* Mayor altura para mejor presencia visual */
+  cursor: pointer;                        /* Cursor tipo clic */
+  transition: background-color 0.3s ease; /* Suaviza el cambio de color al hacer hover */
+  display: flex;                 /* Centra texto verticalmente */
+  align-items: center;          /* Centra texto verticalmente */
+  justify-content: center;      /* Centra texto horizontalmente */
+   white-space: nowrap;       /* Evita saltos de línea en el texto */
+}
+/* Estilo del botón al pasar el mouse */
+.btn-comprar:hover {
+  background-color:var(--main-contenedor3-color);                 /* Color alternativo más oscuro al hacer hover */
+}
+.btn-vermas {
+  background-color: var(--main-contenedor4-color); /* Fondo igual al botón comprar */
+  color: black; /* Texto del mismo color definido */
+  border-radius: 2px solid black; /* Borde negro sólido de 1px */
+  padding: 10px 20px; /* Relleno interno del botón */
+  width: 100%; /* Ocupa todo el ancho disponible */
+  margin-top: 10px; /* Margen superior entre botones */
+  font-weight: bold; /* Hace el texto del botón negrilla */
+}
+.btn-vermas:hover {
+  background-color: var(--main-bg-color); /* Cambia el fondo al pasar el cursor */
+  color:var(--main-text-color);
+}
+.btnSeguirComprando {
+  background-color: var(--main-bg-color); /* Color de fondo base */
+  color: black; /* Color del texto base */
+  border-radius: 6px solid black; /* Borde negro sólido de 1px */
+  padding: 10px 10px; /* Espaciado interno */
+  width: 80%; /* Botón ocupa todo el ancho disponible */
+  margin-top: 5px; /* Separación superior */
+  font-weight: bold; /* Texto en negrita */
+  transition: background-color 0.2s ease; /* Transición suave del color al pasar el mouse */
+}
+.btnSeguirComprando:hover {
+  background-color: var(--main-contenedor3-color); /* Color al pasar el mouse */
+}
+/* Contenedor general con línea inferior */
+.info-producto {
+  margin-bottom: 5px;            /* Elimina el espacio debajo del contenedor para que la línea quede pegada */
+  padding-bottom: 5px;           /* Sin relleno inferior dentro del contenedor */
+  border-bottom: 1px solid #ddd; /* Agrega una línea gris clara como separación visual */
+}
+/* Título del producto */
+#modal-nombre {
+  margin-bottom: 2px;          /* Espacio mínimo debajo del título para mayor compacidad */
+  font-size: 18px;             /* Tamaño de fuente moderado */
+}
+/* Texto de la referencia  */
+.referencia {
+  margin: 0;                   /* Elimina márgenes verticales para que quede pegado al título y al precio */
+  font-size: 14px;             /* Tamaño de letra más pequeño que el título */
+  color: #888;                 /* Color gris claro para menor énfasis */
+}
+/* Precio del producto */
+.precio {
+  margin: 5px;                   /* Elimina espacio externo para alinear bien con otros elementos */
+  padding: 0;                  /* Sin espacio interno adicional */
+  font-size: 18px;             /* Tamaño de letra destacado */
+  color: #b32424;              /* Color rojo para resaltar el precio */
+  font-weight: bold;           /* Hace el texto del precio más llamativo */
+  line-height: 1.1;            /* Ajusta la altura de línea para reducir el espacio vertical */
+}
+/* Estilos para pantallas medianas o móviles (≤768px de ancho) */
+@media (max-width: 768px) {
+ .modal-body {
+  top: 50%;                       /* Posiciona el borde superior del modal al 50% del alto de la ventana. */
+  left: 50%;                      /* Posiciona el borde izquierdo al 50% del ancho de la ventana. */
+  transform: translate(-50%, -50%); /* Mueve el modal hacia arriba y la izquierda la mitad de su tamaño para centrarlo perfectamente. */
+  flex-direction: column;         /* Los elementos hijos se apilan verticalmente. */
+  align-items: stretch;           /* Los elementos hijos se estiran para ocupar el ancho disponible. */
+  width: 100%;                    /* El modal ocupa todo el ancho posible del contenedor padre. */
+  max-width: 100%;                /* Evita que sobrepase el 100% del ancho del contenedor o pantalla. */
+  height: auto;                   /* El alto se adapta al contenido. */
+  min-height: 90vh;               /* Asegura que el modal tenga al menos el 90% del alto de la ventana. */
+  overflow-y: auto;               /* Agrega scroll vertical si el contenido excede el alto del modal. */
+  box-sizing: border-box;         /* Incluye padding y border dentro del ancho y alto especificados. */
+}
+
+  .left-column {
+    flex-direction: row; /* Muestra las miniaturas en fila horizontal */
+    justify-content: center; /* Centra el contenido dentro del contenedor */
+    flex-wrap: wrap; /* Permite que las miniaturas bajen de línea si no caben */
+    gap: 60px; /* Espacio entre las miniaturas */
+  }
+  .thumbnail-gallery {
+    flex-direction: row; /* Galería de miniaturas en línea horizontal */
+    width: auto; /* Ancho automático según el contenido */
+    justify-content: center; /* Centra las imágenes */
+  }
+  .thumbnail-gallery img {
+    display: none;
+  }
+  .main-image {
+    width: 100%; /* Imagen principal ocupa todo el ancho */
+  }
+  .main-image img {
+    min-width: 100%; /* Ancho mínimo del 100% del contenedor */
+    min-height: auto; /* Altura mínima automática (no fuerza valor específico) */
+    max-height: 500px; /* Altura máxima de la imagen principal */
+  }
+  .right-column {
+    width: 100%; /* La columna derecha ocupa todo el ancho disponible */
+  }
+
+  .btn-comprar,
+  .btn-vermas,
+  .btn-seguir {
+    width: 100%; /* Los botones ocupan todo el ancho disponible */
+    font-size: 1em; /* Ajuste del tamaño del texto a la escala del dispositivo */
+  }
+
+  .cantidad {
+    justify-content: center; /* Centra horizontalmente el contenedor de botones de cantidad */
+  }
+}
+/* Estilos para pantallas pequeñas (≤480px de ancho) */
+@media (max-width: 480px) {
+   
+  .main-image img {
+    max-height: 400px; /* Reduce la altura máxima de la imagen principal */
+    width: auto; /* Ajuste automático del ancho */
+    object-fit: contain; /* La imagen mantiene su proporción dentro del contenedor */
+  }
+
+  .talla-btn {
+    padding: 8px 12px; /* Relleno reducido para botones de talla */
+    font-size: 0.9em; /* Tamaño de fuente ligeramente más pequeño */
+  }
+
+  .color-option {
+    width: 25px; /* Botón de color más pequeño */
+    height: 25px; /* Igual en alto */
+  }
+
+  .precio {
+    font-size: 1.3em; /* Tamaño del texto de precio ligeramente más grande para destacarlo */
+  }
+}
+/* 
+  Estilos para el contenedor del modal de descripción 
+*/
+.descripcion {
+  display: flex; /* Flexbox para centrar contenido */
+  position: fixed; /* Se posiciona fijo en la pantalla (no se desplaza con el scroll) */
+  z-index: 1000; /* Se asegura de estar por encima de la mayoría de los elementos */
+  left: 0; /* Alineado completamente al borde izquierdo */
+  top: 0; /* Alineado completamente al borde superior */
+  width: 100vw; /* Ocupa el ancho completo de la ventana del navegador */
+  height: 100vh; /* Ocupa el alto completo de la ventana del navegador */
+  background-color: rgba(0,0,0,0.6); /* Fondo semitransparente negro para efecto de superposición */
+  justify-content: center; /* Centra el contenido horizontalmente (cuando se usa con display: flex) */
+  align-items: center; /* Centra el contenido verticalmente (cuando se usa con display: flex) */
+  padding: 20px; /* Espaciado interior para que el contenido no toque los bordes de la pantalla */
+  box-sizing: border-box; /* Incluye padding dentro del ancho y alto total del elemento */
+    display: none; /* Oculto por defecto hasta que se active mediante JavaScript */
+
+}
+.descripcion-content {
+  background-color: white; /* Fondo blanco para destacar el contenido */
+  border-radius: 8px; /* Bordes redondeados para suavizar el diseño */
+  padding: 25px 30px; /* Espacio interno generoso para el texto */
+  width: 400px; /* Ancho base fijo */
+  max-width: 95%; /* Máximo ancho relativo al viewport para adaptabilidad */
+  max-height: 80vh; /* Máxima altura de 80% del viewport para evitar cubrir toda la pantalla */
+  overflow-y: auto; /* Muestra scroll vertical si el contenido excede la altura máxima */
+  position: relative; /* Necesario para posicionar el botón de cierre absolutamente dentro de este contenedor */
+  box-shadow: 0 5px 20px rgba(0,0,0,0.4); /* Sombra suave para efecto de elevación */
+  font-family: Arial, sans-serif; /* Fuente legible y universal */
+  color: black; /* Texto de color gris oscuro para buena legibilidad */
+    text-align: center; /* Centra el texto dentro del contenedor */
+
+
+}
+.close-btn {
+  position: absolute; /* Se posiciona de forma absoluta respecto al contenedor padre */
+  top: 15px; /* Separación desde el borde superior */
+  right: 20px; /* Separación desde el borde derecho */
+  font-size: 28px; /* Tamaño grande para mayor visibilidad */
+  font-weight: bold; /* Texto en negrita para resaltar */
+  cursor: pointer; /* El cursor cambia a una mano para indicar que es clickeable */
+  user-select: none; /* Evita que el texto se seleccione accidentalmente */
+  color: black; /* Color inicial del ícono */
+  transition: color 0.3s ease; /* Transición suave del color al hacer hover */
+}
+.close-btn:hover {
+  color: var(--main-contenedor2-color); /* Cambia el color usando una variable CSS personalizada */
+}
+#btnCancelar {
+background-color: var(--main-bg-color); /* Color de fondo base */
+  color: black; /* Color del texto base */
+  border-radius: 6px solid black; /* Borde negro sólido de 1px */
+  padding: 10px 10px; /* Espaciado interno */
+  width: 80%; /* Botón ocupa todo el ancho disponible */
+  margin-top: 5px; /* Separación superior */
+  font-weight: bold; /* Texto en negrita */
+  transition: background-color 0.2s ease; /* Transición suave del color al pasar el mouse */
+}
+#btnCancelar:hover {
+  background-color: var(--main-contenedor3-color) /* Cambia el fondo al pasar el cursor usando una variable */
+}
+/* Contenedor del carrito de compras */
+.cart-container {
+  position: relative;
+  display: flex; /* Flexbox para disposición horizontal */
+  align-items: center; /* Alineación vertical centrada */
+  gap: 10px; /* Espacio entre ícono y contador */
+  font-size: 20px; /* Tamaño del texto e íconos */
+  background-color: var(--main-bg-color); /* Color de fondo verde oscuro (variable) */
+  margin-left: 0px; /* Separación desde el borde izquierdo de la pantalla */
+  padding: 0px; /* Opcional: un poco de espacio interno para que no quede muy ajustado */
+}
+/* Icono del carrito */
+.comprar-button img {
+  width: 30px; /* Define el ancho de la imagen */
+  height: 30px; /* Define la altura de la imagen */
+  position: relative;
+  display: inline-block;
+}
+/* Botón de comprar dentro del carrito */
+.comprar-button {
+  background-color: var(--main-bg-color); /* Fondo verde oscuro (variable) */
+  border: none; /* Sin bordes */
+  padding: 10px 15px; /* Espacio interno: 10px vertical, 15px horizontal */
+  border-radius: 5px; /* Bordes redondeados */
+  cursor: pointer; /* Cursor tipo mano */
+  font-size: 20px; /* Tamaño de fuente */
+  font-weight: bold; /* Texto en negrita */
+  transition: transform 0.3s; /* Animación suave cuando cambia de tamaño */
+  margin-right: 20px;
+}
+/* Efecto al pasar el mouse sobre el botón de comprar */
+.comprar-button:hover {
+  transform: scale(1.1); /* Aumenta ligeramente el tamaño (zoom) */
+}
+/* Contenedor deslizante del carrito de compras */
+.modal-carrito {
+  display: block; /* Elemento presente siempre, aunque visualmente esté oculto */
+  position: fixed; /* Fijo en la pantalla aunque se haga scroll */
+  top: 0; /* Alineado arriba */
+  right: -450px; /* Inicialmente oculto fuera del borde derecho de la pantalla */
+  width: 450px; /* Ancho del panel del carrito */
+  height: 100%; /* Ocupa toda la altura de la ventana del navegador */
+  background-color: var(--main-contenedor3-color); /* Fondo blanco */
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3); /* Sombra que aparece hacia la izquierda */
+  transition: right 0.3s ease-in-out; /* Animación suave para mostrar/ocultar el carrito */
+  z-index: 1100; /* Se posiciona por encima de casi todos los elementos */
+}
+/* Cuando se agrega la clase "show", el carrito se muestra */
+.modal-carrito.show {
+  right: 0; /* Se desliza hacia adentro desde la derecha */
+}
+/* Encabezado del carrito (título y botón cerrar) */
+.modal-header {
+  display: flex; /* Flexbox para disposición horizontal */
+  justify-content: space-between; /* Espacia el título y botón de cerrar */
+  align-items: center; /* Centrado vertical */
+  padding: 15px; /* Espaciado interno */
+  background-color: var(--main-bg-color); /* Fondo gris claro */
+  border-bottom: 1px solid transparent; /* Línea inferior divisoria */
+  color: var(--main-text-color); /*Color de la letra de Modal de carrito*/
+}
+
+/* Contenedor principal donde se muestran los elementos del carrito */
+/* Pie de página del carrito donde se muestra el total y acciones */
+.footer-carrito {
+  width: auto;
+  display: flex; /* Flexbox para colocar los elementos horizontalmente */
+  justify-content: space-between; /* Distribuye los elementos a los extremos */
+  align-items: center; /* Alinea verticalmente al centro */
+  background-color: var(--main-contenedor4-color); /* Fondo blanco */
+  border-top: 1px solid var(--main-contenedor-color); /* Línea divisoria en la parte superior */
+  padding: 15px; /* Espaciado interno */
+}
+/* Estilo para el total de la compra */
+.total {
+  text-align: left; /* Alinea el texto a la izquierda */
+}
+/* Contenedor de un producto individual dentro del carrito */
+.product {
+  display: flex; /* Disposición horizontal para imagen e info */
+  align-items: center; /* Centrado vertical */
+  margin-bottom: 15px; /* Separación inferior entre productos */
+  border-bottom: 1px solid var(--main-contenedor2-color); /* Línea divisoria debajo del producto */
+  padding-bottom: 10px; /* Espacio inferior dentro del contenedor del producto */
+}
+/* Imagen del producto dentro del carrito */
+.product img {
+  width: 90px; /* Ancho fijo para las miniaturas */
+  margin-right: 15px; /* Espacio entre la imagen y el texto */
+}
+/* Información textual del producto (nombre, precio, etc.) */
+.product-info {
+  flex-grow: 1; /* Ocupa todo el espacio restante disponible */
+}
+/* Botón para cerrar el carrito */
+.close {
+  cursor: pointer; /* Muestra la mano al pasar el cursor */
+  font-size: 34px; /* Tamaño del ícono de cerrar */
+  font-weight: bold; /* (Opcional) más grueso */
+  color: var(--main-text-color); /* Color del ícono, normalmente un color destacado */
+}
+/* Contenedor de un ítem dentro del carrito */
+.cart-item {
+  height: auto;
+  display: flex; /* Flex para disposición horizontal */
+  align-items: center; /* Centrado vertical */
+  justify-content: space-between; /* Espacio entre los elementos internos */
+  padding: 10px; /* Espaciado interno */
+  gap: 10px; /* Espacio entre elementos hijos */
+  margin-bottom: 20px; /* Separación inferior con otros productos */
+  padding-bottom: 10px; /* Espacio adicional inferior */
+  border-top: 1px solid var(--main-contenedor-color); /* Línea divisoria en la parte superior */
+}
+/* Imagen dentro del ítem del carrito */
+.cart-item img {
+  width: 80px; /* Ancho fijo para las imágenes */
+  height: auto; /* Altura automática para mantener proporción */
+  border-radius: 8px; /* Bordes redondeados */
+  object-fit: cover; /* La imagen se recorta para llenar el contenedor sin deformarse */
+}
+/* Contenedor para la información del producto */
+.cart-item-info {
+  flex: 1; /* Ocupa el espacio disponible restante */
+}
+/* Nombre del producto */
+.cart-item-info h3 {
+  font-size: 16px; /* Tamaño de fuente moderado */
+  margin-bottom: 5px; /* Espacio inferior */
+  color: black; /* Color definido por variable */
+}
+/* Precio o cantidad del producto */
+.cart-item-info p {
+  font-size: 14px; /* Tamaño de fuente menor */
+  margin: 2px 0; /* Margen vertical ajustado */
+  color: var(--main-text-color); /* Color del texto */
+}
+/* Precio total del producto */
+.cart-item-total {
+  font-weight: bold; /* Texto en negrita */
+  color: var(--main-text2-color); /* Color del texto */
+}
+/* Botón para eliminar un producto del carrito */
+.delete-item {
+  border: none; /* Sin bordes */
+  cursor: pointer; /* Cursor tipo mano */
+  font-size: 24px; /* Tamaño del ícono */
+  align-self: flex-start; /* Alinea el botón al inicio del contenedor padre */
+  background: none; /* Fondo transparente */
+  padding: 8px; /* Espaciado interno */
+  display: block; /* Se muestra como bloque */
+}
+/* Botón para realizar cotización */
+.btn-cotizar {
+  background-color: var(--main-bg-color); /* Color de fondo */
+  color: var(--main-text-color); /* Texto en blanco */
+  border-radius: 5px black; /* Sin borde */
+  padding: 10px 20px; /* Espaciado interno */
+  border-radius: 6px; /* Bordes redondeados */
+  font-size: 20px; /* Tamaño de letra */
+  cursor: pointer; /* Cursor tipo mano */
+}
+/* Efecto hover para el botón cotizar */
+.btn-cotizar:hover {
+  background-color: var(--main-contenedor2-color); /* Se puede cambiar para un efecto visual */
+  color: var(--main-text-color);
+}
+/* 🔒 Contenedor del fondo oscuro del modal de confirmación de compra */
+.confirmacion-Comprar {
+  display: none;                               /* Oculto inicialmente hasta que se active por JavaScript */
+  position: fixed;                             /* Fijado a toda la ventana del navegador */
+  top: 0; left: 0; right: 0; bottom: 0;         /* Cubre toda el área de la pantalla */
+  background-color: rgba(0, 0, 0, 0.5);         /* Fondo semitransparente negro */
+  justify-content: center;                     /* Centra horizontalmente el contenido hijo */
+  align-items: center;                         /* Centra verticalmente el contenido hijo */
+  z-index: 9999;                                /* Aparece encima de casi todos los demás elementos */
+}
+
+/* 🧾 Contenedor blanco del contenido del modal */
+.confirmacion-contenido {
+  position: fixed;                              /* Se posiciona relativo a la ventana */
+  top: 50%;                                     /* Centro vertical */
+  left: 50%;                                    /* Centro horizontal */
+  transform: translate(-50%, -50%);             /* Ajusta para que el modal quede perfectamente centrado */
+
+  background-color: #fff;                       /* Fondo blanco */
+  padding: 15px;                                /* Espaciado interno moderado */
+  border-radius: 10px;                          /* Bordes redondeados para un diseño moderno */
+
+  width: 80%;                                   /* Toma el 80% del ancho de la pantalla */
+  max-width: 400px;                             /* Máximo 400px para evitar que se haga muy grande en pantallas amplias */
+  max-height: 70vh;                             /* Alto máximo del 70% de la altura de la ventana */
+  overflow-y: auto;                             /* Scroll si el contenido es más alto que el modal */
+
+  text-align: center;                           /* Centra el texto */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);     /* Sombra sutil para dar profundidad */
+  z-index: 1050;                                /* Aparece por encima del fondo negro (pero aún dentro del modal) */
+}
+
+/* ❌ Botón para cerrar el modal (ícono X) */
+#btnCerrarConfirmacion {
+  position: absolute;                           /* Se posiciona respecto al contenedor .confirmacion-contenido */
+  top: 10px;                                    /* Separación desde el borde superior */
+  right: 20px;                                  /* Separación desde el borde derecho */
+  font-size: 28px;                              /* Tamaño grande para ser visible */
+  font-weight: bold;                            /* Negrita */
+  cursor: pointer;                              /* Cambia a mano al pasar el cursor */
+  user-select: none;                            /* Previene selección de texto al hacer doble clic */
+  color: black;                                 /* Color inicial del ícono */
+  transition: color 0.3s ease;                  /* Transición suave del color al hacer hover */
+  border: none;                                 /* Sin borde */
+  background: transparent;                      /* Sin fondo */
+}
+
+/* 🎨 Hover: cambia color del botón al pasar el mouse */
+#btnCerrarConfirmacion:hover {
+  color: var(--main-bg-color);                  /* Cambia al color principal definido en tus variables CSS */
+}
+/* ❗ MODAL DE ERROR DE DATOS DE COMPRA */
+.modal-Error {
+  display: none;                               /* Oculto por defecto hasta que se active con JS */
+  position: fixed;                             /* Se posiciona respecto a la ventana */
+  top: 0; left: 0; right: 0; bottom: 0;         /* Cubre toda la pantalla */
+  background-color: rgba(0, 0, 0, 0.5);         /* Fondo negro semitransparente */
+  justify-content: center;                     /* Centra horizontalmente el contenido */
+  align-items: center;                         /* Centra verticalmente el contenido */
+  z-index: 9999;                               /* Aparece sobre casi todo lo demás */
+}
+
+/* 💬 CONTENIDO DEL MODAL DE ERROR */
+.modal-content {
+  background-color: transparent;               /* Fondo transparente por defecto */
+  margin: 0 auto;                              /* Centrado horizontal */
+  padding: 20px;                               /* Espacio interno */
+  border-radius: 10px;                         /* Bordes redondeados */
+  width: 100%;                                 /* Toma el ancho completo del contenedor padre */
+  max-width: 400px;                            /* Máximo 400px en pantallas grandes */
+  max-height: 84vh;                            /* Hasta 84% de la altura de la pantalla */
+  overflow-y: auto;                            /* Agrega scroll vertical si el contenido es alto */
+  text-align: center;                          /* Centra el texto */
+  position: relative;                          /* Posicionamiento relativo para el botón de cerrar */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);    /* Sombra suave para profundidad */
+  background-color: var(--main-contenedor4-color); /* Color de fondo definido por variables */
+}
+
+/* 📝 MENSAJE DE ERROR DENTRO DEL MODAL */
+#modalErrorMensaje {
+  color: black;                                /* Texto negro */
+  font-weight: bold;                           /* Negrita para destacar el mensaje */
+  margin-bottom: 15px;                         /* Separación inferior del mensaje */
+}
+
+/* 🔘 BOTÓN PARA CERRAR EL MODAL DE ERROR */
+#btnCerrarError {
+  background-color: var(--main-bg-color);      /* Fondo según variable CSS */
+  color: black;                                /* Texto negro */
+  border-radius: 6px solid black;              /* ⚠️ ERROR: esto debería ser border: 1px solid black; */
+  padding: 10px 10px;                          /* Espaciado interno */
+  width: 80%;                                  /* Ocupa el 80% del ancho del contenedor */
+  margin-top: 5px;                             /* Margen superior */
+  font-weight: bold;                           /* Texto en negrita */
+  transition: background-color 0.2s ease;      /* Transición suave al cambiar color */
+}
+
+/* 🎨 ESTILO DEL BOTÓN AL HACER HOVER */
+#btnCerrarError:hover {
+  background-color: var(--main-contenedor2-color); /* Nuevo color de fondo al pasar el mouse */
+  color: var(--main-text-color);                   /* Color de texto al hacer hover */
+}
+
+/* 📦 MODAL DE COTIZACIÓN */
+#modalCotizacion {
+  display: none;                              /* Oculto por defecto */
+  position: fixed;                            /* Fijado a la ventana del navegador */
+  top: 0;
+  left: 0;
+  width: 100vw;                               /* Ancho del viewport completo */
+  height: 100vh;                              /* Alto del viewport completo */
+  background: rgba(0, 0, 0, 0.5);             /* Fondo negro semitransparente */
+  z-index: 999;                               /* Nivel alto para que aparezca sobre el contenido */
+  padding: 20px 0;                            /* Espacio vertical superior e inferior */
+}
+.modal-container {
+  background: white;                 /* Fondo blanco para el contenido del modal */
+  padding: 20px;                     /* Espacio interno */
+  top: 50%;                  /* Centro vertical */
+  left: 50%;                 /* Centro horizontal */
+  transform: translate(-50%, -50%);  /* Ajuste perfecto al centro */
+  width: 90%;                        /* Ancho responsivo */
+  max-width: 600px;                  /* Ancho máximo */
+  max-height: 80vh;                  /* Alto máximo relativo al viewport */
+  overflow-y: auto;                  /* Scroll interno si el contenido es muy largo */
+  border-radius: 8px;                /* Bordes redondeados */
+  position: relative;                /* Posicionamiento relativo para elementos como botón cerrar */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra para destacar el modal */
+}
+
+    .close-modal-btn {
+    position: absolute;         /* Posicionado dentro del modal */
+    top: 10px;                  /* Separado 10px del borde superior */
+    right: 15px;                /* Separado 15px del borde derecho */
+    background: none;           /* Sin fondo */
+    border: none;               /* Sin borde */
+    font-size: 2em;             /* Tamaño grande para la "X" */
+    font-weight: bold;          /* Texto en negrita */
+    color: #888;                /* Color gris claro */
+    cursor: pointer;            /* Cursor en forma de mano al pasar el mouse */
+    line-height: 1;             /* Ajusta la altura de línea al mínimo para evitar desplazamiento vertical */
+}
+
+.close-modal-btn:hover {
+    color: #000;                /* Cambia a negro al pasar el mouse */
+}
+.product-list {
+    margin-bottom: 20px;        /* Espacio inferior con otros elementos */
+    padding: 0;                 /* Sin padding interno */
+    list-style-type: none;      /* Quita los puntos de lista */
+}
+
+.product-item {
+    display: flex;              /* Flexbox para alinear contenido */
+    justify-content: space-between;  /* Separación entre nombre y botón */
+    align-items: center;        /* Centra verticalmente el contenido */
+    border: 1px solid #000000;  /* Borde negro */
+    padding: 12px 15px;         /* Espaciado interno */
+    margin-bottom: 10px;        /* Separación entre productos */
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;     /* Apila nombre y subtítulo verticalmente */
+}
+
+.product-info-main {
+    font-size: 1em;             /* Tamaño de texto estándar */
+}
+
+.product-subtitle {
+    font-size: 0.8em;           /* Texto más pequeño */
+    color: var(--main-bg-color); /* Color definido por variable CSS */
+    margin-top: 2px;            /* Separación superior pequeña */
+}
+
+.remove-button {
+    background: none;           /* Sin fondo */
+    border: none;               /* Sin borde */
+    font-size: 1.3em;           /* Tamaño visible para la “X” */
+    font-weight: bold;          /* Texto en negrita */
+    cursor: pointer;            /* Mano al pasar el mouse */
+    color: #333;                /* Gris oscuro */
+    padding: 5px 10px;          /* Relleno para hacerlo clickeable */
+}
+
+.remove-button:hover {
+    color: var(--main-bg-color); /* Cambia de color al pasar el mouse */
+}
+    /* Sección del Formulario */
+    .quote-form .form-grid {
+    display: grid;                             /* Usa grid layout */
+    grid-template-columns: 1fr 1fr;            /* Dos columnas de igual ancho */
+    gap: 20px;                                 /* Espaciado entre campos */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;                    /* Etiqueta arriba, campo abajo */
+}
+
+.form-group-full {
+    grid-column: 1 / -1;                       /* Ocupa ambas columnas del grid */
+}
+
+.quote-form label {
+    margin-bottom: 6px;                        /* Espacio entre etiqueta y campo */
+    font-size: 0.9em;                          /* Tamaño ligeramente reducido */
+    color: black;                              /* Texto negro */
+}
+
+.quote-form input[type="text"],
+.quote-form input[type="email"] {
+    padding: 10px;                             /* Relleno interno */
+    border: 1px solid #cccccc;                 /* Borde gris claro */
+    border-radius: 4px;                        /* Bordes suavemente redondeados */
+    font-size: 1em;                            /* Tamaño de texto estándar */
+    width: 100%;                               /* Ocupa todo el ancho disponible */
+    box-sizing: border-box;                    /* Incluye padding y borde en el ancho */
+}
+
+.quote-form input:focus {
+    border-color: var(--main-contenedor-color);       /* Borde en foco */
+    outline: none;                                     /* Elimina contorno por defecto */
+    box-shadow: 0 0 0 2px rgba(139, 195, 74, 0.3);      /* Resaltado suave en verde */
+}
+
+    /* Botón de Envío */
+ .submit-button {
+    display: block;                              /* Ocupa una línea completa */
+    width: auto;                                 /* Ajusta ancho al contenido */
+    margin: 30px auto 10px auto;                 /* Centrado con espacio vertical */
+    padding: 12px 25px;                          /* Relleno interno */
+    background-color: var(--main-contenedor-color); /* Color de fondo personalizado */
+    color: var(--main-text-color);              /* Color del texto */
+    border: 2px solid transparent;              /* Borde invisible por defecto */
+    font-weight: bold;                          /* Texto en negrita */
+    cursor: pointer;                            /* Cursor en forma de mano */
+    text-align: center;                         /* Centrado de texto */
+    border-radius: 4px;                         /* Bordes redondeados */
+    transition: background-color 0.2s ease-in-out; /* Animación suave al cambiar fondo */
+}
+
+.submit-button:hover {
+    background-color: var(--main-bg-color);     /* Cambia fondo al pasar el mouse */
+}
+@media (max-width: 600px) {
+    .quote-form .form-grid {
+        grid-template-columns: 1fr;             /* Cambia a una sola columna en móviles */
+    }
+}
+
+.whatsapp-container {
+  display: flex;                   /* Usa Flexbox para alinear el contenido */
+  justify-content: center;        /* Centra el botón horizontalmente */
+  align-items: center;            /* Centra verticalmente si el contenedor tiene altura */
+  margin-top: 1rem;               /* Espacio superior para separar del contenido anterior */
+}
+.whatsapp-link {
+  display: flex;                   /* Flex para alinear ícono y texto */
+  align-items: center;            /* Centra verticalmente ícono y texto */
+  gap: 0.5rem;                     /* Espacio entre ícono y texto */
+  text-decoration: none;          /* Elimina el subrayado típico de enlaces */
+  background-color: var(--main-bg-color);  /* Color de fondo personalizado (puede simular color de WhatsApp) */
+  padding: 0.75rem 1.5rem;         /* Espaciado interno (vertical y horizontal) */
+  border-radius: 8px;              /* Bordes redondeados */
+}
+.whatsapp-icon {
+  width: 32px;                    /* Ancho fijo del ícono */
+  height: 32px;                   /* Alto fijo del ícono */
+}
+.whatsapp-text {
+  font-weight: bold;              /* Texto en negrita */
+  color: var(--main-text-color);  /* Color de texto definido por variable */
+  font-size: 1.1rem;              /* Tamaño ligeramente mayor al normal */
+}

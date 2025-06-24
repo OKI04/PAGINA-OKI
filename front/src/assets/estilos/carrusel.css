@@ -1,0 +1,91 @@
+
+/* ==========================================================================
+   CONTENEDOR DEL CARRUSEL "PRODUCTOS MAS VENDIDOS"
+   ========================================================================== */
+:root {
+  /* Variables para colores principales reutilizables en todo el archivo */
+
+  --main-bg-color: #929990;         /* Color de fondo principal (gris verdoso oscuro) */
+  --main-text-color: #6F6259;       /* Color principal para textos (marrón suave/dorado envejecido) */
+  --main-text2-color: #718472;      /* Segundo color para textos o acentos (verde oliva suave) */
+  --main-contenedor-color: #B58355;     /* Color de fondo de contenedores primarios (marrón claro) */
+  --main-contenedor2-color: #929990;    /* Segundo color para contenedores (gris verdoso) */
+  --main-contenedor3-color: #D1D4D0;    /* Tercer color para contenedores (gris claro) */
+  --main-contenedor4-color: white;      /* Color de fondo blanco para secciones limpias */
+}
+
+/* RECOMENDADOS - CARRUSEL */
+  .recomendados {
+  /* Estilos para el contenedor principal de la sección de recomendados */
+  margin: 20px; /* Añade un margen de 20px alrededor del contenedor. */
+  padding: 20px; /* Añade un relleno de 20px dentro del contenedor. */
+  background-color: transparent; /* Establece un fondo transparente para el contenedor. */
+  border-radius: 10px; /* Redondea las esquinas del contenedor con un radio de 10px. */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Añade una sombra suave al contenedor. */
+  }
+  .recomendados h2 {
+  margin-top: 90px; /* Estilos para el título principal de la sección de recomendados */
+  font-size: 2rem; /* Establece el tamaño de la fuente en 2.5 veces el tamaño de la fuente raíz. */
+  text-align: center; /* Centra el texto del título. */
+  font-weight: bold; /* Establece el texto del título en negrita. */
+  text-transform: uppercase; /* Convierte todo el texto del título a mayúsculas. */
+  background-size: 200%; /* Establece el tamaño del fondo del degradado al 200% para la animación. */
+  -webkit-background-clip: text; /* Recorta el fondo al contorno del texto (para navegadores basados en WebKit). */
+  color: var(--main-text2-color); /* Hace que el color del texto sea transparente para mostrar el fondo degradado. */
+  }
+  /* Contenedor del carrusel */
+  .carousel-container {
+  /* Estilos para el contenedor principal del carrusel */
+  position: relative; /* Establece la posición como relativa para que los botones de navegación se puedan posicionar absolutamente dentro. */
+  overflow: hidden; /* Oculta cualquier contenido del carrusel que exceda sus límites. */
+  width: 100%; /* Establece el ancho del carrusel al 100% de su contenedor padre. */
+  text-align: center; /* Centra el contenido dentro del carrusel (puede afectar elementos inline o inline-block). */
+  }
+  .carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+  user-select: none;
+}
+  .carousel-track::-webkit-scrollbar {
+  /* Estilos para ocultar la barra de desplazamiento horizontal en navegadores basados en WebKit (Chrome, Safari). */
+  display: none; /* Oculta la barra de desplazamiento. */
+  }
+  .carousel-track.dragging {
+  /* Estilos aplicados a la pista del carrusel cuando se está arrastrando */
+  cursor: grabbing; /* Cambia el cursor a una mano cerrada para indicar que se está arrastrando. */
+  scroll-behavior: auto; /* Desactiva el desplazamiento suave durante el arrastre para una respuesta más directa. */
+  }
+  .carousel-item {
+  /* Estilos para cada elemento individual dentro del carrusel */
+  flex-shrink: 0; /* Evita que los elementos se encojan para ajustarse al contenedor. */
+  width: 350px; /* Establece el ancho de cada elemento del carrusel en 200px. */
+  height: 500px; /* Establece la altura de cada elemento del carrusel en 300px. */
+  border-radius: 20px; /* Redondea las esquinas de cada elemento con un radio de 20px. */
+  overflow: hidden; /* Oculta cualquier contenido dentro del elemento que exceda sus límites. */
+  background: linear-gradient(135deg, transparent); /* Aplica un degradado lineal transparente como fondo (puede ser para efectos visuales o para superponer otros estilos). */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Añade una sombra suave a cada elemento. */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Aplica transiciones suaves a las propiedades "transform" y "box-shadow" durante 0.3 segundos con una función de aceleración "ease". */
+  text-align: center; /* Centra el texto dentro de cada elemento. */
+  justify-content: center; /* Centra el contenido flexible verticalmente (si el elemento es un contenedor flex). */
+  align-items: center; /* Centra el contenido flexible horizontalmente (si el elemento es un contenedor flex). */
+  user-select: none; /* Evita que el usuario pueda seleccionar el texto o las imágenes dentro del elemento. */
+  -webkit-user-drag: none; /* Previene el arrastre de imágenes en navegadores basados en WebKit. */
+  -webkit-touch-callout: none; /* Evita que aparezca el menú contextual al mantener presionado en dispositivos táctiles (WebKit). */
+    padding: 10px; /* 🔸 Añade separación interna */
+  box-sizing: border-box; /* Asegura que el padding no aumente el tamaño total *
+  }
+  .carousel-item:hover {
+  /* Estilos aplicados a cada elemento del carrusel al pasar el cursor sobre él */
+  transform: scale(1.05); /* Escala el elemento al 105% de su tamaño original para un efecto de resaltado. */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Aumenta la intensidad de la sombra al pasar el cursor. */
+  }
+.carousel-item img {
+  width: 100%;              /* Ocupa todo el ancho del contenedor */
+  height: 100%;             /* Ocupa toda la altura del contenedor */
+  object-fit: cover;        /* Rellena completamente sin deformar, recortando si es necesario */
+  border-radius: 15px; /* Menor que el del contenedor para mantener la estética */
+ -webkit-tap-highlight-color: transparent; /* Quita resplandor al tocar en móviles */
+  touch-action: pan-y;                      /* Permite solo scroll vertical */
+  user-select: none;                        /* No permite seleccionar texto o elementos */
+  -webkit-user-drag: none;                  /* No permite arrastrar imágenes o elementos */
+}
