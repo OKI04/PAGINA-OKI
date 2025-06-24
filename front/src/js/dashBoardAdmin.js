@@ -1,4 +1,6 @@
 // Archivo: adminProducts.js
+export const baseApiUrl =
+  import.meta.env.VITE_API_URL || "https://pagina-back-oki.onrender.com";
 
 let productosCargados = [];
 let formularioId = 0;
@@ -42,7 +44,6 @@ window.loadProducts = async function loadProducts() {
       return;
     }
 
-    const baseApiUrl = "https://backend-oki-web.onrender.com";
     const productos = await res.json();
 
     productosCargados = productos.map(prod => {

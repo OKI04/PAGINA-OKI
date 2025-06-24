@@ -1,6 +1,7 @@
 const bodyProduct = document.querySelector(".main-products");
 const tituloProductos = document.querySelector("#producto h2");
-const baseApiUrl = "https://backend-oki-web.onrender.com";
+export const baseApiUrl =
+  import.meta.env.VITE_API_URL || "https://pagina-back-oki.onrender.com";
 let productosCargados = [];
 let carrusel = [];
 
