@@ -136,11 +136,7 @@ function actualizarContadorCarrito() {
   contador.style.display = carrito.length > 0 ? "inline-block" : "none";
 }
 
-// -----------------------------
-document.getElementById("btnCerrarCarrito").onclick = () => {
-  document.getElementById("modalCarrito").style.display = "none";
-};
-
+// ----------------------------
 // -----------------------------
 function mostrarErrorModal(mensaje) {
   document.getElementById("modalErrorMensaje").textContent = mensaje;
