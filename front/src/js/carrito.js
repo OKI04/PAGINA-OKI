@@ -147,8 +147,6 @@ function cerrarModalError() {
   document.getElementById("modalError").style.display = "none";
 }
 
-document.getElementById("btnCerrarError").addEventListener("click", cerrarModalError);
-
 // -----------------------------
 function Contizacion() {
   const modal = document.getElementById("modalCotizacion");
