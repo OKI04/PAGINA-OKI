@@ -7,7 +7,7 @@ let carrusel = [];
 
    async function loadProducts() {
   try {
-    const res = await fetch(`/admin/products/all`, {
+    const res = await fetch(`${baseApiUrl}/admin/products/all`, {
       method: 'GET',
       credentials: 'include'
     });
@@ -15,7 +15,7 @@ let carrusel = [];
     if (!res.ok) {
       const err = await res.text();
       alert('Error al cargar productos: ' + err);
-      return;
+      return; 
     }
 
     const productos = await res.json();
