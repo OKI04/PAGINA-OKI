@@ -966,12 +966,7 @@ background-color: var(--main-bg-color); /* Color de fondo base */
   .close {
   font-size: 30px; /* Tamaño del ícono de cerrar */
 }
-   /* CENTRAR el modal de cotización */
-  #modalCotizacion {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+
 
   .modal-container {
     position: relative;
