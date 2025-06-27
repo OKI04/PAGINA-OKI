@@ -1,10 +1,4 @@
 
-// -----------------------------------------------------------------------------
-// URL fija del backend
-// -----------------------------------------------------------------------------
-const BACKEND_URL = 'https://pagina-back-oki.onrender.com';
-
-// Variable global que otros módulos pueden necesitar
 let productosCargados = [];
 let formularioId = 0;
 const arrayList = [];
@@ -34,19 +28,44 @@ userForm?.addEventListener('submit', async (e) => {
 });
 
 
+// -----------------------------------------------------------------------------
+// URL fija del backend y helpers de normalización
+// -----------------------------------------------------------------------------
+const BACKEND_URL = 'https://pagina-back-oki.onrender.com';
 
-// -----------------------------------------------------------------------------
-// Carga de productos (vista tabla de administración)
-// -----------------------------------------------------------------------------
+const limpiarRuta = r => (r || '').replace(/\\/g, '/');
+
+const normalizarImagenes = (imgs = []) =>
+  imgs.map(img => {
+    const ruta = limpiarRuta(img.url);
+    return { ...img, url: ruta, publicUrl: `${BACKEND_URL}/${ruta}` };
+  });
+
+const normalizarColores = (cols = []) =>
+  cols.map(c => {
+    const imgs = normalizarImagenes(c.imagenes);
+    return { ...c, imagenes: imgs, publicUrl: imgs[0]?.publicUrl || '' };
+  });
+
+const normalizarEstampados = (ests = []) =>
+  ests.map(e => {
+    const imgs = normalizarImagenes(e.imagenes);
+    return { ...e, imagenes: imgs, publicUrl: imgs[0]?.publicUrl || '' };
+  });
+
+
+
 window.loadProducts = async function loadProducts () {
   const loader = document.getElementById('loader');
   const tbody  = document.getElementById('productTable');
 
   try {
-    if (loader) loader.style.display = 'block';      // ⬆️ muestra spinner
+    if (loader) loader.style.display = 'block';           // ⬆️ muestra spinner
 
-    // 1. Petición (sin credentials)
-    const res = await fetch(`${BACKEND_URL}/admin/products/all`);
+    // 1. Petición directa al backend (JWT en encabezado, sin credentials)
+    const res = await fetch(`${BACKEND_URL}/admin/products/all`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
     if (!res.ok) {
       const err = await res.text();
       mostrarAlerta('Error al cargar productos: ' + err);
@@ -56,52 +75,15 @@ window.loadProducts = async function loadProducts () {
     // 2. Datos
     const productos = await res.json();
 
-    // 3. Normalización completa
-    productosCargados = productos.map(prod => {
-      // Imágenes principales
-      const imagenesNorm = (prod.imagenes || []).map(img => {
-        const ruta = img.url.replace(/\\/g, '/');
-        return { ...img, url: ruta, publicUrl: `${BACKEND_URL}/${ruta}` };
-      });
+    // 3. Normalización
+    productosCargados = productos.map(prod => ({
+      ...prod,
+      imagenes  : normalizarImagenes (prod.imagenes),
+      colores   : normalizarColores  (prod.colores),
+      estampados: normalizarEstampados(prod.estampados)
+    })).sort((a, b) => b._id.localeCompare(a._id));       // último arriba
 
-      // Colores
-      const coloresNorm = (prod.colores || []).map(color => {
-        const imagenesColor = (color.imagenes || []).map(img => {
-          const ruta = img.url.replace(/\\/g, '/');
-          return { ...img, url: ruta, publicUrl: `${BACKEND_URL}/${ruta}` };
-        });
-        return {
-          ...color,
-          imagenes : imagenesColor,
-          publicUrl: imagenesColor[0]?.publicUrl || ''
-        };
-      });
-
-      // Estampados
-      const estampadosNorm = (prod.estampados || []).map(estampado => {
-        const imagenesEst = (estampado.imagenes || []).map(img => {
-          const ruta = img.url.replace(/\\/g, '/');
-          return { ...img, url: ruta, publicUrl: `${BACKEND_URL}/${ruta}` };
-        });
-        return {
-          ...estampado,
-          imagenes : imagenesEst,
-          publicUrl: imagenesEst[0]?.publicUrl || ''
-        };
-      });
-
-      return {
-        ...prod,
-        imagenes  : imagenesNorm,
-        colores   : coloresNorm,
-        estampados: estampadosNorm
-      };
-    });
-
-    // Ordenar por _id descendente (últimos arriba)
-    productosCargados.sort((a, b) => b._id.localeCompare(a._id));
-
-    // 4. Renderizado en tabla
+    // 4. Render de tabla
     tbody.innerHTML = productosCargados.map(p => `
       <tr class="fila-producto" data-id="${p._id}" data-referencia="${p.referencia}">
         <td>${p.referencia}</td>
@@ -124,12 +106,11 @@ window.loadProducts = async function loadProducts () {
     tbody.querySelectorAll('button[data-action]').forEach(btn => {
       btn.addEventListener('click', () => {
         const { action, id } = btn.dataset;
-        if (action === 'ver')       view(id);
-        if (action === 'editar')    openEditModal(id);
+        if (action === 'ver')        view(id);
+        if (action === 'editar')     openEditModal(id);
         if (action === 'eliminar') {
-          const confirmBtn = document.getElementById('btn-confirmar-eliminar');
-          // Evitar múltiples listeners con { once: true }
-          confirmBtn.addEventListener('click', () => eliminar(id), { once: true });
+          const confirm = document.getElementById('btn-confirmar-eliminar');
+          confirm.addEventListener('click', () => eliminar(id), { once: true });
         }
       });
     });
@@ -138,9 +119,10 @@ window.loadProducts = async function loadProducts () {
     console.error('Error al cargar productos:', err);
     mostrarAlerta('Error al conectar con el servidor');
   } finally {
-    if (loader) loader.style.display = 'none';       // ⬇️ oculta spinner
+    if (loader) loader.style.display = 'none';            // ⬇️ oculta spinner
   }
 };
+
 
 // Crear Producto
 document.getElementById("createProductForm").addEventListener("submit", async e => {
@@ -453,7 +435,7 @@ function openEditModal(productId) {
   .then(response => response.json())
   .then(producto => {
 
-    const baseApiUrl = "https://pagina-back-oki.onrender.com";
+    const baseApiUrl = "http://localhost:3900";
     console.log(producto);
     let product = producto.product;
     console.log(product);
@@ -1121,7 +1103,7 @@ function agregarItem(containerId, templateFunction) {
 }
 
 
-function mostrarAlerta(mensaje, tiempo = 1000) {
+function mostrarAlerta(mensaje, tiempo = 3000) {
   const modal = document.getElementById("alertModal");
   const mensajeElem = document.getElementById("alertMessage");
   mensajeElem.textContent = mensaje;
