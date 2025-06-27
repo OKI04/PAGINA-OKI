@@ -1,3 +1,5 @@
+// URL fija del backend
+const BACKEND_URL = 'https://pagina-back-oki.onrender.com';
 
 let productosCargados = [];
 let formularioId = 0;
@@ -28,11 +30,6 @@ userForm?.addEventListener('submit', async (e) => {
 });
 
 
-// -----------------------------------------------------------------------------
-// URL fija del backend y helpers de normalización
-// -----------------------------------------------------------------------------
-const BACKEND_URL = 'https://pagina-back-oki.onrender.com';
-
 const limpiarRuta = r => (r || '').replace(/\\/g, '/');
 
 const normalizarImagenes = (imgs = []) =>
@@ -52,8 +49,6 @@ const normalizarEstampados = (ests = []) =>
     const imgs = normalizarImagenes(e.imagenes);
     return { ...e, imagenes: imgs, publicUrl: imgs[0]?.publicUrl || '' };
   });
-
-
 
 window.loadProducts = async function loadProducts () {
   const loader = document.getElementById('loader');
@@ -122,7 +117,6 @@ window.loadProducts = async function loadProducts () {
     if (loader) loader.style.display = 'none';            // ⬇️ oculta spinner
   }
 };
-
 
 // Crear Producto
 document.getElementById("createProductForm").addEventListener("submit", async e => {
@@ -435,7 +429,7 @@ function openEditModal(productId) {
   .then(response => response.json())
   .then(producto => {
 
-    const baseApiUrl = "https://pagina-back-oki.onrender.com";
+    const baseApiUrl = "http://localhost:3900";
     console.log(producto);
     let product = producto.product;
     console.log(product);
