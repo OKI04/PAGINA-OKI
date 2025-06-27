@@ -124,123 +124,103 @@ window.loadProducts = async function loadProducts () {
 };
 
 
-// Crear Producto
-document.getElementById("createProductForm").addEventListener("submit", async e => {
+// -----------------------------------------------------------------------------
+// Crear producto
+// -----------------------------------------------------------------------------
+document.getElementById('createProductForm').addEventListener('submit', async e => {
   e.preventDefault();
 
-  const form = e.target;
+  const form     = e.target;
+  const loader   = document.getElementById('loaderCreate');   // opcional
   const formData = new FormData();
 
-  // Datos generales
-  formData.append("referencia", form.referencia.value);
-  formData.append("categoria", form.categoria.value);
-  //formData.append("otraCategoria", form.otraCategoria.value);
-  formData.append("nombre", form.nombre.value);
-  formData.append("descripcion", form.descripcion.value);
-  formData.append("precio", form.precio.value);
-
-  // Tallas
-  const tallas = {
-    S: form["tallas.S"].value || "0",
-    M: form["tallas.M"].value || "0",
-    L: form["tallas.L"].value || "0",
-    XL: form["tallas.XL"].value || "0",
-    U: form["tallas.U"].value || "0"
-  };
-  formData.append("tallas", JSON.stringify(tallas));
-
-  const colores = recolectarDatosGrupo("#colorContainer", {
-    codigo: ".color-codigo",
-    nombreRef: ".color-nombre-ref",
-    imagenRefFile: "input[name='colorRef']",
-    imagenes: "input[name='colores']"
-  });
-
-  const estampados = recolectarDatosGrupo("#printsContainer", {
-    codigo: ".estampado-codigo",
-    imagenRef: ".estampado-nombre-ref",
-    imagenRefFile: "input[name='estampadoRef']",
-    imagenes: "input[name='estampados']"
-  });
-  
-
-  // FUNCIONES AUXILIARES:
-
-  const hayColores = colores;
-  const hayEstampados = estampados;
-
-  if (!hayColores && !hayEstampados) {
-    mostrarAlerta("Debe agregar al menos un color o un estampado que tenga al menos una imagen.");
-    return;
-  }
-
-  colores.forEach((color, index) => {
-    formData.append(`colores[${index}].codigo`, color.codigo);
-    formData.append(`colores[${index}].imagenRef`, color.nombreRef);
-
-    if (color.imagen) {
-      formData.append(`colores[${index}]`, color.imagen);
-    }
-
-    if (Array.isArray(color.imagenes)) {
-      console.log("Colores: ", color.imagenes);
-      color.imagenes.forEach((img, i) => {
-        formData.append(`colores[${index}]`, img);
-      });
-    }
-  });
-
-  estampados.forEach((estampado, index) => {
-    formData.append(`estampados[${index}].codigo`, estampado.codigo);
-    formData.append(`estampados[${index}].imagenRef`, estampado.nombreRef);
-
-    if (estampado.imagen) {
-      formData.append(`estampados[${index}]`, estampado.imagen);
-    }
-    
-    if (Array.isArray(estampado.imagenes)) {
-      console.log("Estampados: ", estampado.imagenes); 
-      estampado.imagenes.forEach((img, i) => {
-        formData.append(`estampados[${index}]`, img);
-      });
-    }
-  });
-
   try {
-        const res = await fetch('/admin/products/create', {
-          method: 'POST',
-          body: formData,
-          credentials: 'include'       //si usas cookie HttpOnly
-        });
-    
-        if (!res.ok) {
-          const err = await res.json();
-          mostrarAlerta('Error al crear producto: ' + (err.message || res.statusText));
-          return;
-        }
-    
-        const nuevoProducto = await res.json();
-        console.log('Creado:', nuevoProducto);
-    
-        if (typeof loadProducts === 'function') {
-          loadProducts();
-        }
-    
-        // Limpiar formulario
-        form.reset();
+    if (loader) loader.style.display = 'block';               // ⬆️ spinner
 
-        // Limpiar contenedores dinámicos
-        document.querySelector("#colorContainer").innerHTML = "";
-        document.querySelector("#printsContainer").innerHTML = "";
+    // === Datos básicos =======================================================
+    formData.append('referencia',  form.referencia.value.trim());
+    formData.append('categoria',   form.categoria.value);
+    if (form.otraCategoria?.value) formData.append('otraCategoria', form.otraCategoria.value.trim());
+    formData.append('nombre',      form.nombre.value.trim());
+    formData.append('descripcion', form.descripcion.value.trim());
+    formData.append('precio',      form.precio.value);
 
-        // Mostrar mensaje de éxito
-        mostrarAlerta("Producto creado exitosamente.");
-      } catch (error) {
-        console.error('Error en fetch crear producto:', error);
-        mostrarAlerta('Error de conexión al crear producto');
-      }
+    // Tallas
+    const tallas = ['S','M','L','XL','U'].reduce((acc,t)=>
+      ({ ...acc, [t]: form[`tallas.${t}`].value || '0' }),{});
+    formData.append('tallas', JSON.stringify(tallas));
 
+    // === Colores y estampados ===============================================
+    const colores    = recolectarDatosGrupo('#colorContainer', {
+      codigo: '.color-codigo',
+      nombreRef: '.color-nombre-ref',
+      imagenRefFile: "input[name='colorRef']",
+      imagenes: "input[name='colores']"
+    });
+
+    const estampados = recolectarDatosGrupo('#printsContainer', {
+      codigo: '.estampado-codigo',
+      nombreRef: '.estampado-nombre-ref',
+      imagenRefFile: "input[name='estampadoRef']",
+      imagenes: "input[name='estampados']"
+    });
+
+    if ((!colores.length || !tieneImagenes(colores)) &&
+        (!estampados.length || !tieneImagenes(estampados))) {
+      mostrarAlerta('Debe agregar al menos un color o un estampado con imágenes.');
+      return;
+    }
+
+    // → Adjuntar colores
+    colores.forEach((c, idx) => {
+      formData.append(`colores[${idx}].codigo`,     c.codigo);
+      formData.append(`colores[${idx}].imagenRef`,  c.nombreRef);
+      if (c.imagen) formData.append(`colores[${idx}]`, c.imagen);
+      (c.imagenes || []).forEach(f => formData.append(`colores[${idx}]`, f));
+    });
+
+    // → Adjuntar estampados
+    estampados.forEach((e, idx) => {
+      formData.append(`estampados[${idx}].codigo`,    e.codigo);
+      formData.append(`estampados[${idx}].imagenRef`, e.nombreRef);
+      if (e.imagen) formData.append(`estampados[${idx}]`, e.imagen);
+      (e.imagenes || []).forEach(f => formData.append(`estampados[${idx}]`, f));
+    });
+
+    // === Petición ============================================================
+    const res = await fetch(`${BACKEND_URL}/admin/products/create`, {
+      method:  'POST',
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      body:    formData
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(()=>({ message: res.statusText }));
+      throw new Error(err.message);
+    }
+
+    await res.json();                                    // (opcional) producto creado
+    mostrarAlerta('Producto creado exitosamente.');
+    form.reset();
+    document.querySelector('#colorContainer').innerHTML  = '';
+    document.querySelector('#printsContainer').innerHTML = '';
+
+    if (typeof loadProducts === 'function') loadProducts();
+
+  } catch (err) {
+    console.error('Error al crear producto:', err);
+    mostrarAlerta('Error al crear producto: ' + err.message);
+  } finally {
+    if (loader) loader.style.display = 'none';           // ⬇️ spinner
+  }
 });
+
+// -----------------------------------------------------------------------------
+// Helpers
+// -----------------------------------------------------------------------------
+function tieneImagenes(arr) {
+  return arr.some(i => i.imagen || (Array.isArray(i.imagenes) && i.imagenes.length));
+}
 
 
 // Buscador
