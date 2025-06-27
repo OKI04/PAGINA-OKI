@@ -137,3 +137,29 @@
 .login-btn:hover {
   background: #e6e6e6; /* Cambia a gris claro */
 }
+@media (min-width: 200px) and (max-width: 599px) {
+
+  /* Ícono que aparece en la barra (botón de abrir modal) */
+  .usuario {
+    width: 24px;        /* antes 30 px */
+    height: 24px;
+  }
+
+  /* Círculo azul grande que se muestra dentro del modal */
+  .user-icon {
+    width: 50px;        /* antes 70 px */
+    height: 50px;
+    margin: -50px auto 25px; /* ajusta el “overlap” y el margen inferior */
+  }
+
+  /* SVG o PNG del usuario dentro del círculo */
+  .user-icon img {
+    width: 28px;        /* antes 40 px */
+    height: 28px;
+  }
+
+  /* Texto del botón “Iniciar sesión” un poco más pequeño */
+  .login-button {
+    font-size: 0.9rem;  /* opcional: reduce fuente */
+  }
+}

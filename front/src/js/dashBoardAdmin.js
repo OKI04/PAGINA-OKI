@@ -417,349 +417,243 @@ async function view(id) {
 }
 
 // Editar Producto
-function openEditModal(productId) {
-  // Limpiar contenedores
-  document.getElementById('editColorContainer').innerHTML = '';
-  document.getElementById('editPrintsContainer').innerHTML = '';
-  
-  // Obtener datos del producto
-  fetch(`/admin/products/one/${productId}`, {
-    credentials: 'include'
-  })
-  .then(response => response.json())
-  .then(producto => {
+// edit-product.js — módulo ES para la edición de productos
+// --------------------------------------------------------
+// Este archivo exporta la función `openEditModal` y se autoinicializa al
+// cargarse para enlazar eventos del formulario de edición.
+// Debe importarse en tu HTML con:
+//   <script type="module" src="/ruta/edit-product.js"></script>
+// --------------------------------------------------------
 
-    const baseApiUrl = "http://localhost:3900";
-    console.log(producto);
-    let product = producto.product;
-    console.log(product);
+const baseApiUrl = "https://pagina-back-oki.onrender.com";
 
-    const imagenesNorm = (product.imagenes || []).map(img => {
-        const rutaLimpia = img.url.replace(/\\/g, "/");
-        return {
-          ...img,
-          url: rutaLimpia,
-          publicUrl: `${baseApiUrl}/${rutaLimpia}`
-        };
-      });
+/**
+ * Abre el modal de edición, carga los datos del producto y muestra el modal.
+ */
+export async function openEditModal(productId) {
+  try {
+    // Limpiar contenedores dinámicos
+    document.getElementById('editColorContainer').innerHTML = '';
+    document.getElementById('editPrintsContainer').innerHTML = '';
 
-      const coloresNorm = (product.colores || []).map(color => {
-        const imagenesColor = (color.imagenes || []).map(img => {
-          const rutaLimpia = img.url.replace(/\\/g, "/");
-          return {
-            ...img,
-            url: rutaLimpia,
-            publicUrl: `${baseApiUrl}/${rutaLimpia}`
-          };
-        });
+    // Obtener el producto
+    const res = await fetch(`/admin/products/one/${productId}`, {
+      credentials: 'include'
+    });
+    const { product: rawProduct } = await res.json();
 
-        return {
-          ...color,
-          imagenes: imagenesColor,
-          publicUrl: imagenesColor[0]?.publicUrl || '' // para vista previa
-        };
-      });
+    // Normalizar todas las imágenes (producto, colores y estampados)
+    const product = normalizeProduct(rawProduct);
 
-      // Normalizar estampados (cada uno puede tener imagenes[])
-      const estampadosNorm = (product.estampados || []).map(estampado => {
-        const imagenesEst = (estampado.imagenes || []).map(img => {
-          const rutaLimpia = img.url.replace(/\\/g, "/");
-          return {
-            ...img,
-            url: rutaLimpia,
-            publicUrl: `${baseApiUrl}/${rutaLimpia}`
-          };
-        });
-
-        return {
-          ...estampado,
-          imagenes: imagenesEst,
-          publicUrl: imagenesEst[0]?.publicUrl || ''
-        };
-      });
-
-      product = {
-        ...product,
-        imagenes: imagenesNorm,
-        colores: coloresNorm,
-        estampados: estampadosNorm
-      };
-
-    console.log(product);
     // Llenar campos básicos
-    document.getElementById('editProductId').value = product._id;
-    document.querySelector('#modalEdit input[name="referencia"]').value = product.referencia;
-    document.querySelector('#modalEdit input[name="nombre"]').value = product.nombre;
-    document.querySelector('#modalEdit textarea[name="descripcion"]').value = product.descripcion || '';
-    document.querySelector('#modalEdit input[name="precio"]').value = product.precio;
-    
-    // Seleccionar categoría
-    const categorySelect = document.querySelector('#modalEdit select[name="categoria"]');
-    categorySelect.value = product.categoria;
-    
-    // Llenar tallas
-    if (product.tallas) {
-      document.querySelector('#modalEdit input[name="tallas.S"]').value = product.tallas.S || 0;
-      document.querySelector('#modalEdit input[name="tallas.M"]').value = product.tallas.M || 0;
-      document.querySelector('#modalEdit input[name="tallas.L"]').value = product.tallas.L || 0;
-      document.querySelector('#modalEdit input[name="tallas.XL"]').value = product.tallas.XL || 0;
-      document.querySelector('#modalEdit input[name="tallas.U"]').value = product.tallas.U || 0;
-    }
-    
-    // Generar formularios de colores
-    const colorContainer = document.getElementById('editColorContainer');
-    product.colores?.forEach((color, index) => {
-      colorContainer.appendChild(generateColorForm(index, color));
-    });
-    
-    // Generar formularios de estampados
-    const printsContainer = document.getElementById('editPrintsContainer');
-    product.estampados?.forEach((estampado, index) => {
-      printsContainer.appendChild(generateEstampadoForm(index, estampado));
-    });
-    
+    fillBasicFields(product);
+
+    // Generar formularios dinámicos de colores y estampados
+    generateDynamicForms(product);
+
+    // Escuchar cambios de inputs (delegado)
+    setupImageReplacementListeners();
+
     // Mostrar modal
-    const editModal = new bootstrap.Modal(document.getElementById('modalEdit'));
-    editModal.show();
-  })
-  .catch(error => console.error('Error:', error));
+    new bootstrap.Modal('#modalEdit').show();
+  } catch (err) {
+    console.error(err);
+    mostrarAlerta(`Error al cargar producto: ${err.message}`);
+  }
 }
 
-document.getElementById('submitEditForm').addEventListener('click', function() {
-  const form = document.getElementById('editProductForm');
-  const formData = new FormData(form);
-  const productId = document.getElementById('editProductId').value;
+/* ------------------------------------------------------ */
+/*  Funciones auxiliares                                   */
+/* ------------------------------------------------------ */
 
-  console.log(productId);
-  
-  fetch(`/admin/products/update/${productId}`, {
-    method: 'PUT',
-    body: formData,
-    credentials: 'include'
-  })
-  .then(response => response.json())
-  .then(result => {
-    if (result.error) {
-      throw new Error(result.message);
-    }
-    
-    // Cerrar el modal
-    const editModal = bootstrap.Modal.getInstance(document.getElementById('modalEdit'));
-    editModal.hide();
-    // Recargar los productos
-    loadProducts(); // Suponiendo que tienes esta función
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    mostrarAlerta('Error al actualizar: ' + error.message);
-  });
-});
+function normalizeImage(img) {
+  const rutaLimpia = img.url.replace(/\\/g, '/');
+  return { ...img, url: rutaLimpia, publicUrl: `${baseApiUrl}/${rutaLimpia}` };
+}
 
+function normalizeProduct(product) {
+  const imagenes = (product.imagenes || []).map(normalizeImage);
+  const colores = (product.colores || []).map(c => ({
+    ...c,
+    imagenes: (c.imagenes || []).map(normalizeImage),
+    publicUrl: c.imagenes?.[0] ? normalizeImage(c.imagenes[0]).publicUrl : ''
+  }));
+  const estampados = (product.estampados || []).map(e => ({
+    ...e,
+    imagenes: (e.imagenes || []).map(normalizeImage),
+    publicUrl: e.imagenes?.[0] ? normalizeImage(e.imagenes[0]).publicUrl : ''
+  }));
+  return { ...product, imagenes, colores, estampados };
+}
 
-// Función para generar formulario de color
-function generateColorForm(index, colorData) {
-  const formDiv = document.createElement('div');
-  formDiv.className = 'position-relative border p-2 pt-4 rounded bg-light mt-2';
-  formDiv.dataset.index = index;
-  formDiv.innerHTML = `
-    <input type="hidden" class="replace-images" name="replaceImages[${index}]" value="false">
-    <button type="button" class="btn-close position-absolute top-0 end-0 m-2" onclick="this.parentElement.remove()"></button>
-    <div>
-      <label class="form-label">Código de color</label>
-      <input type="text" class="form-control" name="colores[${index}].codigo" value="${colorData.codigo}" required>
-    </div>
-    <div class="mt-2">
-      <label class="form-label">Nombre de la imagen de referencia</label>
-      <input type="text" class="form-control" name="colores[${index}].imagenRef" value="${colorData.imagenRef}" required>
-    </div>
-    <div class="mt-2">
-      <label class="form-label">Imagen de referencia </label>
-      <input type="file" class="form-control ref-image" name="colores[${index}].imagenRef" accept="image/*">
-      <small class="text-muted">Esta es la imagen principal que representa el color</small>
-    </div>
-    <div class="mt-2">
-      <label class="form-label">Imágenes adicionales</label>
-      <div class="row g-2">
-        ${Array.from({length: 4}, (_, i) => `
-          <div class="col-md-4">
-            <input type="file" class="form-control" name="colores[${index}]" accept="image/*">
-          </div>
-        `).join('')}
-      </div>
-    </div>
-    ${colorData.imagenes && colorData.imagenes.length > 0 ? `
+function fillBasicFields(p) {
+  const modal = document.getElementById('modalEdit');
+  modal.querySelector('#editProductId').value                     = p._id;
+  modal.querySelector('input[name="referencia"]').value         = p.referencia ?? '';
+  modal.querySelector('input[name="nombre"]').value             = p.nombre ?? '';
+  modal.querySelector('textarea[name="descripcion"]').value     = p.descripcion ?? '';
+  modal.querySelector('input[name="precio"]').value             = p.precio ?? 0;
+  modal.querySelector('select[name="categoria"]').value         = p.categoria ?? '';
+
+  if (p.tallas) {
+    ['S','M','L','XL','U'].forEach(t => {
+      modal.querySelector(`input[name="tallas.${t}"]`).value = p.tallas[t] ?? 0;
+    });
+  }
+}
+
+function generateDynamicForms(p) {
+  const colorC   = document.getElementById('editColorContainer');
+  const estampC  = document.getElementById('editPrintsContainer');
+  p.colores.forEach((c,i)   => colorC .appendChild(generateColorForm(i,c)));
+  p.estampados.forEach((e,i)=> estampC.appendChild(generateEstampadoForm(i,e)));
+}
+
+function renderExistingImages(arr = []) {
+  if (!arr.length) return '';
+  return `
     <div class="mt-3">
       <label class="form-label">Imágenes existentes:</label>
       <div class="d-flex flex-wrap gap-2">
-        ${colorData.imagenes.map(img => `
+        ${arr.map(img => `
           <div class="position-relative">
             <img src="${img.publicUrl}" alt="Imagen" width="80" height="80" class="img-thumbnail">
             <span class="position-absolute top-0 start-100 translate-middle badge bg-info">${img.orden}</span>
-          </div>
-        `).join('')}
+          </div>`).join('')}
       </div>
-    </div>
-    ` : ''}
-  `;
-  return formDiv;
+    </div>`;
 }
 
-// Función para generar formulario de estampados 
-function generateEstampadoForm(index, colorData) {
-  const formDiv = document.createElement('div');
-  formDiv.className = 'position-relative border p-2 pt-4 rounded bg-light mt-2';
-  formDiv.dataset.index = index;
-  formDiv.innerHTML = `
-    <input type="hidden" class="replace-images-estampado" name="replaceImagesEstampado[${index}]" value="false">
-    <button type="button" class="btn-close position-absolute top-0 end-0 m-2" onclick="this.parentElement.remove()"></button>
-    <div>
-      <label class="form-label">Código de color</label>
-      <input type="text" class="form-control" name="estampados[${index}].codigo" value="${colorData.codigo}" required>
+function generateColorForm(i, data={}) {
+  const el = document.createElement('div');
+  el.className = 'color-form position-relative border p-2 pt-4 rounded bg-light mt-2';
+  el.dataset.index = i;
+  el.innerHTML = `
+    <input type="hidden" class="replace-images" data-index="${i}" value="false">
+    <button type="button" class="btn-close position-absolute top-0 end-0 m-2" aria-label="Cerrar"></button>
+
+    <label class="form-label mt-2">Código de color</label>
+    <input class="form-control" name="colores[${i}].codigo" value="${data.codigo ?? ''}" required>
+
+    <label class="form-label mt-2">Nombre de la imagen de referencia</label>
+    <input class="form-control" name="colores[${i}].imagenRef" value="${data.imagenRef ?? ''}" required>
+
+    <label class="form-label mt-2">Imagen de referencia</label>
+    <input type="file" class="form-control ref-image" accept="image/*" name="colores[${i}].imagenRefFile">
+    <small class="text-muted">Imagen principal del color</small>
+
+    <label class="form-label mt-2">Imágenes adicionales</label>
+    <div class="row g-2">
+      ${Array.from({length:4}).map(()=>`
+        <div class="col-md-4"><input type="file" class="form-control additional-image" accept="image/*" name="colores[${i}].imagenes"></div>`).join('')}
     </div>
-    <div class="mt-2">
-      <label class="form-label">Nombre de la imagen de referencia</label>
-      <input type="text" class="form-control" name="estampados[${index}].imagenRef" value="${colorData.imagenRef}" required>
-    </div>
-    <div class="mt-2">
-      <label class="form-label">Imagen de referencia </label>
-      <input type="file" class="form-control ref-image" name="estampados[${index}].imagenRef" accept="image/*">
-      <small class="text-muted">Esta es la imagen principal que representa el color</small>
-    </div>
-    <div class="mt-2">
-      <label class="form-label">Imágenes adicionales</label>
-      <div class="row g-2">
-        ${Array.from({length: 4}, (_, i) => `
-          <div class="col-md-4">
-            <input type="file" class="form-control" name="estampados[${index}]" accept="image/*">
-          </div>
-        `).join('')}
-      </div>
-    </div>
-    ${colorData.imagenes && colorData.imagenes.length > 0 ? `
-    <div class="mt-3">
-      <label class="form-label">Imágenes existentes:</label>
-      <div class="d-flex flex-wrap gap-2">
-        ${colorData.imagenes.map(img => `
-          <div class="position-relative">
-            <img src="${img.publicUrl}" alt="Imagen" width="80" height="80" class="img-thumbnail">
-            <span class="position-absolute top-0 start-100 translate-middle badge bg-info">${img.orden}</span>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-    ` : ''}
+    ${renderExistingImages(data.imagenes)}
   `;
-  return formDiv;
+  el.querySelector('.btn-close').addEventListener('click', () => el.remove());
+  return el;
 }
 
-// Evento para el botón de editar
-document.getElementById('submitEditForm').addEventListener('click', function() {
-  const form = document.getElementById('editProductForm');
-  const formData = new FormData(form);
-  const productId = document.getElementById('editProductId').value;
+function generateEstampadoForm(i, data={}) {
+  const el = document.createElement('div');
+  el.className = 'stamp-form position-relative border p-2 pt-4 rounded bg-light mt-2';
+  el.dataset.index = i;
+  el.innerHTML = `
+    <input type="hidden" class="replace-images-estampado" data-index="${i}" value="false">
+    <button type="button" class="btn-close position-absolute top-0 end-0 m-2" aria-label="Cerrar"></button>
 
-  // Agregar los indicadores de reemplazo al FormData
-  document.querySelectorAll('.replace-images').forEach(input => {
-    if (input.value === "true") {
-      const index = input.name.match(/\[(\d+)\]/)[1];
-      formData.append(`replaceImages[${index}]`, "true");
-    }
-  });
-  
-  document.querySelectorAll('.replace-images-estampado').forEach(input => {
-    if (input.value === "true") {
-      const index = input.name.match(/\[(\d+)\]/)[1];
-      formData.append(`replaceImagesEstampado[${index}]`, "true");
-    }
-  });
-  
-  fetch(`/admin/products/update/${productId}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    },
-    body: formData
-  })
-  .then(response => response.json())
-  .then(result => {
-    if (result.error) {
-      throw new Error(result.message);
-    }
-    
-    // Cerrar el modal
-    const editModal = bootstrap.Modal.getInstance(document.getElementById('modalEdit'));
-    editModal.hide();
-    // Recargar los productos
-    loadProducts(); 
-      // Mostrar mostrarAlertaa de éxito
-    mostrarAlerta("Producto editado correctamente.");
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    mostrarAlerta('Error al actualizar: ' + error.message);
-  });
-});
+    <label class="form-label mt-2">Código de color</label>
+    <input class="form-control" name="estampados[${i}].codigo" value="${data.codigo ?? ''}" required>
 
-// Botones para agregar nuevos colores/estampados en el modal
-document.getElementById('addEditColorBtn').addEventListener('click', function() {
-  const container = document.getElementById('editColorContainer');
-  const index = container.children.length;
-  container.appendChild(generateColorForm(index, {codigo: '', imagenRef: '', imagenes: []}));
-});
+    <label class="form-label mt-2">Nombre de la imagen de referencia</label>
+    <input class="form-control" name="estampados[${i}].imagenRef" value="${data.imagenRef ?? ''}" required>
 
-document.getElementById('addEditEstampadoBtn').addEventListener('click', function() {
-  const container = document.getElementById('editPrintsContainer');
-  const index = container.children.length;
-  container.appendChild(generateEstampadoForm(index, {codigo: '', imagenRef: '', imagenes: []}));
-});
+    <label class="form-label mt-2">Imagen de referencia</label>
+    <input type="file" class="form-control ref-image" accept="image/*" name="estampados[${i}].imagenRefFile">
+    <small class="text-muted">Imagen principal del estampado</small>
+
+    <label class="form-label mt-2">Imágenes adicionales</label>
+    <div class="row g-2">
+      ${Array.from({length:4}).map(()=>`
+        <div class="col-md-4"><input type="file" class="form-control additional-image" accept="image/*" name="estampados[${i}].imagenes"></div>`).join('')}
+    </div>
+    ${renderExistingImages(data.imagenes)}
+  `;
+  el.querySelector('.btn-close').addEventListener('click', () => el.remove());
+  return el;
+}
 
 function setupImageReplacementListeners() {
-  // Para imagenRef de colores
-  document.querySelectorAll('#editColorContainer .ref-image').forEach(input => {
-    input.addEventListener('change', function() {
-      const formDiv = this.closest('.color-form');
-      const replaceInput = formDiv.querySelector('.replace-images');
-      replaceInput.value = "true";
-      
-      // Destacar que es imagenRef
-      this.parentElement.classList.add('border', 'border-danger', 'p-2');
-    });
+  // Delegación para inputs dentro de colores y estampados
+  document.getElementById('editColorContainer').addEventListener('change', e => {
+    if (e.target.matches('.ref-image, .additional-image')) {
+      e.target.closest('.color-form').querySelector('.replace-images').value = 'true';
+    }
   });
-  
-  // Para imágenes adicionales de colores
-  document.querySelectorAll('#editColorContainer .additional-image').forEach(input => {
-    input.addEventListener('change', function() {
-      const formDiv = this.closest('.color-form');
-      const replaceInput = formDiv.querySelector('.replace-images');
-      replaceInput.value = "true";
-    });
-  });
-  
-  // Repetir para estampados
-  document.querySelectorAll('#editPrintsContainer .ref-image').forEach(input => {
-    input.addEventListener('change', function() {
-      const formDiv = this.closest('.stamp-form');
-      const replaceInput = formDiv.querySelector('.replace-images-estampado');
-      replaceInput.value = "true";
-      this.parentElement.classList.add('border', 'border-danger', 'p-2');
-    });
-  });
-  
-  document.querySelectorAll('#editPrintsContainer .additional-image').forEach(input => {
-    input.addEventListener('change', function() {
-      const formDiv = this.closest('.stamp-form');
-      const replaceInput = formDiv.querySelector('.replace-images-estampado');
-      replaceInput.value = "true";
-    });
+  document.getElementById('editPrintsContainer').addEventListener('change', e => {
+    if (e.target.matches('.ref-image, .additional-image')) {
+      e.target.closest('.stamp-form').querySelector('.replace-images-estampado').value = 'true';
+    }
   });
 }
 
-function mostrarSiTieneValor(valor, talla) {
-  if (valor && valor > 0) {
-    return `<div class="talla-item">${talla}</div>`;
+/* ------------------------------------------------------ */
+/*  Envío del formulario                                   */
+/* ------------------------------------------------------ */
+
+async function handleEditSubmit(evt) {
+  evt.preventDefault();
+  const form     = evt.currentTarget;
+  const productId = document.getElementById('editProductId').value;
+  const fd       = new FormData(form);
+
+  // Añadir flags de reemplazo
+  form.querySelectorAll('.replace-images[value="true"]').forEach(i => fd.append(`replaceImages[${i.dataset.index}]`, 'true'));
+  form.querySelectorAll('.replace-images-estampado[value="true"]').forEach(i => fd.append(`replaceImagesEstampado[${i.dataset.index}]`, 'true'));
+
+  try {
+    const res = await fetch(`/admin/products/update/${productId}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      body: fd
+    });
+    const out = await res.json();
+    if (out.error) throw new Error(out.message);
+
+    bootstrap.Modal.getInstance(document.getElementById('modalEdit')).hide();
+    mostrarAlerta('Producto editado correctamente.');
+    loadProducts();
+  } catch (err) {
+    console.error(err);
+    mostrarAlerta(`Error al actualizar: ${err.message}`);
   }
-  return '';
 }
+
+/* ------------------------------------------------------ */
+/*  Inicialización del módulo                             */
+/* ------------------------------------------------------ */
+
+function init() {
+  const form = document.getElementById('editProductForm');
+  form.addEventListener('submit', handleEditSubmit);
+  document.getElementById('addEditColorBtn').addEventListener('click', () => {
+    const c = document.getElementById('editColorContainer');
+    c.appendChild(generateColorForm(c.children.length));
+  });
+  document.getElementById('addEditEstampadoBtn').addEventListener('click', () => {
+    const e = document.getElementById('editPrintsContainer');
+    e.appendChild(generateEstampadoForm(e.children.length));
+  });
+}
+
+if (document.readyState !== 'loading') {
+  init();
+} else {
+  document.addEventListener('DOMContentLoaded', init);
+}
+
+// Exponer para llamadas inline desde HTML sin romper la compatibilidad
+window.openEditModal = openEditModal;
 
 // const botonColor = document.getElementById("addColorBtn");
 // botonColor.addEventListener('click', () => {

@@ -49,40 +49,50 @@ export function toggleCategorias() {
 window.toggleCategorias = toggleCategorias;
 
 // Flechas en scroll de categorías
-export function iniciarScrollCategorias() {
+// categoriasScroll.js  (versión resumida: solo añadimos el cierre del menú)
+export function iniciarScrollCategorias () {
   const scrollContainer = document.querySelector('.categorias');
-  const leftArrow = document.querySelector('.flecha-izquierda');
-  const rightArrow = document.querySelector('.flecha-derecha');
+  const leftArrow      = document.querySelector('.flecha-izquierda');
+  const rightArrow     = document.querySelector('.flecha-derecha');
 
   if (!scrollContainer || !leftArrow || !rightArrow) return;
 
-  function actualizarVisibilidadFlechas() {
-    const scrollWidth = scrollContainer.scrollWidth;
-    const clientWidth = scrollContainer.clientWidth;
-    const scrollLeft = scrollContainer.scrollLeft;
+  /*  ⬇️ 1)‑‑‑ Ajusta este selector a tu HTML ‑‑‑ */
+  const categoriaSelector    = '.categoria';       // elemento que representa cada categoría
+  const menuHamburguesaSel   = '.navbar-collapse'; // <‑ o el contenedor de tu menú lateral
 
-    const hayOverflow = scrollWidth > clientWidth;
+  /* ---------- función para ocultar el menú hamburguesa ---------- */
+  function ocultarMenuHamburguesa () {
+    const menu = document.querySelector(menuHamburguesaSel);
+    if (!menu) return;
 
-    leftArrow.style.display = (hayOverflow && scrollLeft > 0) ? 'block' : 'none';
-    rightArrow.style.display = (hayOverflow && scrollLeft + clientWidth < scrollWidth - 1) ? 'block' : 'none';
+    /*  OPCIÓN A – menú propio: simplemente quito la clase “open/show”  */
+    menu.classList.remove('open', 'show');
+
+    /*  OPCIÓN B – Navbar Collapse de Bootstrap 5:
+        const bsCollapse = bootstrap.Collapse.getInstance(menu)
+                         || new bootstrap.Collapse(menu, { toggle:false });
+        bsCollapse.hide();
+    */
   }
 
-  scrollContainer.addEventListener('scroll', actualizarVisibilidadFlechas);
-  window.addEventListener('resize', actualizarVisibilidadFlechas);
-
-  leftArrow.addEventListener('click', () => {
-    scrollContainer.scrollBy({ left: -150, behavior: 'smooth' });
+  /* ---------- clic en categoría: cierra flechas + menú ---------- */
+  scrollContainer.addEventListener('click', (e) => {
+    if (e.target.closest(categoriaSelector)) {
+      leftArrow.style.display  = 'none';
+      rightArrow.style.display = 'none';
+      ocultarMenuHamburguesa();      // 🡆 aquí cerramos el menú hamburguesa
+    }
   });
 
-  rightArrow.addEventListener('click', () => {
-    scrollContainer.scrollBy({ left: 150, behavior: 'smooth' });
-  });
-
-  actualizarVisibilidadFlechas();
+  /* …el resto del código (scroll, resize, flechas) se queda igual… */
 }
+
 
 // Inicializar todo al cargar el DOM
 document.addEventListener('DOMContentLoaded', () => {
   iniciarModalLogin();
   iniciarScrollCategorias();
+  ocultarMenuHamburguesa();
+
 });

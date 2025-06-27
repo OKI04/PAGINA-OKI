@@ -325,82 +325,7 @@ button {
   font-weight: bold;           /* Hace el texto del precio más llamativo */
   line-height: 1.1;            /* Ajusta la altura de línea para reducir el espacio vertical */
 }
-/* Estilos para pantallas medianas o móviles (≤768px de ancho) */
-@media (max-width: 768px) {
- .modal-body {
-  top: 50%;                       /* Posiciona el borde superior del modal al 50% del alto de la ventana. */
-  left: 50%;                      /* Posiciona el borde izquierdo al 50% del ancho de la ventana. */
-  transform: translate(-50%, -50%); /* Mueve el modal hacia arriba y la izquierda la mitad de su tamaño para centrarlo perfectamente. */
-  flex-direction: column;         /* Los elementos hijos se apilan verticalmente. */
-  align-items: stretch;           /* Los elementos hijos se estiran para ocupar el ancho disponible. */
-  width: 100%;                    /* El modal ocupa todo el ancho posible del contenedor padre. */
-  max-width: 100%;                /* Evita que sobrepase el 100% del ancho del contenedor o pantalla. */
-  height: auto;                   /* El alto se adapta al contenido. */
-  min-height: 90vh;               /* Asegura que el modal tenga al menos el 90% del alto de la ventana. */
-  overflow-y: auto;               /* Agrega scroll vertical si el contenido excede el alto del modal. */
-  box-sizing: border-box;         /* Incluye padding y border dentro del ancho y alto especificados. */
-}
 
-  .left-column {
-    flex-direction: row; /* Muestra las miniaturas en fila horizontal */
-    justify-content: center; /* Centra el contenido dentro del contenedor */
-    flex-wrap: wrap; /* Permite que las miniaturas bajen de línea si no caben */
-    gap: 60px; /* Espacio entre las miniaturas */
-  }
-  .thumbnail-gallery {
-    flex-direction: row; /* Galería de miniaturas en línea horizontal */
-    width: auto; /* Ancho automático según el contenido */
-    justify-content: center; /* Centra las imágenes */
-  }
-  .thumbnail-gallery img {
-    display: none;
-  }
-  .main-image {
-    width: 100%; /* Imagen principal ocupa todo el ancho */
-  }
-  .main-image img {
-    min-width: 100%; /* Ancho mínimo del 100% del contenedor */
-    min-height: auto; /* Altura mínima automática (no fuerza valor específico) */
-    max-height: 500px; /* Altura máxima de la imagen principal */
-  }
-  .right-column {
-    width: 100%; /* La columna derecha ocupa todo el ancho disponible */
-  }
-
-  .btn-comprar,
-  .btn-vermas,
-  .btn-seguir {
-    width: 100%; /* Los botones ocupan todo el ancho disponible */
-    font-size: 1em; /* Ajuste del tamaño del texto a la escala del dispositivo */
-  }
-
-  .cantidad {
-    justify-content: center; /* Centra horizontalmente el contenedor de botones de cantidad */
-  }
-}
-/* Estilos para pantallas pequeñas (≤480px de ancho) */
-@media (max-width: 480px) {
-   
-  .main-image img {
-    max-height: 400px; /* Reduce la altura máxima de la imagen principal */
-    width: auto; /* Ajuste automático del ancho */
-    object-fit: contain; /* La imagen mantiene su proporción dentro del contenedor */
-  }
-
-  .talla-btn {
-    padding: 8px 12px; /* Relleno reducido para botones de talla */
-    font-size: 0.9em; /* Tamaño de fuente ligeramente más pequeño */
-  }
-
-  .color-option {
-    width: 25px; /* Botón de color más pequeño */
-    height: 25px; /* Igual en alto */
-  }
-
-  .precio {
-    font-size: 1.3em; /* Tamaño del texto de precio ligeramente más grande para destacarlo */
-  }
-}
 /* 
   Estilos para el contenedor del modal de descripción 
 */
@@ -904,4 +829,154 @@ background-color: var(--main-bg-color); /* Color de fondo base */
   font-weight: bold;              /* Texto en negrita */
   color: var(--main-text-color);  /* Color de texto definido por variable */
   font-size: 1.1rem;              /* Tamaño ligeramente mayor al normal */
+}
+
+
+/* Estilos para pantallas pequeñas (≤480px de ancho) */
+@media (min-width: 200px) and (max-width: 600px) {
+  .modal-body {
+  top: 50%;                       /* Posiciona el borde superior del modal al 50% del alto de la ventana. */
+  left: 50%;                      /* Posiciona el borde izquierdo al 50% del ancho de la ventana. */
+  transform: translate(-50%, -50%); /* Mueve el modal hacia arriba y la izquierda la mitad de su tamaño para centrarlo perfectamente. */
+  flex-direction: column;         /* Los elementos hijos se apilan verticalmente. */
+  align-items: stretch;           /* Los elementos hijos se estiran para ocupar el ancho disponible. */
+  width: 100%;                    /* El modal ocupa todo el ancho posible del contenedor padre. */
+  max-width: 100%;                /* Evita que sobrepase el 100% del ancho del contenedor o pantalla. */
+  height: auto;                   /* El alto se adapta al contenido. */
+  min-height: 90vh;               /* Asegura que el modal tenga al menos el 90% del alto de la ventana. */
+  overflow-y: auto;               /* Agrega scroll vertical si el contenido excede el alto del modal. */
+  box-sizing: border-box;         /* Incluye padding y border dentro del ancho y alto especificados. */
+}
+
+  .left-column {
+    flex-direction: row; /* Muestra las miniaturas en fila horizontal */
+    justify-content: center; /* Centra el contenido dentro del contenedor */
+    flex-wrap: wrap; /* Permite que las miniaturas bajen de línea si no caben */
+    gap: 60px; /* Espacio entre las miniaturas */
+  }
+  .thumbnail-gallery {
+    flex-direction: row; /* Galería de miniaturas en línea horizontal */
+    width: auto; /* Ancho automático según el contenido */
+    justify-content: center; /* Centra las imágenes */
+  }
+  .thumbnail-gallery img {
+    display: none;
+  }
+  .main-image {
+    width: 100%; /* Imagen principal ocupa todo el ancho */
+  }
+  .main-image img {
+    min-width: 100%; /* Ancho mínimo del 100% del contenedor */
+    min-height: auto; /* Altura mínima automática (no fuerza valor específico) */
+    max-height: 460px; /* Altura máxima de la imagen principal */
+  }
+  .right-column {
+    width: 100%; /* La columna derecha ocupa todo el ancho disponible */
+  }
+
+.btn-comprar {
+  font-size: 13px;                        /* Texto un poco más grande */
+  height: 30px;                           /* Mayor altura para mejor presencia visual */
+  width: 100%;
+
+}
+
+  .btn-vermas,
+  .btn-seguir {
+    margin-top: 0px; /* Separación superior */
+    width: 100%; /* Los botones ocupan todo el ancho disponible */
+    font-size: 13px;                        /* Texto un poco más grande */
+    justify-content: center;
+    height: 30PX;
+  }
+
+  .cantidad {
+    justify-content: center; /* Centra horizontalmente el contenedor de botones de cantidad */
+  }
+
+  .comprar-button img {
+  width: 25px; /* Define el ancho de la imagen */
+  height: 25px; /* Define la altura de la imagen */
+}
+
+  /* El carrito ocupa toda la pantalla tipo “drawer” */
+  .modal-carrito {
+    width: 80vw;
+    right: -80vw;
+  }
+
+  .modal-header,
+  .footer-carrito {
+    gap: 0px;
+    text-align: center;
+  }
+
+  /* Reduce paddings y tamaños para que todo quepa bien */
+  .modal-header,
+  .footer-carrito,
+  .cart-item,
+  .quote-form input[type="text"],
+  .quote-form input[type="email"] {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+.btn-comprar {
+  font-size: 13px;                        /* Texto un poco más grande */
+  height: 30px;                           /* Mayor altura para mejor presencia visual */
+  width: 100%;
+
+}
+
+  .btn-vermas,
+  .btn-cotizar,
+  .btn-seguir {
+    margin-top: 0px; /* Separación superior */
+    width: 100%; /* Los botones ocupan todo el ancho disponible */
+    font-size: 13px;                        /* Texto un poco más grande */
+    justify-content: center;
+    height: 30PX;
+  }
+
+  /* Miniaturas aún más pequeñas */
+  .cart-item img {
+    width: 70px;
+  }
+
+  /* Botón WhatsApp a ancho completo */
+  .whatsapp-container {
+    margin-top: .5rem;
+  }
+  .whatsapp-link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Formulario de cotización en una sola columna */
+  .quote-form .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Modal de confirmación/errores algo más pequeño */
+  .confirmacion-contenido,
+  .modal-content,
+  .modal-container {
+    width: 90%;
+    max-width: 320px;
+  }
+  .close {
+  font-size: 30px; /* Tamaño del ícono de cerrar */
+}
+   /* CENTRAR el modal de cotización */
+  #modalCotizacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-container {
+    position: relative;
+    top: 50%;                  /* Centro vertical */
+  left: 55%;                 /* Centro horizontal */
+  transform: translate(-55%, -45%);  /* Ajuste perfecto al centro */
+  }
 }

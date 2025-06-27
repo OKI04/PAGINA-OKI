@@ -214,87 +214,83 @@ header {
   color: var(--main-contenedor3-color);
   transform: scale(1.05);    /* Aumenta ligeramente el tamaño (5%). */
 }
-/* ==========================================================================
-   MEDIA QUERIES PARA RESPONSIVE DESIGN (PARA PANTALLAS MÁS PEQUEÑAS)
-   ========================================================================== */
-/*
-   Media query para pantallas con un ancho máximo de 768px (tabletas y dispositivos móviles).
-*/
-@media (max-width: 768px) {
-  /*
-     En pantallas pequeñas, los elementos de la lista de productos ocupan todo el ancho disponible.
-  */
-  .producto-item {
-    width: 100%; /* Ocupa todo el ancho del contenedor */
-    max-width: 300px; /* Establece un ancho máximo para evitar que se extiendan demasiado en pantallas grandes */
-  }
-  /*
-     En pantallas pequeñas, el modal ocupa un porcentaje mayor del ancho de la pantalla.
-  */
-  .modal-contenido {
-    width: 95%; /* Ocupa el 95% del ancho de la pantalla */
-  }
-}
-/* --- Botón fijo de WhatsApp --- */
-.whatsapp-button {
-  position: fixed;         /* Lo deja fijo en la pantalla al hacer scroll. */
-  bottom: 20px;            /* Separado 20px del fondo. */
-  right: 20px;             /* Separado 20px del borde derecho. */
-  z-index: 1000;           /* Se asegura de que quede encima de todo. */
-}
-/* --- Estilo del icono dentro del botón --- */
-.icono-wsp {
-  width: 50px;             /* Tamaño del ícono de WhatsApp (ajustable). */
-  height: 50px;
-  border-radius: 50%;      /* Lo hace redondo. */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para que resalte. */
-  transition: transform 0.3s ease;         /* Animación suave al pasar el mouse. */
-}
-.icono-wsp:hover {
-  transform: scale(1.1);   /* Efecto de agrandarse al pasar el mouse. */
-}
-/* RESPONSIVE DESIGN para pantallas medianas */
-@media (max-width: 768px) { /* Aplica estilos solo cuando el ancho de la pantalla es de 768 píxeles o menos (para tablets). */
-  header {padding: 15px; }/* Reduce el relleno del encabezado a 15 píxeles. */
-  .header-container {gap: 4px; }/* Reduce el espacio entre los elementos del encabezado a 5 píxeles. */
-  .golden-text {font-size: 1.2rem;}/* Reduce el tamaño de la fuente del texto dorado a 1.8rem. */
-  body {padding-top: var(--header-height-mobile); }/* Ajusta el padding superior para la altura del header móvil */
+
+/* ======================================================================
+   TABLETS  •  600 px – 1024 px
+   ====================================================================== */
+@media (min-width: 600px) and (max-width: 1024px) {
+
+  /* — Header — */
+  header,
   .site-header {
-      height: var(--header-height-mobile);/* Usa la altura definida para móvil */
-      padding: 0 5px; }/* Reduce el padding horizontal en el header */
+    height: 70px;              /* un poco más bajo que en desktop */
+    padding: 0 10px;
+  }
+
   .logo {
-      width:142px;  /* Reduce más el tamaño del logo */
-      height: 142px;} /* Mantiene la proporción para círculo */
-  .eslogan {
-      font-size: 0.8em; }/* Reduce más el tamaño del eslogan */
-  .menu-toggle {display: block;  } /* Muestra el botón hamburguesa */
-  .icon-buttons {gap: 1px;} /* Espacio horizontal entre el botón de login y el carrito */
-.usuario {
-  width: 10px; /* Reduce más el tamaño del icono*/
-  height: 10px; } /* Mantiene la proporción para círculo */
-  /*Icono del carrito*/
-.comprar-button img {
-  width: 10px;/*Define el ancho de la imagen*/
-  height: 10px; /*Define la altura de la imagen */
+    width: 110px;
+    height: 110px;
+    margin-top: -25px;
+  }
+
+  .golden-text { font-size: 1.6rem; }
+  .eslogan     { font-size: 0.9rem; }
+
+  /* — Categorías — */
+  .categorias-wrapper { top: 70px; }        /* ajusta posición bajo header */
+  .categorias         { gap: 4px; }         /* espacio entre botones */
+  .btn-categoria      { font-size: 18px; }
+
+  /* Flechas visibles en tablet */
+  .flecha-izquierda,
+  .flecha-derecha     { display: block; }
+  
+  /* Menú hamburguesa oculto en tablet */
+  .menu-toggle        { display: none; }
 }
+
+/* ======================================================================
+   MÓVILES  •  200 px – 599 px
+   ====================================================================== */
+@media (min-width: 200px) and (max-width: 599px) {
+
+  /* — Header — */
+  header,
+  .site-header {
+    height: 60px;              /* cabe mejor en pantallas pequeñas */
+    padding: 0 8px;
+  }
+
+  .logo {
+    width: 80px;
+    height: 80px;
+    margin-top: -10px;
+  }
+
+  .golden-text { font-size: 1.4rem; }
+  .eslogan     { display: none; }
+
+  /* — Categorías — */
+  .categorias-wrapper { top: 60px; }
+  .categorias         {
+    gap: 0;
+    padding: 0 6px;
+  }
+  .btn-categoria      {
+    font-size: 16px;
+    padding: 8px 10px;
+  }
+
+  /* Oculta flechas en móvil */
+  .flecha-izquierda,
+  .flecha-derecha     { display: none; }
+
+  /* Muestra el botón menú hamburguesa */
+  .menu-toggle        { display: block; }
 }
-/* RESPONSIVE DESIGN para pantallas pequeñas */
-@media (max-width: 480px) { /* Aplica estilos solo cuando el ancho de la pantalla es de 480 píxeles o menos (para teléfonos). */
-  header {padding: 10px; }/* Aún menos espacio en pantallas muy pequeñas */
-  .golden-text {font-size: 1.5rem; }/* Reducir más el texto */
-  .logo {width: 60px; } /* Reducir aún más el tamaño del logo */
-  .icon-buttons {gap: 1px;} /* Espacio horizontal entre el botón de login y el carrito */
-.usuario {
-  width: 20px; /* Reduce más el tamaño del icono*/
-  height: 20px; } /* Mantiene la proporción para círculo */
-  /*Icono del carrito*/
-.comprar-button img {
-  width: 20px;/*Define el ancho de la imagen*/
-  height: 20px; /*Define la altura de la imagen */
-}
-}
+
 /* === REGLAS RESPONSIVE (Aplicables en pantallas de 768px o menos) === */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   /* --- Contenedor de Categorías (Menú Lateral - Estado Base Oculto en Móvil) --- */
   .categorias {
     /* --- Posicionamiento y Dimensiones --- */
@@ -302,7 +298,7 @@ header {
     top: 0;                    /* Pegado a la parte superior de la ventana. */
     left: 0;                   /* Pegado al lado izquierdo de la ventana. */
     width: 80%;                /* Ocupa el 80% del ancho de la ventana (ajustable). */
-    max-width: 320px;          /* Ancho máximo de 320px, para no ser demasiado ancho en pantallas intermedias. */
+    max-width: 350px;          /* Ancho máximo de 320px, para no ser demasiado ancho en pantallas intermedias. */
     height: 100%;              /* Ocupa el 100% de la altura de la ventana. */
     background-color: var(--main-contenedor4-color); /* Color de fondo blanco para el panel lateral. */
     z-index: 999;              /* Profundidad en la pila de elementos (menor que el botón de menú). */
