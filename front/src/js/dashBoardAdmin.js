@@ -1,7 +1,10 @@
-// Archivo: adminProducts.js
-export const baseApiUrl =
-  import.meta.env.VITE_API_URL;
 
+// -----------------------------------------------------------------------------
+// URL fija del backend
+// -----------------------------------------------------------------------------
+const BACKEND_URL = 'https://pagina-back-oki.onrender.com';
+
+// Variable global que otros módulos pueden necesitar
 let productosCargados = [];
 let formularioId = 0;
 const arrayList = [];
@@ -31,124 +34,111 @@ userForm?.addEventListener('submit', async (e) => {
 });
 
 
-window.loadProducts = async function loadProducts() {
-  try {
-    const res = await fetch('/admin/products/all', {
-      method: 'GET',
-      credentials: 'include'
-    });
 
+// -----------------------------------------------------------------------------
+// Carga de productos (vista tabla de administración)
+// -----------------------------------------------------------------------------
+window.loadProducts = async function loadProducts () {
+  const loader = document.getElementById('loader');
+  const tbody  = document.getElementById('productTable');
+
+  try {
+    if (loader) loader.style.display = 'block';      // ⬆️ muestra spinner
+
+    // 1. Petición (sin credentials)
+    const res = await fetch(`${BACKEND_URL}/admin/products/all`);
     if (!res.ok) {
       const err = await res.text();
       mostrarAlerta('Error al cargar productos: ' + err);
       return;
     }
 
+    // 2. Datos
     const productos = await res.json();
 
+    // 3. Normalización completa
     productosCargados = productos.map(prod => {
-      // Normalizar imágenes principales
+      // Imágenes principales
       const imagenesNorm = (prod.imagenes || []).map(img => {
-        const rutaLimpia = img.url.replace(/\\/g, "/");
-        return {
-          ...img,
-          url: rutaLimpia,
-          publicUrl: `${baseApiUrl}/${rutaLimpia}`
-        };
+        const ruta = img.url.replace(/\\/g, '/');
+        return { ...img, url: ruta, publicUrl: `${BACKEND_URL}/${ruta}` };
       });
 
-      // Normalizar colores (cada uno puede tener imagenes[])
+      // Colores
       const coloresNorm = (prod.colores || []).map(color => {
         const imagenesColor = (color.imagenes || []).map(img => {
-          const rutaLimpia = img.url.replace(/\\/g, "/");
-          return {
-            ...img,
-            url: rutaLimpia,
-            publicUrl: `${baseApiUrl}/${rutaLimpia}`
-          };
+          const ruta = img.url.replace(/\\/g, '/');
+          return { ...img, url: ruta, publicUrl: `${BACKEND_URL}/${ruta}` };
         });
-
         return {
           ...color,
-          imagenes: imagenesColor,
-          publicUrl: imagenesColor[0]?.publicUrl || '' // para vista previa
+          imagenes : imagenesColor,
+          publicUrl: imagenesColor[0]?.publicUrl || ''
         };
       });
 
-      // Normalizar estampados (cada uno puede tener imagenes[])
+      // Estampados
       const estampadosNorm = (prod.estampados || []).map(estampado => {
         const imagenesEst = (estampado.imagenes || []).map(img => {
-          const rutaLimpia = img.url.replace(/\\/g, "/");
-          return {
-            ...img,
-            url: rutaLimpia,
-            publicUrl: `${baseApiUrl}/${rutaLimpia}`
-          };
+          const ruta = img.url.replace(/\\/g, '/');
+          return { ...img, url: ruta, publicUrl: `${BACKEND_URL}/${ruta}` };
         });
-
         return {
           ...estampado,
-          imagenes: imagenesEst,
+          imagenes : imagenesEst,
           publicUrl: imagenesEst[0]?.publicUrl || ''
         };
       });
 
       return {
         ...prod,
-        imagenes: imagenesNorm,
-        colores: coloresNorm,
+        imagenes  : imagenesNorm,
+        colores   : coloresNorm,
         estampados: estampadosNorm
       };
     });
 
-    const loader = document.getElementById("loader");
-    if(loader){
-      loader.remove();
-    }
+    // Ordenar por _id descendente (últimos arriba)
     productosCargados.sort((a, b) => b._id.localeCompare(a._id));
 
-
-    // Renderizar en tabla
-    const tbody = document.getElementById("productTable");
+    // 4. Renderizado en tabla
     tbody.innerHTML = productosCargados.map(p => `
       <tr class="fila-producto" data-id="${p._id}" data-referencia="${p.referencia}">
         <td>${p.referencia}</td>
         <td>${p.categoria}</td>
         <td>${p.nombre}</td>
-        <td>
-          ${['S', 'M', 'L', 'XL', 'U'].filter(t => p.tallas[t] > 0).join(' - ')}
-        </td>
-        <td>$${p.precio}</td>
+        <td>${['S','M','L','XL','U'].filter(t => p.tallas[t] > 0).join(' - ')}</td>
+        <td>$${p.precio.toLocaleString('es-CO')}</td>
         <td>${(p.colores || []).map(c => c.codigo).join(' - ') || '-'}</td>
         <td>${(p.estampados || []).map(e => e.codigo).join(' - ') || '-'}</td>
         <td>
-          <button class="btn btn-primary btn-sm" data-action="ver" data-id="${p._id}">Ver</button>
-          <button class="btn btn-success btn-sm" data-action="editar" data-id="${p._id}">Editar</button>
-          <button class="btn btn-danger btn-sm" data-id="${p._id}" data-bs-toggle="modal" data-action="eliminar" data-bs-target="#modalDelete">Eliminar</button>
+          <button class="btn btn-primary btn-sm" data-action="ver"     data-id="${p._id}">Ver</button>
+          <button class="btn btn-success btn-sm" data-action="editar"  data-id="${p._id}">Editar</button>
+          <button class="btn btn-danger  btn-sm" data-action="eliminar" data-id="${p._id}"
+                  data-bs-toggle="modal" data-bs-target="#modalDelete">Eliminar</button>
         </td>
-      </tr>`).join('');
+      </tr>
+    `).join('');
 
-    // Asignar eventos
+    // 5. Asignar eventos a los botones
     tbody.querySelectorAll('button[data-action]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const action = btn.dataset.action;
-        const id = btn.dataset.id;
-        if (action === "ver") view(id);
-        else if (action === "editar") openEditModal(id);
-        else if (action === "eliminar") {
-          document.getElementById('btn-confirmar-eliminar').addEventListener('click', function () {
-            if (id) {
-              eliminar(id);
-            }
-          });
-          
+        const { action, id } = btn.dataset;
+        if (action === 'ver')       view(id);
+        if (action === 'editar')    openEditModal(id);
+        if (action === 'eliminar') {
+          const confirmBtn = document.getElementById('btn-confirmar-eliminar');
+          // Evitar múltiples listeners con { once: true }
+          confirmBtn.addEventListener('click', () => eliminar(id), { once: true });
         }
       });
     });
 
-  } catch (error) {
-    console.log('Error al cargar productos:', error);
-    console.log('Error al cargar productos');
+  } catch (err) {
+    console.error('Error al cargar productos:', err);
+    mostrarAlerta('Error al conectar con el servidor');
+  } finally {
+    if (loader) loader.style.display = 'none';       // ⬇️ oculta spinner
   }
 };
 
