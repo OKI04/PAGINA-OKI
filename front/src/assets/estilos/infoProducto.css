@@ -343,7 +343,8 @@
   line-height: 1.5;        /* Espaciado entre líneas */
 }
  
-  .color-imagen  {
+  .color-imagen 
+  .estampado-imagen {
   width: 12px;                  /* Ancho fijo de la imagen */
   height: 12px;                 /* Alto fijo */
   }

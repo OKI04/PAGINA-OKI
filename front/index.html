@@ -20,35 +20,36 @@
 <body>
 
   <!-- ==================== ENCABEZADO PRINCIPAL ==================== -->
- <header class="header">
-  <div class="site-container">
-    
-    <!-- Logo y eslogan -->
-    <div class="header-titles">
-      <img src="src/Imagen_De_Apoyo/logo.png" alt="Logo" class="logo" />
-      <p class="eslogan">Vive cada momento con estilo</p>
-    </div>
-
-    <!-- Contenedor de íconos de usuario y carrito -->
-    <div class="icon-buttons">
-
-      <div class="user-container">
-        <button id="openModalBtn" class="login-button">
-          <img class="usuario" src="src/Imagen_De_Apoyo/usuario.png" alt="Usuario" onclick="iniciarModalLogin()" />
-        </button>
+  <header class="header">
+    <div class="site-container">
+      <!-- Logo y eslogan -->
+      <div class="header-titles">
+        <img src="src/Imagen_De_Apoyo/logo.png" alt="Logo" class="logo">
+        <p class="eslogan">Vive cada momento con estilo</p>
       </div>
 
-      <div class="cart-container">
-        <button class="comprar-button" onclick="toggleCarrito()">
-          <img src="src/Imagen_De_Apoyo/Carro.png" alt="Carrito de compras" />
-          <span id="cart-count" class="cart-count">0</span>
-        </button>
+      <!-- Contenedor de íconos de usuario y carrito -->
+      <div class="icon-buttons">
+
+        <!-- Icono de usuario que abre modal de inicio de sesión -->
+        <div class="user-container">
+          <button id="openModalBtn" class="login-button" >
+            <img class="usuario" src="src/Imagen_De_Apoyo/usuario.png" alt="Usuario" onclick="iniciarModalLogin()">
+          </button>
+        </div>
+
+
+        <!-- Botón del carrito con contador de productos -->
+        <div class="cart-container">
+          <button class="comprar-button" onclick="toggleCarrito()">
+            <img src="src/Imagen_De_Apoyo/Carro.png" alt="Carrito de compras" />
+            <span id="cart-count" class="cart-count">0</span>
+          </button>
+        </div>
+
       </div>
-
     </div>
-  </div>
-</header>
-
+  </header>
 
   <!-- ==================== MODAL DEL CARRITO DE COMPRAS ==================== -->
   <div class="modal-carrito" id="modalCarrito">
@@ -140,7 +141,7 @@
 
   <!-- ==================== SECCIÓN DE PRODUCTOS MÁS VENDIDOS ==================== -->
 <section id="recomendados" class="recomendados">
-  <h2>PRODUCTOS MÁS VENDIDOS</h2>
+  <h2>NUESTRAS COLECCIONES</h2>
   <div class="carousel-container">
   <div class="carousel-track" id="carouselTrack">
   </div>
@@ -165,7 +166,6 @@
       <button class="btn-categoria" data-categoria="Vestidos">VESTIDOS</button>
       <button class="btn-categoria" data-categoria="Conjuntos y enterizos">CONJUNTOS - ENTERIZOS</button>
       <button class="btn-categoria" data-categoria="Referencias nuevas">REFERENCIAS NUEVAS</button>
-      <button class="btn-categoria" data-categoria="otro">OTROS</button>
     </nav>
 
     <!-- Flecha derecha para desplazamiento -->

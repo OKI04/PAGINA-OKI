@@ -168,7 +168,7 @@ function renderProductos(productos) {
                   <div class="colores-container">
                     ${p.estampados.map((estampado, i) => `
                       <div class="estampado-item ${(p.colores?.length === 0 && i === 0) ? 'selected' : ''}">
-                        <img src="${estampado.publicUrl}" class="color-imagen">
+                        <img src="${estampado.publicUrl}" class="estampado-imagen ">
                       </div>
                     `).join('')}
                   </div>
@@ -190,109 +190,119 @@ function renderProductos(productos) {
   }).join('');
 
 /* ❷ Cambia la lista de inicializaciones */
-inicializarNavArrows();    // ⬅️  Sustituye a inicializarRotacion()
-inicializarColorClick();
-inicializarEstampadoClick();
+
+  inicializarRotacion();
+  inicializarColorClick();
+  inicializarEstampadoClick();
+  inicializarNavArrows()
 }
-
-/* ❸ Nueva función: navegación con flechas */
 function inicializarNavArrows() {
-  document.querySelectorAll(".product-image").forEach(container => {
-    const img   = container.querySelector(".main-image");
-    const prev  = container.querySelector(".prev-arrow");
-    const next  = container.querySelector(".next-arrow");
+  document.querySelectorAll(".product-card").forEach(card => {
+    const img  = card.querySelector(".main-image");
+    const prev = card.querySelector(".prev-arrow");
+    const next = card.querySelector(".next-arrow");
 
-    // Oculta flechas si no hay imágenes para rotar
-    if (!img.dataset.rotacionactiva || JSON.parse(img.dataset.rotacionactiva).length === 0) {
+    // Si el producto no tiene rotación, oculta flechas y sal
+    const lista = JSON.parse(img.dataset.rotacionactiva || "[]");
+    if (lista.length === 0) {
       prev.style.display = next.style.display = "none";
       return;
     }
+    prev.style.display = next.style.display = "";    // por si antes estaban ocultas
 
-    let currentIndex = 0;
+    let current = 0;
 
-    const mostrarImagen = () => {
-      const lista = JSON.parse(img.dataset.rotacionactiva || "[]");
-      if (lista.length === 0) return;
-      img.src = lista[currentIndex];
-    };
+    const mostrar = () => { img.src = lista[current]; };
 
-    prev.addEventListener("click", e => {
-      e.stopPropagation();
-      const lista = JSON.parse(img.dataset.rotacionactiva || "[]");
-      if (lista.length === 0) return;
-      currentIndex = (currentIndex - 1 + lista.length) % lista.length;
-      mostrarImagen();
-    });
-
-    next.addEventListener("click", e => {
-      e.stopPropagation();
-      const lista = JSON.parse(img.dataset.rotacionactiva || "[]");
-      if (lista.length === 0) return;
-      currentIndex = (currentIndex + 1) % lista.length;
-      mostrarImagen();
-    });
+    prev.onclick = e => { e.stopPropagation(); current = (current - 1 + lista.length) % lista.length; mostrar(); };
+    next.onclick = e => { e.stopPropagation(); current = (current + 1) % lista.length; mostrar(); };
   });
 }
 
-/* ❹ Ajustes en los manejadores de color / estampado:
-      – Actualizan mainImg.src como antes
-      – Sobrescriben data-rotacionactiva
-      – Resetean currentIndex a 0 para la tarjeta afectada */
+
+function inicializarRotacion() {
+  document.querySelectorAll('.main-image').forEach(img => {
+    const imagenesRotacion = JSON.parse(img.dataset.rotacionactiva || "[]");
+    if (imagenesRotacion.length === 0) return;
+
+    let intervalId = null;
+    let currentIndex = 0;
+
+    function startRotation() {
+      if (intervalId !== null) return; // Ya está rotando
+      currentIndex = 0;
+      intervalId = setInterval(() => {
+        img.src = imagenesRotacion[currentIndex];
+        currentIndex = (currentIndex + 1) % imagenesRotacion.length;
+      }, 1000);
+    }
+
+    function stopRotation() {
+      clearInterval(intervalId);
+      intervalId = null;
+      currentIndex = 0;
+      img.src = imagenesRotacion[0]; // Imagen principal al salir
+    }
+
+    img.addEventListener("mouseenter", startRotation);
+    img.addEventListener("mouseleave", stopRotation);
+  });
+}
+
+
 function inicializarColorClick() {
   document.querySelectorAll(".product-colors .color-imagen:not(.estampado-imagen)").forEach(colorImg => {
-    colorImg.addEventListener("click", e => {
+    colorImg.addEventListener("click", (e) => {
       const card = e.target.closest(".product-card");
-      card.querySelectorAll(".color-item, .estampado-item").forEach(it => it.classList.remove("selected"));
+
+      // Limpiar selección previa
+      card.querySelectorAll(".color-item, .estampado-item").forEach(item => item.classList.remove("selected"));
       e.target.parentElement.classList.add("selected");
 
-      const mainImg  = card.querySelector(".main-image");
-      const index    = mainImg.dataset.index;
+      const mainImg = card.querySelector(".main-image");
+      const index = mainImg.dataset.index;
       const producto = productosCargados[index];
 
-      const srcRelativa     = new URL(colorImg.src).pathname;
+      const srcRelativa = new URL(colorImg.src).pathname;
       const colorSeleccionado = producto.colores.find(c => new URL(c.publicUrl, location.origin).pathname === srcRelativa);
 
       if (!colorSeleccionado || colorSeleccionado.imagenes.length < 2) return;
 
-      mainImg.src = colorSeleccionado.imagenes[1].publicUrl;
-      const rotacion = colorSeleccionado.imagenes.slice(2).map(i => i.publicUrl);
-      mainImg.dataset.rotacionactiva = JSON.stringify(rotacion);
-      
-      /* Reinicia el índice de la tarjeta tocada */
-      const container = mainImg.closest(".product-image");
-      container.__currentIndex = 0;
+      mainImg.src = colorSeleccionado.imagenes[1].publicUrl; // Mostrar la segunda imagen
+      const imagenesRotacion = colorSeleccionado.imagenes.slice(2).map(img => img.publicUrl); // Rotar desde la tercera
+      mainImg.dataset.rotacionactiva = JSON.stringify(imagenesRotacion);
+      inicializarRotacion();
+      inicializarNavArrows()
     });
   });
 }
 
 function inicializarEstampadoClick() {
   document.querySelectorAll(".product-colors .estampado-imagen").forEach(estampadoImg => {
-    estampadoImg.addEventListener("click", e => {
+    estampadoImg.addEventListener("click", (e) => {
       const card = e.target.closest(".product-card");
-      card.querySelectorAll(".color-item, .estampado-item").forEach(it => it.classList.remove("selected"));
+
+      // Limpiar selección previa
+      card.querySelectorAll(".color-item, .estampado-item").forEach(item => item.classList.remove("selected"));
       e.target.parentElement.classList.add("selected");
 
-      const mainImg  = card.querySelector(".main-image");
-      const index    = mainImg.dataset.index;
+      const mainImg = card.querySelector(".main-image");
+      const index = mainImg.dataset.index;
       const producto = productosCargados[index];
 
-      const srcRelativa        = new URL(estampadoImg.src).pathname;
-      const estampadoSeleccionado = producto.estampados.find(es => new URL(es.publicUrl, location.origin).pathname === srcRelativa);
+      const srcRelativa = new URL(estampadoImg.src).pathname;
+      const estampadoSeleccionado = producto.estampados.find(e => new URL(e.publicUrl, location.origin).pathname === srcRelativa);
 
       if (!estampadoSeleccionado || estampadoSeleccionado.imagenes.length < 2) return;
 
-      mainImg.src = estampadoSeleccionado.imagenes[1].publicUrl;
-      const rotacion = estampadoSeleccionado.imagenes.slice(2).map(i => i.publicUrl);
-      mainImg.dataset.rotacionactiva = JSON.stringify(rotacion);
-      
-      /* Reinicia el índice de la tarjeta tocada */
-      const container = mainImg.closest(".product-image");
-      container.__currentIndex = 0;
+      mainImg.src = estampadoSeleccionado.imagenes[1].publicUrl; // Mostrar la segunda imagen
+      const imagenesRotacion = estampadoSeleccionado.imagenes.slice(2).map(img => img.publicUrl); // Rotar desde la tercera
+      mainImg.dataset.rotacionactiva = JSON.stringify(imagenesRotacion);
+      inicializarRotacion();
+      inicializarNavArrows()
     });
   });
 }
-
-
 // --- Carrusel ----------------------------------------------------------------
 const carouselTrack = document.querySelector(".carousel-track");
 let animationId;

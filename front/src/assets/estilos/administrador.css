@@ -19,7 +19,6 @@
   height: 30px;
   object-fit: cover;       /* Mantiene la proporción sin deformar */
   border-radius: 50%;      /* Opcional: hace la imagen circular */
-  top:90px;
 }
 /* Círculo azul con ícono de usuario */
 .user-icon {
