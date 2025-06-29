@@ -4,17 +4,15 @@
 
 /* -------------------------------  GLOBALES  ------------------------------- */
 let productosCargados = [];
-let formularioId = 0;
-const arrayList = [];
 
 /* ------------------------  BACKEND_URL (env o fallback)  ------------------ */
 const BACKEND_URL = (
   typeof import.meta !== 'undefined' &&
   import.meta.env &&
   import.meta.env.VITE_API_URL
-    ? import.meta.env.VITE_API_URL   // .env.production / .env.development
+    ? import.meta.env.VITE_API_URL
     : 'https://pagina-back-oki.onrender.com'
-).replace(/\/+$/, '');                // quita barras finales duplicadas
+).replace(/\/+$/, ''); // quita barras finales duplicadas
 
 /* ==========================================================================
 
@@ -35,15 +33,14 @@ userForm?.addEventListener('submit', async (e) => {
     });
 
     if (!res.ok) {
-      const error = await res.json();
-      console.error('Error al registrar:', error);
+      mostrarAlerta('Error al registrar usuario');
+      console.error(await res.json());
       return;
     }
-
-    const data = await res.json();
-    console.log('✅ Usuario creado:', data);
+    mostrarAlerta('Usuario creado correctamente');
   } catch (err) {
     console.error('Error en el registro:', err);
+    mostrarAlerta('No se pudo registrar');
   }
 });
 
@@ -54,20 +51,14 @@ userForm?.addEventListener('submit', async (e) => {
 export async function loadProducts() {
   const loader = document.getElementById('loader');
   const tbody  = document.getElementById('productTable');
-
-  if (!tbody) {
-    console.error('No se encontró el elemento productTable');
-    return;
-  }
+  if (!tbody) return console.error('No se encontró #productTable');
 
   loader?.classList.remove('d-none');
 
   try {
-    // --- 2.1) Petición al backend (sin credentials) ---
     const res = await fetch(`${BACKEND_URL}/admin/products/all`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    // --- 2.2) Datos recibidos ---
     const productos = await res.json();
     if (!Array.isArray(productos) || !productos.length) {
       tbody.innerHTML =
@@ -75,24 +66,21 @@ export async function loadProducts() {
       return;
     }
 
-    // --- 2.3) Normalizar ---
     productosCargados = productos
       .map((p) => ({
         ...p,
-        imagenes  : normalizarImagenes  (p.imagenes),
-        colores   : normalizarColores   (p.colores),
+        imagenes  : normalizarImagenes(p.imagenes),
+        colores   : normalizarColores(p.colores),
         estampados: normalizarEstampados(p.estampados),
       }))
       .sort((a, b) => b._id.localeCompare(a._id));
 
-    // --- 2.4) Renderizar tabla ---
     renderTabla(tbody, productosCargados);
-    console.log(`✅ ${productosCargados.length} productos cargados`);
   } catch (err) {
     console.error('Error al cargar productos:', err);
     tbody.innerHTML =
       `<tr><td colspan="8" class="text-danger text-center">` +
-      `Error al cargar productos: ${err.message}</td></tr>`;
+      `Error al cargar productos</td></tr>`;
   } finally {
     loader?.classList.add('d-none');
   }
@@ -104,44 +92,42 @@ export async function loadProducts() {
   ------------------------------------------------------------------------ */
 const abs = (rutaRel) => `${BACKEND_URL}/${rutaRel.replace(/^\/+/, '')}`;
 
-function normalizarImagenes(lista = []) {
-  return (Array.isArray(lista) ? lista : []).map((img) => {
+const normalizarImagenes = (l=[]) =>
+  l.map(img => {
     const ruta = img.url.replace(/\\/g, '/');
     return { ...img, url: ruta, publicUrl: abs(ruta) };
   });
-}
 
-function normalizarColores(lista = []) {
-  return (Array.isArray(lista) ? lista : []).map((c) => {
+const normalizarColores = (l=[]) =>
+  l.map(c => {
     const imgs = normalizarImagenes(c.imagenes);
-    return { ...c, imagenes: imgs, publicUrl: imgs[0]?.publicUrl ?? '' };
+    return { ...c, imagenes: imgs, publicUrl: imgs[0]?.publicUrl || '' };
   });
-}
 
-function normalizarEstampados(lista = []) {
-  return (Array.isArray(lista) ? lista : []).map((e) => {
+const normalizarEstampados = (l=[]) =>
+  l.map(e => {
     const imgs = normalizarImagenes(e.imagenes);
-    return { ...e, imagenes: imgs, publicUrl: imgs[0]?.publicUrl ?? '' };
+    return { ...e, imagenes: imgs, publicUrl: imgs[0]?.publicUrl || '' };
   });
-}
 
 /* ==========================================================================
 
-  4.  RENDER DE TABLA + DELEGACIÓN DE EVENTOS
+  4.  RENDER TABLA Y DELEGACIÓN DE EVENTOS
   ------------------------------------------------------------------------ */
 function renderTabla(tbody, lista) {
   tbody.innerHTML = lista
     .map(
       (p) => `
-      <tr data-id="${p._id}">
+      <tr class="fila-producto"
+          data-id="${p._id}"
+          data-referencia="${(p.referencia ?? '').toLowerCase()}">
         <td>${p.referencia ?? '-'}</td>
         <td>${p.categoria  ?? '-'}</td>
         <td>${p.nombre     ?? '-'}</td>
-        <td>${['S','M','L','XL','U']
-              .filter((t) => p.tallas?.[t] > 0).join(' - ') || '-'}</td>
+        <td>${['S','M','L','XL','U'].filter(t=>p.tallas?.[t]>0).join(' - ') || '-'}</td>
         <td>$${p.precio ?? 0}</td>
-        <td>${p.colores.map(c => c.codigo).join(' - ')   || '-'}</td>
-        <td>${p.estampados.map(e => e.codigo).join(' - ')|| '-'}</td>
+        <td>${p.colores.map(c=>c.codigo).join(' - ') || '-'}</td>
+        <td>${p.estampados.map(e=>e.codigo).join(' - ') || '-'}</td>
         <td>
           <button class="btn btn-primary btn-sm" data-act="ver">Ver</button>
           <button class="btn btn-success btn-sm" data-act="editar">Editar</button>
@@ -155,228 +141,231 @@ function renderTabla(tbody, lista) {
     .join('');
 }
 
-/* -- Un solo listener para todo el <tbody> -- */
+/* Delegación de eventos (ver / editar / eliminar) */
 document.getElementById('productTable')?.addEventListener('click', (e) => {
   const btn = e.target.closest('button[data-act]');
   if (!btn) return;
-
-  const tr      = btn.closest('tr[data-id]');
-  const id      = tr?.dataset.id;
-  const accion  = btn.dataset.act;
-
+  const tr   = btn.closest('tr[data-id]');
+  const id   = tr?.dataset.id;
+  const act  = btn.dataset.act;
   if (!id) return;
 
-  switch (accion) {
-    case 'ver':
-      return typeof view === 'function'
-        ? view(id)
-        : console.error('Función view no encontrada');
-    case 'editar':
-      return typeof openEditModal === 'function'
-        ? openEditModal(id)
-        : console.error('Función openEditModal no encontrada');
-    case 'eliminar':
-      prepararEliminacion(id);
-      break;
-  }
+  if (act === 'ver')    return view(id);
+  if (act === 'editar') return typeof openEditModal === 'function'
+    ? openEditModal(id)
+    : console.error('openEditModal no encontrada');
+  if (act === 'eliminar') prepararEliminacion(id);
 });
-
-/* ------------------------------------------------------------------ */
 function prepararEliminacion(id) {
-  const btnConfirm = document.getElementById('btn-confirmar-eliminar');
-  if (!btnConfirm) return;
-
-  const newBtn = btnConfirm.cloneNode(true);
-  btnConfirm.replaceWith(newBtn);
-
-  newBtn.addEventListener('click', () => {
-    if (typeof eliminar === 'function') eliminar(id);
-    else console.error('Función eliminar no encontrada');
-  });
+  const btn = document.getElementById('btn-confirmar-eliminar');
+  if (!btn) return;
+  const nuevo = btn.cloneNode(true);
+  btn.parentNode.replaceChild(nuevo, btn);
+  nuevo.addEventListener('click', () => eliminar(id));
 }
 
 /* ==========================================================================
 
-  5.  MODAL “VER PRODUCTO”
+  5.  BUSCADOR POR CÓDIGO DE REFERENCIA
   ------------------------------------------------------------------------ */
-async function view(id) {
-  const producto = productosCargados.find(p => p._id === id);
-  if (!producto) return mostrarAlerta('Producto no encontrado');
+(function buscadorReferencia() {
+  const input = document.getElementById('searchInput');
+  const tbody = document.getElementById('productTable');
+  if (!input || !tbody) return;
 
-  // Selección de galería con prioridad
-  const galBase  = producto.imagenes || [];
-  const galColor = producto.colores?.[0]?.imagenes?.length ? producto.colores[0].imagenes : null;
-  const galEst   = !galColor && producto.estampados?.[0]?.imagenes?.length ? producto.estampados[0].imagenes : null;
+  let timer;
+  input.addEventListener('input', (e) => {
+    clearTimeout(timer);
+    const q = e.target.value.trim().toLowerCase();
+    timer = setTimeout(() => filtrar(q), 200);
+  });
 
-  const galeria = galColor || galEst || galBase;
-  if (!galeria.length) return mostrarAlerta('Producto sin imágenes');
+  function filtrar(q) {
+    let visibles = 0;
+    tbody.querySelectorAll('tr.fila-producto').forEach((fila) => {
+      const ref = fila.dataset.referencia;
+      const ok  = ref.includes(q);
+      fila.style.display = ok ? '' : 'none';
+      if (ok) visibles++;
+    });
+    manejarSinResultados(visibles === 0, q);
+  }
 
-  // 👉 Mostrar desde la segunda imagen
-  const principal = galeria[1]?.publicUrl ?? galeria[0].publicUrl;
-  const secundarias = galeria.slice(1); // miniaturas desde la segunda
+  function manejarSinResultados(sin, q) {
+    let row = document.getElementById('noResultsRow');
+    if (sin) {
+      if (!row) {
+        row = document.createElement('tr');
+        row.id = 'noResultsRow';
+        row.innerHTML =
+          '<td colspan="8" class="text-center text-muted"></td>';
+        tbody.appendChild(row);
+      }
+      row.firstElementChild.textContent =
+        `No se encontraron referencias para “${q}”`;
+    } else if (row) {
+      row.remove();
+    }
+  }
+})();
 
-  const modalBody = document.querySelector('#modalView .modal-body');
-  modalBody.innerHTML = plantillaProducto(producto, principal, secundarias);
+/* ==========================================================================
 
+  6.  MODAL “VER PRODUCTO”
+  ------------------------------------------------------------------------ */
+function view(id) {
+  const p = productosCargados.find(x => x._id === id);
+  if (!p) return mostrarAlerta('Producto no encontrado');
+
+  const base  = p.imagenes || [];
+  const gCol  = p.colores?.[0]?.imagenes?.length ? p.colores[0].imagenes : null;
+  const gEst  = !gCol && p.estampados?.[0]?.imagenes?.length ? p.estampados[0].imagenes : null;
+  const gal   = gCol || gEst || base;
+  if (!gal.length) return mostrarAlerta('Producto sin imágenes');
+
+  const principal   = gal[1]?.publicUrl ?? gal[0].publicUrl;
+  const miniaturas  = gal.slice(1);
+
+  const body = document.querySelector('#modalView .modal-body');
+  body.innerHTML = plantillaProducto(p, principal, miniaturas);
   const modal = bootstrap.Modal.getOrCreateInstance('#modalView');
   modal.show();
 
-  // Listeners
-  modalBody.addEventListener('click', (e) => {
-    const imgSel = e.target.closest('img[data-tipo]');
-    if (imgSel) {
-      const tipo = imgSel.dataset.tipo;
-      const idx = +imgSel.dataset.index;
-      const origen =
-        tipo === 'color'     ? producto.colores?.[idx]?.imagenes :
-        tipo === 'estampado' ? producto.estampados?.[idx]?.imagenes : [];
-
-      if (origen?.length) actualizarGaleria(origen);
+  body.addEventListener('click', handlerImgs);
+  function handlerImgs(e) {
+    const sel = e.target.closest('img[data-tipo]');
+    if (sel) {
+      const tipo = sel.dataset.tipo, idx = +sel.dataset.index;
+      const arr  = tipo === 'color'
+        ? p.colores?.[idx]?.imagenes
+        : tipo === 'estampado'
+        ? p.estampados?.[idx]?.imagenes
+        : [];
+      if (arr?.length) actualizarGaleria(arr);
       return;
     }
     const mini = e.target.closest('img.miniatura');
     if (mini) cambiarPrincipal(mini.src);
-  });
-
-  function actualizarGaleria(imgs) {
-    const princ = imgs[1]?.publicUrl ?? imgs[0].publicUrl;
-    const minis = imgs.slice(1); // miniaturas desde la segunda
-
-    cambiarPrincipal(princ);
-    const cont = modalBody.querySelector('#imagenesSecundarias');
-    cont.innerHTML = minis
+  }
+  function actualizarGaleria(arr) {
+    cambiarPrincipal(arr[1]?.publicUrl ?? arr[0].publicUrl);
+    body.querySelector('#imagenesSecundarias').innerHTML = arr
+      .slice(1)
       .map(i => `<img src="${i.publicUrl}" class="miniatura" />`)
       .join('');
   }
-
   function cambiarPrincipal(url) {
-    const main = modalBody.querySelector('#mainImage');
-    if (main) main.src = url;
+    const img = body.querySelector('#mainImage');
+    if (img) img.src = url;
   }
 }
 
-
-/* ============================================================
-   Plantilla del modal – respeta el estilo original
-   ============================================================ */
-function plantillaProducto(unicoProducto, principal, secundarias) {
-  const miniaturasHTML = secundarias
-    .map(
-      (img) => `
-        <img src="${img.publicUrl}" 
-             class="miniatura" 
-             style="cursor:pointer; max-width:50px; margin-right:5px;" />
-      `
-    )
+/* ---------------- Plantilla modal ---------------- */
+function plantillaProducto(p, principal, secundarias) {
+  const miniHTML = secundarias
+    .map(i => `<img src="${i.publicUrl}" class="miniatura" style="cursor:pointer;max-width:50px;margin-right:5px;" />`)
     .join('');
 
-  const coloresHTML = unicoProducto.colores?.length
-    ? `
-      <div class="colores">
-        <div class="lista-colores"></div>
-        <div class="colores-container">
-          ${unicoProducto.colores
-            .map(
-              (color, index) => `
-                <div class="color-item">
-                  <img src="${color.publicUrl || ''}"
-                       alt="${color.codigo}"
-                       class="color-imagen"
-                       data-tipo="color"
-                       data-index="${index}"
-                       style="cursor:pointer;" />
-                  <div class="color-codigo">${color.codigo}</div>
-                </div>
-            `
-            )
-            .join('')}
-        </div>
-      </div>`
-    : '';
+  const bloque = (arr, tipo) => arr?.length ? `
+    <div class="${tipo === 'color' ? 'colores' : 'estampados'}">
+      <div class="lista-colores"></div>
+      <div class="colores-container">
+        ${arr.map((x, i) => `
+          <div class="color-item">
+            <img src="${x.publicUrl}" alt="${x.codigo}"
+                 class="color-imagen${tipo==='estampado'?' estampado-imagen':''}"
+                 data-tipo="${tipo}" data-index="${i}" style="cursor:pointer;" />
+            <div class="color-codigo">${x.codigo}</div>
+          </div>`).join('')}
+      </div>
+    </div>` : '';
 
-  const estampadosHTML = unicoProducto.estampados?.length
-    ? `
-      <div class="estampados">
-        <div class="lista-colores"></div>
-        <div class="colores-container">
-          ${unicoProducto.estampados
-            .map(
-              (estampado, index) => `
-                <div class="color-item">
-                  <img src="${estampado.publicUrl || ''}"
-                       alt="${estampado.codigo}"
-                       class="color-imagen estampado-imagen"
-                       data-tipo="estampado"
-                       data-index="${index}"
-                       style="cursor:pointer;" />
-                  <div class="color-codigo">${estampado.codigo}</div>
-                </div>
-            `
-            )
-            .join('')}
-        </div>
-      </div>`
-    : '';
-
-  // Aquí solo mostramos la letra si tiene cantidad mayor a 0
-  const mostrarTalla = (cantidad, talla) =>
-    cantidad > 0 ? `<span class="talla-letra">${talla}</span>` : '';
+  const talla = (v, t) => v > 0 ? `<span class="talla-letra">${t}</span>` : '';
 
   return `
-    <div class="plantilla">
-      <div class="plantilla-container">
-        <div class="imagen-y-miniaturas">
-          <div class="imagenes-secundarias" id="imagenesSecundarias">
-            ${miniaturasHTML}
-          </div>
-          <div class="imagen-principal">
-            <img id="mainImage"
-                 class="main-image"
-                 src="${principal}"
-                 alt="Imagen principal"
-                 style="max-width:100%;" />
-          </div>
-        </div>
-
-        <div class="detalles-producto">
-          <div class="nombre-modelo">${unicoProducto.nombre}</div>
-          <div class="referencia">Referencia: ${unicoProducto.referencia}</div>
-          <div class="precio">
-            $${Number(unicoProducto.precio).toLocaleString('es-CO')}
-          </div>
-
-          ${coloresHTML}
-          ${estampadosHTML}
-
-          <div class="lista-colores"><strong>TALLA</strong></div>
-          <div class="talla">
-            ${mostrarTalla(unicoProducto.tallas?.S, 'S')}
-            ${mostrarTalla(unicoProducto.tallas?.M, 'M')}
-            ${mostrarTalla(unicoProducto.tallas?.L, 'L')}
-            ${mostrarTalla(unicoProducto.tallas?.XL, 'XL')}
-            ${mostrarTalla(unicoProducto.tallas?.U, 'U')}
-          </div>
-
-          ${
-            unicoProducto.descripcion
-              ? `
-              <div class="descripcion-container" style="margin-top:1rem;">
-                <div class="lista-colores">DESCRIPCIÓN</div>
-                <div class="descripcion">${unicoProducto.descripcion}</div>
-              </div>`
-              : ''
-          }
-        </div>
-      </div>
+  <div class="plantilla"><div class="plantilla-container">
+    <div class="imagen-y-miniaturas">
+      <div class="imagenes-secundarias" id="imagenesSecundarias">${miniHTML}</div>
+      <div class="imagen-principal"><img id="mainImage" class="main-image" src="${principal}" style="max-width:100%;" /></div>
     </div>
-  `;
+
+    <div class="detalles-producto">
+      <div class="nombre-modelo">${p.nombre}</div>
+      <div class="referencia">Referencia: ${p.referencia}</div>
+      <div class="precio">$${Number(p.precio).toLocaleString('es-CO')}</div>
+
+      ${bloque(p.colores, 'color')}
+      ${bloque(p.estampados, 'estampado')}
+
+      <div class="lista-colores"><strong>TALLA</strong></div>
+      <div class="talla">
+        ${talla(p.tallas?.S, 'S')}
+        ${talla(p.tallas?.M, 'M')}
+        ${talla(p.tallas?.L, 'L')}
+        ${talla(p.tallas?.XL, 'XL')}
+        ${talla(p.tallas?.U, 'U')}
+      </div>
+
+      ${p.descripcion
+        ? `<div class="descripcion-container mt-3">
+             <div class="lista-colores">DESCRIPCIÓN</div>
+             <div class="descripcion">${p.descripcion}</div>
+           </div>`
+        : ''}
+    </div>
+  </div></div>`;
 }
 
+/* ==========================================================================
+
+  7.  ELIMINAR PRODUCTO
+  ------------------------------------------------------------------------ */
+async function eliminar(_id) {
+  try {
+    await fetch(`${BACKEND_URL}/admin/products/delete/${_id}`, {
+  method: 'DELETE',
+  credentials: 'include',          // ← indispensable
+});
+
+    if (res.status === 401 || res.status === 403) {
+      return mostrarAlerta('Sesión expirada. Inicia sesión de nuevo.');
+    }
+    if (!res.ok) {
+      return mostrarAlerta(`Error al eliminar (${res.status})`);
+    }
+
+    const { deletedCount = 0 } = await res.json();
+    if (deletedCount !== 1) {
+      return mostrarAlerta('No se eliminó ningún documento. Revisa el ID.');
+    }
+
+    // Recarga lista directamente del backend
+    await loadProducts();
+    mostrarAlerta('Producto eliminado correctamente');
+  } catch (err) {
+    console.error('Error al eliminar:', err);
+    mostrarAlerta('El producto no fue eliminado');
+  }
+}
 
 
 /* ==========================================================================
 
-   EXPOSICIÓN GLOBAL Y AUTO‑EJECUCIÓN
+  8.  UTILIDADES (alerta modal simple)
+  ------------------------------------------------------------------------ */
+function mostrarAlerta(mensaje, ms = 3000) {
+  const modal   = document.getElementById('alertModal');
+  const mensajeEl = document.getElementById('alertMessage');
+  if (!modal || !mensajeEl) return alert(mensaje);
+
+  mensajeEl.textContent = mensaje;
+  modal.style.display = 'flex';
+  if (ms) setTimeout(() => modal.style.display = 'none', ms);
+}
+
+/* ==========================================================================
+
+  9.  AUTO‑EJECUCIÓN
   ------------------------------------------------------------------------ */
 window.loadProducts = loadProducts;
 document.addEventListener('DOMContentLoaded', loadProducts);
