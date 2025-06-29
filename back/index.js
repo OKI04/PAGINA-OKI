@@ -16,10 +16,6 @@ const app = express();
 const port = process.env.PORT || 3900;
 const cors = require('cors');
 
-app.use(cors({
-  origin: ['https://pagina-oki-n3qw.onrender.com', 'http://localhost:5173'], // dominios permitidos
-  credentials: true                                            // ← importante
-}));
 
 
 
