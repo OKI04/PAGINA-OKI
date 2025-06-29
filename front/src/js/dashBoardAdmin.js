@@ -320,34 +320,32 @@ function plantillaProducto(p, principal, secundarias) {
 
   7.  ELIMINAR PRODUCTO
   ------------------------------------------------------------------------ */
+// Eliminar Producto
 async function eliminar(_id) {
-  try {
-    await fetch(`${BACKEND_URL}/admin/products/delete/${_id}`, {
-  method: 'DELETE',
-  credentials: 'include',          // ← indispensable
-});
+  console.log("action: eliminar");
+  console.log("Id url: " + _id);
+   try {
+    
+     const res = await fetch(`/admin/products/delete/${_id}`, {
+       method: 'DELETE',
+       credentials: 'include'    // si usas cookie HttpOnly
+     });
 
-    if (res.status === 401 || res.status === 403) {
-      return mostrarAlerta('Sesión expirada. Inicia sesión de nuevo.');
-    }
-    if (!res.ok) {
-      return mostrarAlerta(`Error al eliminar (${res.status})`);
-    }
+     if (!res.ok) {
+       const err = await res.text();
+       mostrarAlerta('Error al cargar productos: ' + err);
+       return;
+     }
 
-    const { deletedCount = 0 } = await res.json();
-    if (deletedCount !== 1) {
-      return mostrarAlerta('No se eliminó ningún documento. Revisa el ID.');
-    }
+     const productoDelete = await res.json();
+     console.log(productoDelete);
+     loadProducts();
 
-    // Recarga lista directamente del backend
-    await loadProducts();
-    mostrarAlerta('Producto eliminado correctamente');
-  } catch (err) {
-    console.error('Error al eliminar:', err);
-    mostrarAlerta('El producto no fue eliminado');
-  }
+   } catch (error) {
+     console.error('Error en loadProducts:', error);
+     mostrarAlerta('El producto no fue eliminado');
+   }
 }
-
 
 /* ==========================================================================
 

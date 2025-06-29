@@ -14,7 +14,6 @@ connection();
 //Servidor
 const app = express();
 const port = process.env.PORT || 3900;
-const cors = require('cors');
 
 
 
