@@ -20,36 +20,35 @@
 <body>
 
   <!-- ==================== ENCABEZADO PRINCIPAL ==================== -->
-  <header class="header">
-    <div class="site-container">
-      <!-- Logo y eslogan -->
-      <div class="header-titles">
-        <img src="src/Imagen_De_Apoyo/logo.png" alt="Logo" class="logo">
-        <p class="eslogan">Vive cada momento con estilo</p>
-      </div>
-
-      <!-- Contenedor de íconos de usuario y carrito -->
-      <div class="icon-buttons">
-
-        <!-- Icono de usuario que abre modal de inicio de sesión -->
-        <div class="user-container">
-          <button id="openModalBtn" class="login-button" >
-            <img class="usuario" src="src/Imagen_De_Apoyo/usuario.png" alt="Usuario" onclick="iniciarModalLogin()">
-          </button>
-        </div>
-
-
-        <!-- Botón del carrito con contador de productos -->
-        <div class="cart-container">
-          <button class="comprar-button" onclick="toggleCarrito()">
-            <img src="src/Imagen_De_Apoyo/Carro.png" alt="Carrito de compras" />
-            <span id="cart-count" class="cart-count">0</span>
-          </button>
-        </div>
-
-      </div>
+ <header class="header">
+  <div class="site-container">
+    
+    <!-- Logo y eslogan -->
+    <div class="header-titles">
+      <img src="src/Imagen_De_Apoyo/logo.png" alt="Logo" class="logo" />
+      <p class="eslogan">Vive cada momento con estilo</p>
     </div>
-  </header>
+
+    <!-- Contenedor de íconos de usuario y carrito -->
+    <div class="icon-buttons">
+
+      <div class="user-container">
+        <button id="openModalBtn" class="login-button">
+          <img class="usuario" src="src/Imagen_De_Apoyo/usuario.png" alt="Usuario" onclick="iniciarModalLogin()" />
+        </button>
+      </div>
+
+      <div class="cart-container">
+        <button class="comprar-button" onclick="toggleCarrito()">
+          <img src="src/Imagen_De_Apoyo/Carro.png" alt="Carrito de compras" />
+          <span id="cart-count" class="cart-count">0</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</header>
+
 
   <!-- ==================== MODAL DEL CARRITO DE COMPRAS ==================== -->
   <div class="modal-carrito" id="modalCarrito">
@@ -177,7 +176,7 @@
 
   <!-- Botón tipo hamburguesa para mostrar categorías en dispositivos móviles -->
   <button class="menu-toggle" onclick="toggleCategorias()">☰</button>
-
+  
   <!-- ==================== SECCIÓN DE TODOS LOS PRODUCTOS ==================== -->
   <section id="producto" class="prudcto">
     <h2>TODOS LOS PRODUCTOS</h2>

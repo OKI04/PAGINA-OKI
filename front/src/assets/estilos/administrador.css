@@ -19,6 +19,7 @@
   height: 30px;
   object-fit: cover;       /* Mantiene la proporción sin deformar */
   border-radius: 50%;      /* Opcional: hace la imagen circular */
+  top:90px;
 }
 /* Círculo azul con ícono de usuario */
 .user-icon {
@@ -150,6 +151,7 @@
     width: 50px;        /* antes 70 px */
     height: 50px;
     margin: -50px auto 25px; /* ajusta el “overlap” y el margen inferior */
+    
   }
 
   /* SVG o PNG del usuario dentro del círculo */

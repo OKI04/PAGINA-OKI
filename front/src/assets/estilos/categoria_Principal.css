@@ -22,7 +22,7 @@ body {
   left: 0;
   width: 100%;                    /* Ocupa todo el ancho */
   height: 80px;                   /* Altura visual reducida */
-  padding: 0 5px;                 /* Relleno lateral mínimo */
+  padding: 0 16px;                 /* Relleno lateral mínimo */
   z-index: 1001;                  /* Prioridad de apilamiento */
   display: flex;                  /* Flexbox para alinear contenido interno */
   align-items: center;           /* Centra verticalmente */
@@ -70,6 +70,7 @@ header {
   overflow: visible;            /* Permite sobresalir el logo */
 }
 
+
 /* --- Contenedor Interno del Header (logo + título) --- */
 .header-container {
   display: flex;                 /* Flexbox vertical */
@@ -105,14 +106,12 @@ header {
    Botones de Usuario / Iconos
    ============================ */
 
-/* --- Contenedor de Íconos (Login y Carrito) --- */
 .icon-buttons {
-  display: flex;                /* Alineación horizontal */
-  align-items: center;          /* Centrado vertical */
-  justify-content: flex-end;    /* Pegado a la derecha */
-  gap: 0px;                     /* Sin espacio entre íconos */
+  display: flex;
+  align-items: center;         /* Centra los íconos verticalmente */
+  justify-content: flex-end;
+  gap: 12px;                   /* Puedes ajustar si quieres separación entre íconos */
 }
-
 /* --- CONTENEDOR PRINCIPAL DE LAS CATEGORÍAS Y FLECHAS --- */
 .categorias-wrapper {
   position: fixed;                /* Hace que quede fijo en la pantalla */
@@ -190,7 +189,7 @@ header {
   background-color: var(--main-contenedor-color); /* Color de fondo, igual al de los botones de categoría. */
   color: var(--main-text-color);           /* Color del icono o texto (ej. '☰'), igual al texto de los botones. */
   font-size: 24px;           /* Tamaño del icono o texto del botón hamburguesa. */
-  padding: 10px 20px;      /* Relleno interno del botón. */
+  padding: 10px 10px;      /* Relleno interno del botón. */
   border: none;              /* Quita cualquier borde por defecto. */
   border-radius: 10px;     /* Redondea las esquinas. */
   cursor: pointer;         /* Cursor de 'mano' al pasar sobre él. */
@@ -223,7 +222,7 @@ header {
   /* — Header — */
   header,
   .site-header {
-    height: 70px;              /* un poco más bajo que en desktop */
+    height: 60px;              /* un poco más bajo que en desktop */
     padding: 0 10px;
   }
 
@@ -257,14 +256,14 @@ header {
   /* — Header — */
   header,
   .site-header {
-    height: 60px;              /* cabe mejor en pantallas pequeñas */
+    height: 10px;              /* cabe mejor en pantallas pequeñas */
     padding: 0 8px;
   }
 
   .logo {
     width: 80px;
     height: 80px;
-    margin-top: -10px;
+    margin-top: -15px;
   }
 
   .golden-text { font-size: 1.4rem; }
@@ -354,7 +353,7 @@ header {
   .menu-toggle {
     display: block;            /* Hace visible el botón en pantallas pequeñas. */
     position: fixed;           /* Posición fija respecto a la ventana. */
-    top: 15px;                 /* A 15px del borde superior. */
+    top: -5px;                 /* A 15px del borde superior. */
     left: 15px;                /* A 15px del borde izquierdo. */
     z-index: 1000;             /* Profundidad alta para estar SIEMPRE ENCIMA del menú lateral. */
     margin: 0;                 /* Elimina cualquier margen previo. */

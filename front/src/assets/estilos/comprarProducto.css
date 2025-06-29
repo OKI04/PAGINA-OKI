@@ -31,6 +31,9 @@ button {
   box-sizing: border-box; /* Incluye padding en el tamaño total */
   overflow-y: auto; /* Permite scroll vertical si el contenido excede */
 }
+.cart-count{
+  color: black;
+}
 
 #btnCerrarCompra {
   position: absolute; /* Se posiciona de forma absoluta respecto al contenedor padre */

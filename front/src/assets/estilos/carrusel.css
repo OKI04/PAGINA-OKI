@@ -35,7 +35,7 @@ html, body {
 }
 
 .recomendados h2 {
-  margin-top: 40px;
+  margin-top: 100px;
   font-size: 2rem;
   text-align: center;
   font-weight: bold;
@@ -118,7 +118,7 @@ html, body {
   header       { height: 80px; }
 
   .recomendados {
-    padding-top: 60px;      /* compensa el header fijo */
+    padding-top: 30px;      /* compensa el header fijo */
   }
 
   .recomendados h2 {
@@ -136,12 +136,12 @@ html, body {
 
 /* —— CELULARES GRANDES ———————————————————— */
 @media (min-width: 100px) and (max-width: 599px) {
-  header       { height: 70px; }
+  header       { height: 55px; }
 
   .recomendados { 
     
-  margin-top: -50px;
-  padding-top: 120px; }
+  margin-top: -40px;
+  padding-top: 50px; }
 
   .recomendados h2 { font-size: 1.4rem; }
 

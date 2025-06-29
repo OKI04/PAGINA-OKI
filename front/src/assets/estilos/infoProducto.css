@@ -54,7 +54,7 @@
 /*Mostrador de productos */
 .main-products {
   display: grid; /* Utiliza el sistema de diseño CSS Grid para organizar los elementos en filas y columnas */
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Crea tantas columnas como quepan en el contenedor, con un ancho mínimo de 250px.Cada columna puede crecer hasta ocupar el espacio disponible (1fr). Esto permite que el diseño se adapte automáticamente a pantallas pequeñas y grandes. */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Crea tantas columnas como quepan en el contenedor, con un ancho mínimo de 250px.Cada columna puede crecer hasta ocupar el espacio disponible (1fr). Esto permite que el diseño se adapte automáticamente a pantallas pequeñas y grandes. */
   gap: 30px; /* Espacio horizontal y vertical entre los productos */
   width: 100%;  /* Ocupa todo el ancho disponible del contenedor padre */
   padding: 100px; /* Agrega espacio interno en todos los lados para separar el contenido del borde */
@@ -225,6 +225,39 @@
   border-radius: 50%;
   padding: 2px; /* para que el borde no achique la imagen */
 }
+
+.nav-arrow {
+  position: absolute; /* Posiciona este botón en relación al contenedor .main-image */
+  top: 50%; /* Centra verticalmente el botón */
+  transform: translateY(-50%); /* Ajusta exactamente al centro vertical */
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semitransparente */
+  border: 1px solid #ccc; /* Borde gris claro */
+  border-radius: 50%; /* Forma circular */
+  width: 36px; /* Ancho del botón */
+  height: 36px; /* Altura del botón */
+  font-size: 18px; /* Tamaño del ícono o flecha */
+  cursor: pointer; /* Cursor tipo "mano" al pasar sobre el botón */
+  display: flex; /* Flexbox para centrar el contenido (ícono) */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  color: var(--primary-text-color); /* Color del ícono o flecha basado en una variable */
+  transition: background-color 0.2s; /* Transición suave para el fondo al hacer hover */
+}
+.nav-arrow:hover {
+  background-color: var(--white-color); /* Cambia el fondo al blanco puro al pasar el mouse */
+}
+
+.prev-arrow { left: 10px; }
+.next-arrow { right: 10px; }
+.precio {
+  font-size: 1.5em; /* Tamaño del texto de precio */
+  color: var(--main-bg-color); /* Color verde oscuro */
+}
+
+
+/* =========================================================
+   MÓVIL (1024 px – 600 px)  ➜  3 contenedores por fila
+   ========================================================= */
 @media (min-width: 600px) and (max-width: 1024px) {
   .main-products {
     grid-template-columns: repeat(3, 1fr);
@@ -270,6 +303,10 @@
   .product-sizes {
     gap: 6px;
   }
+  .quick-buy:hover {
+  background: rgba(0, 0, 0, 0.8); /* Cambia el fondo del botón a negro semitransparente al hacer hover */
+  color: #fff;                    /* Cambia el color del texto a blanco */
+}
 }
 
 
@@ -320,4 +357,8 @@
   .product-sizes {
     gap: 5px;
   }
+  .quick-buy:hover {
+  background: rgba(0, 0, 0, 0.8); /* Cambia el fondo del botón a negro semitransparente al hacer hover */
+  color: #fff;                    /* Cambia el color del texto a blanco */
+}
 }
