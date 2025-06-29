@@ -66,6 +66,7 @@
 /* IMAGEN DEL PRODUCTO Y EFECTO ZOOM */
 /* Contenedor de la imagen del producto */
 .product-image {
+  border-radius: 15px;
   position: relative;   /* Contexto para posicionar elementos hijos si es necesario */
   width: 100%;          /* Ocupa todo el ancho del contenedor padre */
   height: 550px;        /* Altura fija para evitar cambios de tamaño al rotar imágenes */
@@ -187,7 +188,11 @@
 /* PRECIO DEL PRODUCTO */
 .product-price {
   font-size: 20px; /* Tamaño de fuente para el precio */
+  margin-top: 8px;         /* Separación superior */
+  margin-bottom: 2px;      /* Separación inferior */
+  line-height: 1.5;        /* Espaciado entre líneas */
 }
+ 
 
 .price-value {
   font-weight: bold; /* Solo el valor en negrilla */
@@ -200,7 +205,7 @@
   background: #fff;                     /* Fondo blanco */
   box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Sombra sutil para efecto de elevación */
   overflow: hidden;                     /* Oculta contenido que se desborde */
-  border-radius: 6px;                   /* Bordes redondeados */
+  border-radius: 25px;                   /* Bordes redondeados */
   position: relative;                   /* Necesario para posicionar elementos hijos como el botón */
 }
 /* CONTENEDOR DE PRODUCTOS */
@@ -220,35 +225,99 @@
   border-radius: 50%;
   padding: 2px; /* para que el borde no achique la imagen */
 }
-/* ===== MÓVILES: 200 px – 599 px ===== */
-@media (min-width: 200px) and (max-width: 599px) {
-
-  /* Centrado de contenido */
-  .prudcto,
-  .main-products,
-  .product-container {
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: center;
-  }
-
+@media (min-width: 600px) and (max-width: 1024px) {
   .main-products {
-    grid-template-columns: 1fr;
-    padding: 20px 10px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 24px 16px;
   }
 
   .product-card {
     width: 100%;
-    max-width: 320px;
-    margin: 0 auto;
+    border-radius: 20px;
+    border: transparent;
   }
 
-  /* Reducción del tamaño de la imagen */
   .product-image {
-    height: 300px; /* Antes era 550px */
+    height: 40vw; /* Imagen un poco más pequeña */
+    border-radius: 20px;
   }
 
-  .product-image img.main-image {
-    object-fit: cover;
+  .product-name {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .product-price {
+    font-size: 15px;
+    margin-top: 8px;
+    margin-bottom: 2px;
+    line-height: 1.5;
+  }
+
+  .color-imagen,
+  .estampado-imagen {
+    width: 16px; /* Más grandes */
+    height: 16px;
+  }
+
+  .size-box {
+    padding: 8px 8px; /* Más espacio */
+    font-size: 10px;   /* Más grande */
+    border-radius: 4px;
+  }
+
+  .product-sizes {
+    gap: 6px;
+  }
+}
+
+
+/* =========================================================
+   MÓVIL (200 px – 599 px)  ➜  2 contenedores por fila
+   ========================================================= */
+@media (min-width: 200px) and (max-width: 599px) {
+  .main-products {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 24px 16px;
+  }
+
+  .product-card {
+    width: 100%;
+    border-radius: 20px;
+    border: transparent;
+  }
+
+  .product-image {
+    height: 55vw;
+    border-radius: 20px;
+  }
+
+  .product-name {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .product-price {
+  font-size: 10px;
+  margin-top: 8px;         /* Separación superior */
+  margin-bottom: 2px;      /* Separación inferior */
+  line-height: 1.5;        /* Espaciado entre líneas */
+}
+ 
+  .color-imagen  {
+  width: 12px;                  /* Ancho fijo de la imagen */
+  height: 12px;                 /* Alto fijo */
+  }
+
+ .size-box {
+    padding: 6px 6px;
+    font-size: 8px;
+    border-radius: 3px;
+  }
+
+  .product-sizes {
+    gap: 5px;
   }
 }
