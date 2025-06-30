@@ -36,7 +36,7 @@ const PORT = process.env.PORT || 3900;
 // ─── CORS ──────────────────────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
   process.env.FRONTEND_DEV  || 'http://localhost:5173',
-  process.env.FRONTEND_PROD || 'https://pagina-oki-n3qw.onrender.com',
+  process.env.FRONTEND_PROD || 'https://pagina-oki-n3qw.onrender.com/dashboardAdmin.html',
 ];
 
 app.use(
