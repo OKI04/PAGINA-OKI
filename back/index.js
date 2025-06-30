@@ -15,9 +15,6 @@ connection();
 const app = express();
 const port = process.env.PORT || 3900;
 
-
-
-
 //Middlewares
 app.use(cors()); //Configurar CORS
 app.use(express.json()); //recibir datos con contentType app/json

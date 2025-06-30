@@ -321,7 +321,7 @@ function plantillaProducto(p, principal, secundarias) {
   7.  ELIMINAR PRODUCTO
   ------------------------------------------------------------------------ */
 // Eliminar Producto
-async function eliminar(_id) {
+export async function eliminar(_id) {
   console.log("action: eliminar");
   console.log("Id url: " + _id);
    try {
@@ -366,4 +366,5 @@ function mostrarAlerta(mensaje, ms = 3000) {
   9.  AUTO‑EJECUCIÓN
   ------------------------------------------------------------------------ */
 window.loadProducts = loadProducts;
+window.eliminar = eliminar;
 document.addEventListener('DOMContentLoaded', loadProducts);
