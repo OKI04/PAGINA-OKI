@@ -1,42 +1,35 @@
-
-// 1. Referencias al formulario y al contenedor de error
-const form = document.getElementById('loginForm');
-const errorMsg = document.getElementById('errorMsg');
-
-// 2. Escucha el evento submit
-form.addEventListener('submit', async event => {
-  event.preventDefault();               // evita recarga automática
-
-  // 3. Toma los valores de los campos
-  const email = form.email.value;
-  const password = form.password.value;
+const login = async (req, res) => {
+  const { email, password } = req.body;
 
   try {
-    // 4. Llama al endpoint de login
-    const res = await fetch('/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-      credentials: 'include'            // si usas cookies
+    const userFound = await User.findOne({ email });
+
+    if (!userFound) {
+      return res.status(400).json({ message: "Usuario no encontrado" });
+    }
+
+    // ✅ Agrega log para depurar
+    console.log("Contraseña en BD:", userFound.password);
+
+    const isMatch = await bcrypt.compare(password, userFound.password);
+
+    // ✅ IMPORTANTE: asegúrate de retornar
+    if (!isMatch) {
+      console.log("Contraseña incorrecta");
+      return res.status(400).json({ message: "Contraseña incorrecta" });
+    }
+
+    const token = await createAccessToken({ id: userFound._id });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // solo HTTPS en prod
+      sameSite: "strict"
     });
 
-    // 5. Si no es 200–299, muestra error
-    if (!res.ok) {
-      const err = await res.json();
-      errorMsg.textContent = err.message || 'Credenciales inválidas';
-      errorMsg.style.display = 'block';
-      return;
-    }
-   
-    // 6. Si fue exitoso, redirige al dashboard
-    window.location.href = '/dashboardAdmin.html';
-
-  } catch (err) {
-    console.error('Error en fetch login:', err);
-    errorMsg.textContent = 'Error de conexión';
-    errorMsg.style.display = 'block';
+    res.status(200).json({ message: "Bienvenido" });
+  } catch (error) {
+    console.error("Error en login:", error);
+    res.status(500).json({ message: "Error en el servidor" });
   }
-});
-
-
- 
+};
