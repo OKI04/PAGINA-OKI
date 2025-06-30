@@ -27,8 +27,7 @@ form.addEventListener('submit', async event => {
       return;
     }
 
-    // 6. Si fue exitoso, guarda el token y redirige al dashboard
-    // Ya no se guarda el token en localStorage, solo redirige
+    // 6. Si fue exitoso, redirige al dashboard
     window.location.href = '/dashboardAdmin.html';
 
   } catch (err) {
