@@ -27,7 +27,11 @@ form.addEventListener('submit', async event => {
       return;
     }
 
-    // 6. Si fue exitoso, redirige al dashboard
+    // 6. Si fue exitoso, guarda el token y redirige al dashboard
+    const data = await res.json();
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+    }
     window.location.href = '/dashboardAdmin.html';
 
   } catch (err) {
