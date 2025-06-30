@@ -340,30 +340,31 @@ function plantillaProducto(p, principal, secundarias) {
 // =========================================================================
 // 7. ELIMINAR PRODUCTO
 // -------------------------------------------------------------------------
-export async function eliminar(id) {
-  console.log('action: eliminar', id);
-  
+export async function eliminar(_id) {
+  console.log("action: eliminar");
   console.log("Id url: " + _id);
-
-  try {
-   
+   try {
+    
      const res = await fetch(`/admin/products/delete/${_id}`, {
        method: 'DELETE',
        credentials: 'include'    // si usas cookie HttpOnly
      });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(errText || `HTTP ${res.status}`);
-    }
+     if (!res.ok) {
+       const err = await res.text();
+       mostrarAlerta('Error al cargar productos: ' + err);
+       return;
+     }
 
-    mostrarAlerta('Producto eliminado');
-    await loadProducts();                                // refresca la tabla
-    bootstrap.Modal.getInstance('#modalDelete')?.hide(); // cierra el modal
-  } catch (err) {
-    console.error('Error al eliminar producto:', err);
-    mostrarAlerta('El producto no fue eliminado');
-  }
+     const productoDelete = await res.json();
+     console.log(productoDelete);
+     loadProducts();
+
+   } catch (error) {
+     console.error('Error en loadProducts:', error);
+     mostrarAlerta(`El producto no fue eliminado (${id})`);
+
+   }
 }
 
 /* ==========================================================================
