@@ -344,15 +344,19 @@ async function eliminar(id) {
   if (!id) return;
 
   try {
-    const res = await fetch(`/admin/products/delete/${encodeURIComponent(id)}`, {
+    const res = await fetch(`${BACKEND_URL}/admin/products/delete/${encodeURIComponent(id)}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       // credentials: 'include',
     });
 
     if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(errText || `HTTP ${res.status}`);
+      let errorMsg = `HTTP ${res.status}`;
+      try {
+        const data = await res.json();
+        errorMsg = data.message || data.mesaje || errorMsg;
+      } catch {}
+      throw new Error(errorMsg);
     }
 
     mostrarAlerta(`Producto eliminado correctamente (${id})`);
@@ -360,7 +364,7 @@ async function eliminar(id) {
     await loadProducts();
   } catch (err) {
     console.error('Error al eliminar producto:', err);
-    mostrarAlerta(`El producto no fue eliminado (${id})`);
+    mostrarAlerta(`Error: ${err.message}`);
   }
 }/* ==========================================================================
 
