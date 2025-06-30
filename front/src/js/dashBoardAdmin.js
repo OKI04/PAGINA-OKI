@@ -217,13 +217,13 @@ document.getElementById("createProductForm").addEventListener("submit", async e 
     formData.append(`colores[${index}].imagenRef`, color.nombreRef);
 
     if (color.imagen) {
-      formData.append(`colores[${index}]`, color.imagen);
+      formData.append(`colores[${index}].imagenRefFile`, color.imagen);
     }
 
     if (Array.isArray(color.imagenes)) {
       console.log("Colores: ", color.imagenes);
       color.imagenes.forEach((img, i) => {
-        formData.append(`colores[${index}]`, img);
+        formData.append(`colores[${index}].imagenes[${i}]`, img);
       });
     }
   });
@@ -233,19 +233,19 @@ document.getElementById("createProductForm").addEventListener("submit", async e 
     formData.append(`estampados[${index}].imagenRef`, estampado.nombreRef);
 
     if (estampado.imagen) {
-      formData.append(`estampados[${index}]`, estampado.imagen);
+      formData.append(`estampados[${index}].imagenRefFile`, estampado.imagen);
     }
     
     if (Array.isArray(estampado.imagenes)) {
       console.log("Estampados: ", estampado.imagenes); 
       estampado.imagenes.forEach((img, i) => {
-        formData.append(`estampados[${index}]`, img);
+        formData.append(`estampados[${index}].imagenes[${i}]`, img);
       });
     }
   });
 
   try {
-        const res = await fetch('/admin/products/create', {
+        const res = await fetch(`${baseApiUrl}/admin/products/create`, {
           method: 'POST',
           body: formData,
           credentials: 'include'       //si usas cookie HttpOnly
