@@ -305,16 +305,10 @@ async function eliminar(_id) {
       ? ''
       : 'https://pagina-back-oki.onrender.com';
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-      mostrarAlerta('No estás autenticado.');
-      return;
-    }
-
     const res = await fetch(`${baseApiUrl}/admin/products/delete/${_id}`, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
       credentials: 'include'
     });
