@@ -15,6 +15,10 @@ connection();
 const app = express();
 const port = process.env.PORT || 3900;
 
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://catalogo-virtual-oki.onrender.com'], // frontend en local y producción
+  credentials: true
+}));
 
 //Middlewares
 app.use(cors()); //Configurar CORS

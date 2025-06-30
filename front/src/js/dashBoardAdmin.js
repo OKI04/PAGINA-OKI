@@ -3,7 +3,10 @@
 let productosCargados = [];
 let formularioId = 0;
 const arrayList = [];
-    const baseApiUrl = "https://pagina-back-oki.onrender.com";
+
+const baseApiUrl = location.hostname === 'localhost'
+  ? ''
+  : 'https://pagina-back-oki.onrender.com';
 
 //Crear Usuario
 const userForm = document.getElementById('formRegister');
@@ -32,7 +35,7 @@ userForm?.addEventListener('submit', async (e) => {
 
 window.loadProducts = async function loadProducts() {
   try {
-    const res = await fetch('/admin/products/all', {
+    const res = await fetch('${baseApiUrl}/admin/products/all', {
       method: 'GET',
       credentials: 'include'
     });
