@@ -342,15 +342,15 @@ function plantillaProducto(p, principal, secundarias) {
 // -------------------------------------------------------------------------
 export async function eliminar(id) {
   console.log('action: eliminar', id);
+  
+  console.log("Id url: " + _id);
 
   try {
-    const res = await fetch(
-      `${BACKEND_URL}/admin/products/delete/${encodeURIComponent(id)}`,
-      {
-        method: 'DELETE',       // ← importante: método DELETE
-        credentials: 'include', // envía cookies si tu backend las usa
-      }
-    );
+   
+     const res = await fetch(`/admin/products/delete/${_id}`, {
+       method: 'DELETE',
+       credentials: 'include'    // si usas cookie HttpOnly
+     });
 
     if (!res.ok) {
       const errText = await res.text();
