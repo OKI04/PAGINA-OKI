@@ -1,3 +1,6 @@
+// src/js/login.js
+
+
 // 1. Referencias al formulario y al contenedor de error
 const form = document.getElementById('loginForm');
 const errorMsg = document.getElementById('errorMsg');
@@ -26,12 +29,12 @@ form.addEventListener('submit', async event => {
       errorMsg.style.display = 'block';
       return;
     }
-
-    const data = await res.json();
+        const data = await res.json();
     localStorage.setItem('token', data.token);
 
+
     // 6. Si fue exitoso, redirige al dashboard
-    window.location.href = '/dashboardAdmin.html';
+    window.location.href = '/src/views/dashboardAdmin.html';
 
   } catch (err) {
     console.error('Error en fetch login:', err);
@@ -39,3 +42,6 @@ form.addEventListener('submit', async event => {
     errorMsg.style.display = 'block';
   }
 });
+
+
+ 
