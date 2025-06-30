@@ -2,68 +2,80 @@ const User = require("../models/user.model");
 const bcrypt = require('bcryptjs');
 const { createAccessToken } = require('../libs/jwt');
 
+// === REGISTRO ===
 const register = async (req, res) => {
+  const { email, password, username } = req.body;
 
-    const {email, password, username} = req.body;
+  try {
+    const passwordHash = await bcrypt.hash(password, 10);
 
-    try {
+    const newUser = new User({
+      username,
+      email,
+      password: passwordHash
+    });
 
-        const passwordHash = await bcrypt.hash(password, 10);
+    const userSaved = await newUser.save();
+    const token = await createAccessToken({ id: userSaved._id });
 
-        const newUser = new User({
-            username,
-            email,
-            password: passwordHash
-        });
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 2 * 60 * 60 * 1000 // 2 horas
+    });
 
-        const userSaved = await newUser.save();
-        const token = await createAccessToken({id: userSaved._id});
+    res.status(200).json({ message: "User created successfully" });
 
-        res.cookie('token', token);
-        res.status(200).json({
-            message: "user created successfully"
-        });
+  } catch (error) {
+    console.error("Error in register:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-    } catch (error) {
-        console.log(error);
-    }
-    
-}
-
+// === LOGIN ===
 const login = async (req, res) => {
+  const { email, password } = req.body;
 
-    const {email, password} = req.body;
+  try {
+    const userFound = await User.findOne({ email });
+    if (!userFound)
+      return res.status(400).json({ message: "User not found" });
 
-    try {
+    const isMatch = await bcrypt.compare(password, userFound.password);
+    if (!isMatch)
+      return res.status(400).json({ message: "Incorrect password" });
 
-        const userFound = await User.findOne({email});
+    const token = await createAccessToken({ id: userFound._id });
 
-        if(!userFound) return res.status(400).json({message: "User not found"});
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 2 * 60 * 60 * 1000 // 2 horas
+    });
 
-        const isMatch = await bcrypt.compare(password, userFound.password);
+    res.status(200).json({ message: "Welcome" });
 
-        if(!isMatch) return res.status(400).json({message: "Incorrect password"});
+  } catch (error) {
+    console.error("Error in login:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-        const token = await createAccessToken({id: userFound._id});
-
-        res.cookie('token', token);
-        res.status(200).json({
-            message: "Welcome"
-        });
-
-    } catch (error) {
-        console.log(error);
-    }
-    
-}
-
+// === LOGOUT ===
 const logout = (req, res) => {
-    res.cookie('token', "", {expires: new Date(0)})
-    return res.status(200).json({ message: "Bye"});
-}
+  res.cookie('token', "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    expires: new Date(0)
+  });
+  return res.status(200).json({ message: "Bye" });
+};
 
 module.exports = {
-    register,
-    login,
-    logout
-}
+  register,
+  login,
+  logout
+};
