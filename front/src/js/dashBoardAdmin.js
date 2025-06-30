@@ -275,7 +275,7 @@ document.getElementById("createProductForm").addEventListener("submit", async e 
         mostrarAlerta("Producto creado exitosamente.");
       } catch (error) {
         console.error('Error en fetch crear producto:', error);
-        mostrarAlerta('Error de conexión al crear producto');
+        mostrarAlerta('Error de conexión al crear producto: ' + (error.message || error));
       }
 
 });
