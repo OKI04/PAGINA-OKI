@@ -1,7 +1,6 @@
 const User = require("../models/user.model");
 const bcrypt = require('bcryptjs');
 const { createAccessToken } = require('../libs/jwt');
-const jwt = require('jsonwebtoken');
 
 const register = async (req, res) => {
 
@@ -49,8 +48,7 @@ const login = async (req, res) => {
 
         res.cookie('token', token);
         res.status(200).json({
-            message: "Welcome",
-            token
+            message: "Welcome"
         });
 
     } catch (error) {
@@ -64,27 +62,8 @@ const logout = (req, res) => {
     return res.status(200).json({ message: "Bye"});
 }
 
-const verify = async (req, res) => {
-    const { token } = req.cookies;
-    if(!token) return res.status(401).json({ message: "Unauthorized" });
-
-    jwt.verify(token, process.env.TOKEN_SECRET, async (err, user) => {
-        if(err) return res.status(401).json({ message: "Unauthorized" });
-
-        const userFound = await User.findById(user.id);
-        if(!userFound) return res.status(401).json({ message: "Unauthorized" });
-
-        return res.json({
-            id: userFound._id,
-            username: userFound.username,
-            email: userFound.email
-        });
-    });
-}
-
 module.exports = {
     register,
     login,
-    logout,
-    verify
+    logout
 }
