@@ -27,10 +27,7 @@ form.addEventListener('submit', async event => {
       errorMsg.style.display = 'block';
       return;
     }
-        const data = await res.json();
-    localStorage.setItem('token', data.token);
-
-
+   
     // 6. Si fue exitoso, redirige al dashboard
     window.location.href = '/dashboardAdmin.html';
 
