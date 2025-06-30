@@ -321,29 +321,30 @@ function plantillaProducto(p, principal, secundarias) {
   7.  ELIMINAR PRODUCTO
   ------------------------------------------------------------------------ */
 // Eliminar Producto
-export async function eliminar(_id) {
-  console.log("action: eliminar");
-  console.log("Id url: " + _id);
-   try {
-    
+export async function eliminar(id) {
+  console.log('action: eliminar', id);
 
-     const res = await fetch(`${BACKEND_URL}/admin/products/delete/${_id}`);
-         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-         
-     if (!res.ok) {
-       const err = await res.text();
-       mostrarAlerta('Error al cargar productos: ' + err);
-       return;
-     }
+  try {
+    const res = await fetch(
+      `${BACKEND_URL}/admin/products/delete/${encodeURIComponent(id)}`,
+      {
+        method: 'DELETE',       // ← importante: DELETE, no GET
+        credentials: 'include', // si tu sesión usa cookie HttpOnly
+      }
+    );
 
-     const productoDelete = await res.json();
-     console.log(productoDelete);
-     loadProducts();
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(errText || `HTTP ${res.status}`);
+    }
 
-   } catch (error) {
-     console.error('Error en loadProducts:', error);
-     mostrarAlerta('El producto no fue eliminado');
-   }
+    mostrarAlerta('Producto eliminado');
+    await loadProducts();                                  // refresca la tabla
+    bootstrap.Modal.getInstance('#modalDelete')?.hide();   // cierra el modal
+  } catch (err) {
+    console.error('Error al eliminar producto:', err);
+    mostrarAlerta('El producto no fue eliminado');
+  }
 }
 
 /* ==========================================================================
