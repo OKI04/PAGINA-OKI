@@ -1,5 +1,3 @@
-// src/js/login.js
-
 
 // 1. Referencias al formulario y al contenedor de error
 const form = document.getElementById('loginForm');
@@ -34,7 +32,7 @@ form.addEventListener('submit', async event => {
 
 
     // 6. Si fue exitoso, redirige al dashboard
-    window.location.href = '/src/views/dashboardAdmin.html';
+    window.location.href = '/dashboardAdmin.html';
 
   } catch (err) {
     console.error('Error en fetch login:', err);
