@@ -326,11 +326,10 @@ export async function eliminar(_id) {
   console.log("Id url: " + _id);
    try {
     
-     const res = await fetch(`/admin/products/delete/${_id}`, {
-       method: 'DELETE',
-       credentials: 'include'    // si usas cookie HttpOnly
-     });
 
+     const res = await fetch(`${BACKEND_URL}/admin/products/delete/${_id}`);
+         if (!res.ok) throw new Error(`HTTP ${res.status}`);
+         
      if (!res.ok) {
        const err = await res.text();
        mostrarAlerta('Error al cargar productos: ' + err);
