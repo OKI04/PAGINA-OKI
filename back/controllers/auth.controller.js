@@ -19,7 +19,11 @@ const register = async (req, res) => {
         const userSaved = await newUser.save();
         const token = await createAccessToken({id: userSaved._id});
 
-        res.cookie('token', token);
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true, // Cambia a false solo si pruebas en local sin HTTPS
+            sameSite: 'None'
+        });
         res.status(200).json({
             message: "user created successfully"
         });
@@ -46,7 +50,11 @@ const login = async (req, res) => {
 
         const token = await createAccessToken({id: userFound._id});
 
-        res.cookie('token', token);
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true, // Cambia a false solo si pruebas en local sin HTTPS
+            sameSite: 'None'
+        });
         res.status(200).json({
             message: "Welcome"
         });
@@ -58,7 +66,12 @@ const login = async (req, res) => {
 }
 
 const logout = (req, res) => {
-    res.cookie('token', "", {expires: new Date(0)})
+    res.cookie('token', "", {
+        httpOnly: true,
+        secure: true, // Cambia a false solo si pruebas en local sin HTTPS
+        sameSite: 'None',
+        expires: new Date(0)
+    });
     return res.status(200).json({ message: "Bye"});
 }
 
