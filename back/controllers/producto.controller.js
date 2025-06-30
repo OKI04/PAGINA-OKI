@@ -494,16 +494,16 @@ const deleteProduct = async (req, res) => {
     const productoBorrado = await Product.findByIdAndDelete(articulo_id);
 
     if(!productoBorrado){
-      return res.status(500).json({
+      return res.status(404).json({
         status: "error",
-        mesaje: "Error al borrar"
-      })
+        message: "Producto no encontrado o ya eliminado"
+      });
     }
 
     return res.status(200).json({ 
       status: "success",
-      prodducto: productoBorrado,
-      mesaje: "Producto borrado"
+      producto: productoBorrado,
+      message: "Producto borrado"
     });
 
   } catch (error) {
