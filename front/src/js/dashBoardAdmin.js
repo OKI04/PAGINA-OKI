@@ -2,17 +2,9 @@
    adminProducts.js  –  Módulo ES listo para producción
    ============================================================ */
 
-/* -------------------------------  GLOBALES  ------------------------------- */
 let productosCargados = [];
 
-/* ------------------------  BACKEND_URL (env o fallback)  ------------------ */
-const BACKEND_URL = (
-  typeof import.meta !== 'undefined' &&
-  import.meta.env &&
-  import.meta.env.VITE_API_URL
-    ? import.meta.env.VITE_API_URL
-    : 'https://pagina-back-oki.onrender.com'
-).replace(/\/+$/, ''); // quita barras finales duplicadas
+export const BACKEND_URL = 'https://pagina-back-oki.onrender.com'.replace(/\/+$/, ''); // ✅ Evita doble slash
 
 /* ==========================================================================
 
@@ -21,9 +13,9 @@ const BACKEND_URL = (
 const userForm = document.getElementById('formRegister');
 userForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const nombre   = document.getElementById('name').value.trim();
-  const email    = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
+  const nombre   = document.getElementById('name')?.value.trim();
+  const email    = document.getElementById('email')?.value.trim();
+  const password = document.getElementById('password')?.value;
 
   try {
     const res = await fetch(`${BACKEND_URL}/admin/register`, {
@@ -57,30 +49,25 @@ export async function loadProducts() {
 
   try {
     const res = await fetch(`${BACKEND_URL}/admin/products/all`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const productos = await res.json();
     if (!Array.isArray(productos) || !productos.length) {
-      tbody.innerHTML =
-        `<tr><td colspan="8" class="text-center">No hay productos disponibles.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center">No hay productos disponibles.</td></tr>`;
       return;
     }
 
-    productosCargados = productos
-      .map((p) => ({
-        ...p,
-        imagenes  : normalizarImagenes(p.imagenes),
-        colores   : normalizarColores(p.colores),
-        estampados: normalizarEstampados(p.estampados),
-      }))
-      .sort((a, b) => b._id.localeCompare(a._id));
+    productosCargados = productos.map((p) => ({
+      ...p,
+      imagenes  : normalizarImagenes(p.imagenes),
+      colores   : normalizarColores(p.colores),
+      estampados: normalizarEstampados(p.estampados),
+    })).sort((a, b) => b._id.localeCompare(a._id));
 
     renderTabla(tbody, productosCargados);
   } catch (err) {
     console.error('Error al cargar productos:', err);
-    tbody.innerHTML =
-      `<tr><td colspan="8" class="text-danger text-center">` +
-      `Error al cargar productos</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="text-danger text-center">Error al cargar productos</td></tr>`;
   } finally {
     loader?.classList.add('d-none');
   }
@@ -92,19 +79,19 @@ export async function loadProducts() {
   ------------------------------------------------------------------------ */
 const abs = (rutaRel) => `${BACKEND_URL}/${rutaRel.replace(/^\/+/, '')}`;
 
-const normalizarImagenes = (l=[]) =>
+const normalizarImagenes = (l = []) =>
   l.map(img => {
     const ruta = img.url.replace(/\\/g, '/');
     return { ...img, url: ruta, publicUrl: abs(ruta) };
   });
 
-const normalizarColores = (l=[]) =>
+const normalizarColores = (l = []) =>
   l.map(c => {
     const imgs = normalizarImagenes(c.imagenes);
     return { ...c, imagenes: imgs, publicUrl: imgs[0]?.publicUrl || '' };
   });
 
-const normalizarEstampados = (l=[]) =>
+const normalizarEstampados = (l = []) =>
   l.map(e => {
     const imgs = normalizarImagenes(e.imagenes);
     return { ...e, imagenes: imgs, publicUrl: imgs[0]?.publicUrl || '' };
@@ -115,74 +102,23 @@ const normalizarEstampados = (l=[]) =>
   4.  RENDER TABLA Y DELEGACIÓN DE EVENTOS
   ------------------------------------------------------------------------ */
 function renderTabla(tbody, lista) {
-  tbody.innerHTML = lista
-    .map(
-      (p) => `
-      <tr class="fila-producto"
-          data-id="${p._id}"
-          data-referencia="${(p.referencia ?? '').toLowerCase()}">
-        <td>${p.referencia ?? '-'}</td>
-        <td>${p.categoria  ?? '-'}</td>
-        <td>${p.nombre     ?? '-'}</td>
-        <td>${['S','M','L','XL','U'].filter(t=>p.tallas?.[t]>0).join(' - ') || '-'}</td>
-        <td>$${p.precio ?? 0}</td>
-        <td>${p.colores.map(c=>c.codigo).join(' - ') || '-'}</td>
-        <td>${p.estampados.map(e=>e.codigo).join(' - ') || '-'}</td>
-        <td>
-          <button class="btn btn-primary btn-sm" data-act="ver">Ver</button>
-          <button class="btn btn-success btn-sm" data-act="editar">Editar</button>
-          <button class="btn btn-danger  btn-sm" data-act="eliminar"
-                  data-bs-toggle="modal" data-bs-target="#modalDelete">
-            Eliminar
-          </button>
-        </td>
-      </tr>`
-    )
-    .join('');
-}
-
-/* ----------------------  Delegación de eventos (ver / editar)  ---------------------- */
-document.getElementById('productTable')?.addEventListener('click', (e) => {
-  const btn = e.target.closest('button[data-act]');
-  if (!btn) return;
-
-  const tr   = btn.closest('tr[data-id]');
-  const id   = tr?.dataset.id;
-  const act  = btn.dataset.act;
-  if (!id) return;
-
-  if (act === 'ver') {
-    return view(id);
-  }
-
-  if (act === 'editar') {
-    return typeof openEditModal === 'function'
-      ? openEditModal(id)
-      : console.error('openEditModal no encontrada');
-  }
-
-  // Si act === 'eliminar', el modal se abrirá y se encargará de llamar a eliminar()
-  // mediante el listener 'show.bs.modal' más abajo.
-});
-
-/* -------------------------------------------------------------------
-   MODAL CONFIRMACIÓN DE ELIMINAR
-------------------------------------------------------------------- */
-const modalDelete = document.getElementById('modalDelete');
-if (modalDelete) {
-  modalDelete.addEventListener('show.bs.modal', (e) => {
-    // Botón 🗑️ que disparó el modal
-    const triggerBtn = e.relatedTarget;
-    const tr         = triggerBtn?.closest('tr[data-id]');
-    const id         = tr?.dataset.id;
-
-    // Botón “Confirmar” dentro del modal
-    const confirmBtn = modalDelete.querySelector('#btn-confirmar-eliminar');
-    if (!confirmBtn) return;
-
-    // Limpia cualquier handler previo y asigna el nuevo
-    confirmBtn.onclick = () => eliminar(id);
-  });
+  tbody.innerHTML = lista.map((p) => `
+    <tr class="fila-producto"
+        data-id="${p._id}"
+        data-referencia="${(p.referencia ?? '').toLowerCase()}">
+      <td>${p.referencia ?? '-'}</td>
+      <td>${p.categoria  ?? '-'}</td>
+      <td>${p.nombre     ?? '-'}</td>
+      <td>${['S','M','L','XL','U'].filter(t => p.tallas?.[t] > 0).join(' - ') || '-'}</td>
+      <td>$${p.precio ?? 0}</td>
+      <td>${p.colores.map(c => c.codigo).join(' - ') || '-'}</td>
+      <td>${p.estampados.map(e => e.codigo).join(' - ') || '-'}</td>
+      <td>
+        <button class="btn btn-primary btn-sm" data-action="ver" data-id="${p._id}">Ver</button>
+        <button class="btn btn-success btn-sm" data-action="editar" data-id="${p._id}">Editar</button>
+        <button class="btn btn-danger btn-sm" data-id="${p._id}" data-bs-toggle="modal" data-action="eliminar" data-bs-target="#modalDelete">Eliminar</button>
+      </td>
+    </tr>`).join('');
 }
 
 /* ==========================================================================
@@ -218,12 +154,10 @@ if (modalDelete) {
       if (!row) {
         row = document.createElement('tr');
         row.id = 'noResultsRow';
-        row.innerHTML =
-          '<td colspan="8" class="text-center text-muted"></td>';
+        row.innerHTML = '<td colspan="8" class="text-center text-muted"></td>';
         tbody.appendChild(row);
       }
-      row.firstElementChild.textContent =
-        `No se encontraron referencias para “${q}”`;
+      row.firstElementChild.textContent = `No se encontraron referencias para “${q}”`;
     } else if (row) {
       row.remove();
     }
@@ -238,22 +172,22 @@ function view(id) {
   const p = productosCargados.find(x => x._id === id);
   if (!p) return mostrarAlerta('Producto no encontrado');
 
-  const base  = p.imagenes || [];
-  const gCol  = p.colores?.[0]?.imagenes?.length ? p.colores[0].imagenes : null;
-  const gEst  = !gCol && p.estampados?.[0]?.imagenes?.length ? p.estampados[0].imagenes : null;
-  const gal   = gCol || gEst || base;
+  const base = p.imagenes || [];
+  const gCol = p.colores?.[0]?.imagenes?.length ? p.colores[0].imagenes : null;
+  const gEst = !gCol && p.estampados?.[0]?.imagenes?.length ? p.estampados[0].imagenes : null;
+  const gal  = gCol || gEst || base;
+
   if (!gal.length) return mostrarAlerta('Producto sin imágenes');
 
-  const principal   = gal[1]?.publicUrl ?? gal[0].publicUrl;
-  const miniaturas  = gal.slice(1);
+  const principal  = gal[1]?.publicUrl ?? gal[0].publicUrl;
+  const miniaturas = gal.slice(1);
 
   const body = document.querySelector('#modalView .modal-body');
   body.innerHTML = plantillaProducto(p, principal, miniaturas);
   const modal = bootstrap.Modal.getOrCreateInstance('#modalView');
   modal.show();
 
-  body.addEventListener('click', handlerImgs);
-  function handlerImgs(e) {
+  const handlerImgs = (e) => {
     const sel = e.target.closest('img[data-tipo]');
     if (sel) {
       const tipo = sel.dataset.tipo, idx = +sel.dataset.index;
@@ -267,7 +201,15 @@ function view(id) {
     }
     const mini = e.target.closest('img.miniatura');
     if (mini) cambiarPrincipal(mini.src);
-  }
+  };
+
+  body.addEventListener('click', handlerImgs);
+
+  // ✅ Limpia listener al cerrar
+  document.getElementById('modalView')?.addEventListener('hidden.bs.modal', () => {
+    body.removeEventListener('click', handlerImgs);
+  });
+
   function actualizarGaleria(arr) {
     cambiarPrincipal(arr[1]?.publicUrl ?? arr[0].publicUrl);
     body.querySelector('#imagenesSecundarias').innerHTML = arr
@@ -275,13 +217,13 @@ function view(id) {
       .map(i => `<img src="${i.publicUrl}" class="miniatura" />`)
       .join('');
   }
+
   function cambiarPrincipal(url) {
     const img = body.querySelector('#mainImage');
     if (img) img.src = url;
   }
 }
 
-/* ---------------- Plantilla modal ---------------- */
 function plantillaProducto(p, principal, secundarias) {
   const miniHTML = secundarias
     .map(i => `<img src="${i.publicUrl}" class="miniatura" style="cursor:pointer;max-width:50px;margin-right:5px;" />`)
@@ -294,7 +236,7 @@ function plantillaProducto(p, principal, secundarias) {
         ${arr.map((x, i) => `
           <div class="color-item">
             <img src="${x.publicUrl}" alt="${x.codigo}"
-                 class="color-imagen${tipo==='estampado'?' estampado-imagen':''}"
+                 class="color-imagen${tipo === 'estampado' ? ' estampado-imagen' : ''}"
                  data-tipo="${tipo}" data-index="${i}" style="cursor:pointer;" />
             <div class="color-codigo">${x.codigo}</div>
           </div>`).join('')}
@@ -327,54 +269,66 @@ function plantillaProducto(p, principal, secundarias) {
         ${talla(p.tallas?.U, 'U')}
       </div>
 
-      ${p.descripcion
-        ? `<div class="descripcion-container mt-3">
-             <div class="lista-colores">DESCRIPCIÓN</div>
-             <div class="descripcion">${p.descripcion}</div>
-           </div>`
-        : ''}
+      ${p.descripcion ? `
+        <div class="descripcion-container mt-3">
+          <div class="lista-colores">DESCRIPCIÓN</div>
+          <div class="descripcion">${p.descripcion}</div>
+        </div>` : ''}
     </div>
   </div></div>`;
 }
+/* ==========================================================================
 
-/* -------------------------------------------------------------------
-   FUNCIÓN ELIMINAR PRODUCTO
-------------------------------------------------------------------- */
-async function eliminar(id) {
-  if (!id) return;
+  7.  ELIMINAR PRODUCTO (Modal + Confirmación)
+  ------------------------------------------------------------------------ */
+let idAEliminar = null;
+
+// Escuchar clicks sobre los botones de eliminar de cada producto
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-action="eliminar"]');
+  if (!btn) return;
+
+  idAEliminar = btn.dataset.id;
+});
+
+// Confirmar eliminación al presionar el botón rojo en el modal
+document.getElementById('btn-confirmar-eliminar')?.addEventListener('click', async () => {
+  if (!idAEliminar) return mostrarAlerta('ID de producto no válido');
 
   try {
-    const res = await fetch(`${BACKEND_URL}/admin/products/delete/${encodeURIComponent(id)}`, {
+    const res = await fetch(`${BACKEND_URL}/admin/products/${idAEliminar}`, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      // credentials: 'include',
     });
 
     if (!res.ok) {
-      let errorMsg = `HTTP ${res.status}`;
-      try {
-        const data = await res.json();
-        errorMsg = data.message || data.mesaje || errorMsg;
-      } catch {}
-      throw new Error(errorMsg);
+      console.error(await res.json());
+      return mostrarAlerta('Error al eliminar producto');
     }
 
-    mostrarAlerta(`Producto eliminado correctamente (${id})`);
-    bootstrap.Modal.getInstance('#modalDelete')?.hide();
-    await loadProducts();
-  } catch (err) {
-    console.error('Error al eliminar producto:', err);
-    mostrarAlerta(`Error: ${err.message}`);
-  }
-}/* ==========================================================================
+    // Elimina visualmente la fila de la tabla
+    const fila = document.querySelector(`tr[data-id="${idAEliminar}"]`);
+    if (fila) fila.remove();
 
-  8.  UTILIDADES (alerta modal simple)
+    // Actualiza la lista de productos en memoria
+    productosCargados = productosCargados.filter(p => p._id !== idAEliminar);
+
+    mostrarAlerta('Producto eliminado correctamente');
+  } catch (err) {
+    console.error('Error al eliminar:', err);
+    mostrarAlerta('No se pudo eliminar el producto');
+  } finally {
+    idAEliminar = null;
+  }
+});
+
+/* ==========================================================================
+
+  8.  ALERTA SIMPLE
   ------------------------------------------------------------------------ */
 function mostrarAlerta(mensaje, ms = 3000) {
-  const modal   = document.getElementById('alertModal');
+  const modal     = document.getElementById('alertModal');
   const mensajeEl = document.getElementById('alertMessage');
   if (!modal || !mensajeEl) return alert(mensaje);
-
   mensajeEl.textContent = mensaje;
   modal.style.display = 'flex';
   if (ms) setTimeout(() => modal.style.display = 'none', ms);
@@ -385,5 +339,4 @@ function mostrarAlerta(mensaje, ms = 3000) {
   9.  AUTO‑EJECUCIÓN
   ------------------------------------------------------------------------ */
 window.loadProducts = loadProducts;
-window.eliminar = eliminar;
 document.addEventListener('DOMContentLoaded', loadProducts);
