@@ -337,37 +337,32 @@ function plantillaProducto(p, principal, secundarias) {
   </div></div>`;
 }
 
-// =========================================================================
-// 7. ELIMINAR PRODUCTO
-// -------------------------------------------------------------------------
-export async function eliminar(_id) {
-  console.log("action: eliminar");
-  console.log("Id url: " + _id);
-   try {
-    
-     const res = await fetch(`/admin/products/delete/${_id}`, {
-       method: 'DELETE',
-       credentials: 'include'    // si usas cookie HttpOnly
-     });
+/* -------------------------------------------------------------------
+   FUNCIÓN ELIMINAR PRODUCTO
+------------------------------------------------------------------- */
+async function eliminar(id) {
+  if (!id) return;
 
-     if (!res.ok) {
-       const err = await res.text();
-       mostrarAlerta('Error al cargar productos: ' + err);
-       return;
-     }
+  try {
+    const res = await fetch(`/admin/products/delete/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      // credentials: 'include',
+    });
 
-     const productoDelete = await res.json();
-     console.log(productoDelete);
-     loadProducts();
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(errText || `HTTP ${res.status}`);
+    }
 
-   } catch (error) {
-     console.error('Error en loadProducts:', error);
-     mostrarAlerta(`El producto no fue eliminado (${id})`);
-
-   }
-}
-
-/* ==========================================================================
+    mostrarAlerta(`Producto eliminado correctamente (${id})`);
+    bootstrap.Modal.getInstance('#modalDelete')?.hide();
+    await loadProducts();
+  } catch (err) {
+    console.error('Error al eliminar producto:', err);
+    mostrarAlerta(`El producto no fue eliminado (${id})`);
+  }
+}/* ==========================================================================
 
   8.  UTILIDADES (alerta modal simple)
   ------------------------------------------------------------------------ */
