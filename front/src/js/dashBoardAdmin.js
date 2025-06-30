@@ -3,6 +3,8 @@
 let productosCargados = [];
 let formularioId = 0;
 const arrayList = [];
+let productoIdAEliminar = null;
+
 
 const baseApiUrl = location.hostname === 'localhost'
   ? ''
@@ -137,14 +139,10 @@ window.loadProducts = async function loadProducts() {
         const id = btn.dataset.id;
         if (action === "ver") view(id);
         else if (action === "editar") openEditModal(id);
-        else if (action === "eliminar") {
-          document.getElementById('btn-confirmar-eliminar').addEventListener('click', function () {
-            if (id) {
-              eliminar(id);
-            }
-          });
-          
+     else if (action === "eliminar") {
+          productoIdAEliminar = id; // Guardamos el ID del producto que se quiere eliminar
         }
+
       });
     });
 
@@ -153,6 +151,16 @@ window.loadProducts = async function loadProducts() {
     console.log('Error al cargar productos');
   }
 };
+
+const btnConfirmarEliminar = document.getElementById('btn-confirmar-eliminar');
+if (btnConfirmarEliminar) {
+  btnConfirmarEliminar.addEventListener('click', () => {
+    if (productoIdAEliminar) {
+      eliminar(productoIdAEliminar);
+      productoIdAEliminar = null; // Limpiar después de usar
+    }
+  });
+}
 
 // Crear Producto
 document.getElementById("createProductForm").addEventListener("submit", async e => {
@@ -292,30 +300,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Eliminar Producto
 async function eliminar(_id) {
-  console.log("action: eliminar");
-  console.log("Id url: " + _id);
-   try {
-    
-     const res = await fetch(`/admin/products/delete/${_id}`, {
-       method: 'DELETE',
-       credentials: 'include'    // si usas cookie HttpOnly
-     });
+  try {
+    const baseApiUrl = location.hostname === 'localhost'
+      ? ''
+      : 'https://pagina-back-oki.onrender.com';
 
-     if (!res.ok) {
-       const err = await res.text();
-       mostrarAlerta('Error al cargar productos: ' + err);
-       return;
-     }
+    const res = await fetch(`${baseApiUrl}/admin/products/delete/${_id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
 
-     const productoDelete = await res.json();
-     console.log(productoDelete);
-     loadProducts();
-
-   } catch (error) {
-     console.error('Error en loadProducts:', error);
-     mostrarAlerta('El producto no fue eliminado');
-   }
+    if (res.ok) {
+      await loadProducts();
+    } else {
+      mostrarAlerta('No se pudo eliminar el producto');
+    }
+  } catch (error) {
+    console.error("Error al eliminar:", error);
+    mostrarAlerta('Error al eliminar el producto');
+  }
 }
+
 // Ver producto
 async function view(id) {
   const unicoProducto = productosCargados.find(p => p._id === id);
