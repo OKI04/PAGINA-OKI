@@ -310,10 +310,14 @@ async function eliminar(_id) {
       credentials: 'include'
     });
 
+    const respuestaTexto = await res.text(); // Mostrar lo que responde el backend
+
     if (res.ok) {
+      console.log('✅ Producto eliminado:', respuestaTexto);
       await loadProducts();
     } else {
-      mostrarAlerta('No se pudo eliminar el producto');
+      console.error('❌ Respuesta del backend:', respuestaTexto);
+      mostrarAlerta('No se pudo eliminar el producto: ' + respuestaTexto);
     }
   } catch (error) {
     console.error("Error al eliminar:", error);
