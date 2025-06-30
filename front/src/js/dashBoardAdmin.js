@@ -35,10 +35,11 @@ userForm?.addEventListener('submit', async (e) => {
 
 window.loadProducts = async function loadProducts() {
   try {
-    const res = await fetch('${baseApiUrl}/admin/products/all', {
-      method: 'GET',
-      credentials: 'include'
-    });
+  const res = await fetch(`${baseApiUrl}/admin/products/all`, {
+  method: 'GET',
+  credentials: 'include'
+});
+
 
     if (!res.ok) {
       const err = await res.text();
