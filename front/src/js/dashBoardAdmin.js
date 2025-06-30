@@ -141,27 +141,48 @@ function renderTabla(tbody, lista) {
     .join('');
 }
 
-/* Delegación de eventos (ver / editar / eliminar) */
+/* ----------------------  Delegación de eventos (ver / editar)  ---------------------- */
 document.getElementById('productTable')?.addEventListener('click', (e) => {
   const btn = e.target.closest('button[data-act]');
   if (!btn) return;
+
   const tr   = btn.closest('tr[data-id]');
   const id   = tr?.dataset.id;
   const act  = btn.dataset.act;
   if (!id) return;
 
-  if (act === 'ver')    return view(id);
-  if (act === 'editar') return typeof openEditModal === 'function'
-    ? openEditModal(id)
-    : console.error('openEditModal no encontrada');
-  if (act === 'eliminar') prepararEliminacion(id);
+  if (act === 'ver') {
+    return view(id);
+  }
+
+  if (act === 'editar') {
+    return typeof openEditModal === 'function'
+      ? openEditModal(id)
+      : console.error('openEditModal no encontrada');
+  }
+
+  // Si act === 'eliminar', el modal se abrirá y se encargará de llamar a eliminar()
+  // mediante el listener 'show.bs.modal' más abajo.
 });
-function prepararEliminacion(id) {
-  const btn = document.getElementById('btn-confirmar-eliminar');
-  if (!btn) return;
-  const nuevo = btn.cloneNode(true);
-  btn.parentNode.replaceChild(nuevo, btn);
-  nuevo.addEventListener('click', () => eliminar(id));
+
+/* -------------------------------------------------------------------
+   MODAL CONFIRMACIÓN DE ELIMINAR
+------------------------------------------------------------------- */
+const modalDelete = document.getElementById('modalDelete');
+if (modalDelete) {
+  modalDelete.addEventListener('show.bs.modal', (e) => {
+    // Botón 🗑️ que disparó el modal
+    const triggerBtn = e.relatedTarget;
+    const tr         = triggerBtn?.closest('tr[data-id]');
+    const id         = tr?.dataset.id;
+
+    // Botón “Confirmar” dentro del modal
+    const confirmBtn = modalDelete.querySelector('#btn-confirmar-eliminar');
+    if (!confirmBtn) return;
+
+    // Limpia cualquier handler previo y asigna el nuevo
+    confirmBtn.onclick = () => eliminar(id);
+  });
 }
 
 /* ==========================================================================
@@ -316,11 +337,9 @@ function plantillaProducto(p, principal, secundarias) {
   </div></div>`;
 }
 
-/* ==========================================================================
-
-  7.  ELIMINAR PRODUCTO
-  ------------------------------------------------------------------------ */
-// Eliminar Producto
+// =========================================================================
+// 7. ELIMINAR PRODUCTO
+// -------------------------------------------------------------------------
 export async function eliminar(id) {
   console.log('action: eliminar', id);
 
@@ -328,8 +347,8 @@ export async function eliminar(id) {
     const res = await fetch(
       `${BACKEND_URL}/admin/products/delete/${encodeURIComponent(id)}`,
       {
-        method: 'DELETE',       // ← importante: DELETE, no GET
-        credentials: 'include', // si tu sesión usa cookie HttpOnly
+        method: 'DELETE',       // ← importante: método DELETE
+        credentials: 'include', // envía cookies si tu backend las usa
       }
     );
 
@@ -339,8 +358,8 @@ export async function eliminar(id) {
     }
 
     mostrarAlerta('Producto eliminado');
-    await loadProducts();                                  // refresca la tabla
-    bootstrap.Modal.getInstance('#modalDelete')?.hide();   // cierra el modal
+    await loadProducts();                                // refresca la tabla
+    bootstrap.Modal.getInstance('#modalDelete')?.hide(); // cierra el modal
   } catch (err) {
     console.error('Error al eliminar producto:', err);
     mostrarAlerta('El producto no fue eliminado');
