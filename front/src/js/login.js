@@ -28,7 +28,15 @@ form.addEventListener('submit', async event => {
     }
 
     // 6. Si fue exitoso, guarda el token y redirige al dashboard
-    const data = await res.json();
+    let data = {};
+    try {
+      const text = await res.text();
+      data = text ? JSON.parse(text) : {};
+    } catch (e) {
+      errorMsg.textContent = 'Respuesta inesperada del servidor.';
+      errorMsg.style.display = 'block';
+      return;
+    }
     if (data.token) {
       localStorage.setItem('token', data.token);
     }
