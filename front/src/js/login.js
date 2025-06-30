@@ -28,18 +28,7 @@ form.addEventListener('submit', async event => {
     }
 
     // 6. Si fue exitoso, guarda el token y redirige al dashboard
-    let data = {};
-    try {
-      const text = await res.text();
-      data = text ? JSON.parse(text) : {};
-    } catch (e) {
-      errorMsg.textContent = 'Respuesta inesperada del servidor.';
-      errorMsg.style.display = 'block';
-      return;
-    }
-    if (data.token) {
-      localStorage.setItem('token', data.token);
-    }
+    // Ya no se guarda el token en localStorage, solo redirige
     window.location.href = '/dashboardAdmin.html';
 
   } catch (err) {

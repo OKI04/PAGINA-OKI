@@ -305,14 +305,9 @@ async function eliminar(_id) {
       ? ''
       : 'https://pagina-back-oki.onrender.com';
 
-    const token = localStorage.getItem('token'); // 👈 obtener token
-
     const res = await fetch(`${baseApiUrl}/admin/products/delete/${_id}`, {
       method: 'DELETE',
-      credentials: 'include',
-      headers: {
-        'Authorization': `Bearer ${token}` // 👈 enviar token al backend
-      }
+      credentials: 'include'
     });
 
     const respuestaTexto = await res.text();
