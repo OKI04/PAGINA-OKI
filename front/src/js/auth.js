@@ -1,47 +1,43 @@
-function verificarAutenticacionSimple() {
-  // Obtiene el token de autenticación desde las cookies
-  const token = obtenerCookie('token');
+// main.js (este será tu único archivo JavaScript, debe incluirse con type="module")
 
-  // Si no hay token, se redirige al usuario a la página de login
-  if (!token) {
-    window.location.href = '/login';  // Redirecciona
-    return false;                     // Retorna false porque no está autenticado
-  }
-
-  // Si hay token, la verificación es exitosa
-  return true;
-}
-
+/**
+ * Obtiene el valor de una cookie por nombre.
+ * @param {string} nombre - Nombre de la cookie a buscar.
+ * @returns {string|null} - Valor de la cookie o null si no se encuentra.
+ */
 function obtenerCookie(nombre) {
-  // Construye el prefijo que identifica la cookie
   const name = nombre + "=";
-
-  // Decodifica todas las cookies del documento
   const decodedCookie = decodeURIComponent(document.cookie);
-
-  // Divide las cookies en partes individuales por el punto y coma
   const ca = decodedCookie.split(';');
-
-  // Recorre todas las cookies
-  for(let i = 0; i < ca.length; i++) {
+  for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
-
-    // Elimina espacios en blanco iniciales
     while (c.charAt(0) === ' ') {
       c = c.substring(1);
     }
-
-    // Si encuentra la cookie con el nombre indicado, devuelve su valor
     if (c.indexOf(name) === 0) {
       return c.substring(name.length, c.length);
     }
   }
-
-  // Si no encuentra la cookie, devuelve null
   return null;
 }
 
-// Ejecutar la verificación al cargar la página
-if (!verificarAutenticacionSimple()) {
-  // Si la verificación falla, ya se redirigió.
+/**
+ * Verifica si el usuario está autenticado revisando la existencia del token.
+ * Si no está autenticado, redirige a la página de login.
+ * @returns {boolean} - true si está autenticado, false si no.
+ */
+function verificarAutenticacionSimple() {
+  const token = obtenerCookie('token');
+
+  if (!token) {
+    window.location.href = '/login';
+    return false;
+  }
+
+  return true;
 }
+
+// Ejecutar la verificación cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+  verificarAutenticacionSimple();
+});
