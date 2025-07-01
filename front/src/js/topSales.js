@@ -1,7 +1,6 @@
 // topSales.js — versión ES Module SIN dependencias externas
 // Carga este archivo con:
 //   <script type="module" src="src/js/topSales.js"></script>
-// y funcionará de forma autónoma.
 
 let formularioId = 0;
 const arrayList = [];
@@ -97,9 +96,11 @@ export async function guardarDatos() {
 
     const nuevoCarrusel = await res.json();
     console.log('Creado:', nuevoCarrusel);
+    mostrarAlerta('¡Carrusel creado correctamente!');
+    limpiarFormularios(); // Opcional: limpia tras guardar
   } catch (error) {
     console.error('Error en fetch crear el carrusel: ', error);
-    alert('Error de conexión al crear el carrusel');
+    mostrarAlerta('❌ Error al crear el carrusel. Intenta de nuevo.', 4000);
   }
 }
 
@@ -127,4 +128,22 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initTopSalesModule);
 } else {
   initTopSalesModule();
+}
+
+function mostrarAlerta(mensaje, tiempo = 3000) {
+  const modal = document.getElementById("alertModal");
+  const mensajeElem = document.getElementById("alertMessage");
+  mensajeElem.textContent = mensaje;
+  modal.style.display = "flex";
+
+  if (tiempo > 0) {
+    setTimeout(() => {
+      cerrarAlerta();
+    }, tiempo);
+  }
+}
+
+function cerrarAlerta() {
+  const modal = document.getElementById("alertModal");
+  modal.style.display = "none";
 }
