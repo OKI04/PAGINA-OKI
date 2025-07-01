@@ -8,7 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log("Saliendo");
 
       try {
-        const res = await fetch('/admin/logout', {
+        // Determinar la URL base según el entorno
+        const baseUrl = location.hostname === 'localhost' 
+          ? '' // En desarrollo local, usar proxy de Vite
+          : 'https://pagina-back-oki.onrender.com'; // En producción, usar URL directa
+
+        const res = await fetch(`${baseUrl}/admin/logout`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include'

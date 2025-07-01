@@ -12,7 +12,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Verificar que el token sea válido
   try {
-    const response = await fetch('/admin/verify', {
+    // Determinar la URL base según el entorno
+    const baseUrl = location.hostname === 'localhost' 
+      ? '' // En desarrollo local, usar proxy de Vite
+      : 'https://pagina-back-oki.onrender.com'; // En producción, usar URL directa
+
+    const verifyUrl = `${baseUrl}/admin/verify`;
+    console.log('Verificando token en:', verifyUrl);
+
+    const response = await fetch(verifyUrl, {
       method: 'GET',
       credentials: 'include'
     });
@@ -67,7 +75,12 @@ userForm?.addEventListener('submit', async (e) => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const res = await fetch('/admin/register', {
+  // Determinar la URL base según el entorno
+  const baseUrl = location.hostname === 'localhost' 
+    ? '' // En desarrollo local, usar proxy de Vite
+    : 'https://pagina-back-oki.onrender.com'; // En producción, usar URL directa
+
+  const res = await fetch(`${baseUrl}/admin/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, email, password })

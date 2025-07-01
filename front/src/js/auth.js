@@ -11,7 +11,12 @@ async function verificarAutenticacionSimple() {
 
   // Verificar si el token es válido haciendo una petición al servidor
   try {
-    const response = await fetch('/admin/verify', {
+    // Determinar la URL base según el entorno
+    const baseUrl = location.hostname === 'localhost' 
+      ? '' // En desarrollo local, usar proxy de Vite
+      : 'https://pagina-back-oki.onrender.com'; // En producción, usar URL directa
+
+    const response = await fetch(`${baseUrl}/admin/verify`, {
       method: 'GET',
       credentials: 'include'
     });
