@@ -30,7 +30,7 @@ function verificarAutenticacionSimple() {
   const token = obtenerCookie('token');
 
   if (!token) {
-    window.location.href = '/login';
+    window.location.href = 'index.html';
     return false;
   }
 
