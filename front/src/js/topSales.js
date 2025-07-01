@@ -41,11 +41,9 @@ export function carruselItemTemplate(index) {
       </div>
     </div>`;
   formContainer.appendChild(div);
-  formularioId++; // siguiente ID único
+  formularioId++;
 
-  // Evento para eliminar la tarjeta al pulsar la X
   div.querySelector('.btn-close').addEventListener('click', () => div.remove());
-
   return div;
 }
 
@@ -85,7 +83,7 @@ export async function guardarDatos() {
   if (hayError) return;
 
   try {
-    const res = await fetch('${baseApiUrl}/admin/carrusel/products/create/item', {
+    const res = await fetch(`${baseApiUrl}/admin/carrusel/products/create/item`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ productos: arrayList }),
