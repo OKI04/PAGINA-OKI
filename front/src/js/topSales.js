@@ -71,7 +71,7 @@ export async function guardarDatos() {
     const codigo = formDiv.querySelector('.codigo').value.trim();
 
     if (!referencia || !tipo || !codigo) {
-      alert(`Los campos en el formulario ${index + 1} son obligatorios.`);
+      mostrarAlerta(`Los campos del formulario ${index + 1} son obligatorios.`, 4000);
       hayError = true;
       return;
     }
@@ -96,8 +96,8 @@ export async function guardarDatos() {
 
     const nuevoCarrusel = await res.json();
     console.log('Creado:', nuevoCarrusel);
-    mostrarAlerta('¡Carrusel creado correctamente!');
-    limpiarFormularios(); // Opcional: limpia tras guardar
+    mostrarAlerta('✅ ¡Carrusel creado correctamente!');
+    limpiarFormularios(); // Limpia después de guardar
   } catch (error) {
     console.error('Error en fetch crear el carrusel: ', error);
     mostrarAlerta('❌ Error al crear el carrusel. Intenta de nuevo.', 4000);
@@ -115,21 +115,8 @@ export function eliminarFormulario(id) {
 }
 
 /**
- * Inicializa el módulo: conecta el botón "Añadir" cuando el DOM esté listo.
+ * Muestra una alerta modal personalizada
  */
-export function initTopSalesModule() {
-  document.getElementById('addCarruselItemBtn')?.addEventListener('click', () =>
-    agregarItem('formContainer', carruselItemTemplate)
-  );
-}
-
-// Auto‑init cuando el DOM está listo
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initTopSalesModule);
-} else {
-  initTopSalesModule();
-}
-
 function mostrarAlerta(mensaje, tiempo = 3000) {
   const modal = document.getElementById("alertModal");
   const mensajeElem = document.getElementById("alertMessage");
@@ -146,4 +133,22 @@ function mostrarAlerta(mensaje, tiempo = 3000) {
 function cerrarAlerta() {
   const modal = document.getElementById("alertModal");
   modal.style.display = "none";
+}
+
+/**
+ * Inicializa el módulo al cargar DOM
+ */
+export function initTopSalesModule() {
+  document.getElementById('addCarruselItemBtn')?.addEventListener('click', () =>
+    agregarItem('formContainer', carruselItemTemplate)
+  );
+
+  document.getElementById('btnGuardarCarrusel')?.addEventListener('click', guardarDatos);
+}
+
+// Auto-inicialización
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initTopSalesModule);
+} else {
+  initTopSalesModule();
 }
