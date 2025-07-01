@@ -48,27 +48,31 @@ form.addEventListener('submit', async event => {
     const data = await res.json();
     console.log('Login exitoso:', data);
 
-    // 6. Guardar información de usuario en localStorage como respaldo
+    // 6. Guardar información de usuario en localStorage INMEDIATAMENTE
     if (data.user) {
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('loginTime', Date.now().toString());
       console.log('Usuario guardado en localStorage:', data.user);
+      console.log('Verificando localStorage:', {
+        user: localStorage.getItem('user'),
+        loginTime: localStorage.getItem('loginTime')
+      });
+    } else {
+      console.warn('⚠️ No se recibió información de usuario en la respuesta');
     }
 
     // 7. Verificar que las cookies se establecieron correctamente
-    setTimeout(() => {
-      const cookies = document.cookie;
-      console.log('Cookies después del login:', cookies);
-      
-      // Si no hay cookies, mostrar advertencia pero continuar
-      if (!cookies.includes('token=')) {
-        console.warn('⚠️ No se detectó cookie de token, pero continuando...');
-      }
-      
-      // 8. Redirigir al dashboard
-      console.log('Redirigiendo al dashboard...');
-      window.location.href = '/dashboardAdmin.html';
-    }, 100);
+    const cookies = document.cookie;
+    console.log('Cookies después del login:', cookies);
+    
+    // Si no hay cookies, mostrar advertencia pero continuar
+    if (!cookies.includes('token=')) {
+      console.warn('⚠️ No se detectó cookie de token, usando localStorage como respaldo');
+    }
+    
+    // 8. Redirigir al dashboard INMEDIATAMENTE (sin setTimeout)
+    console.log('Redirigiendo al dashboard...');
+    window.location.href = '/dashboardAdmin.html';
 
   } catch (err) {
     console.error('Error en fetch login:', err);
