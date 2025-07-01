@@ -1,62 +1,5 @@
 // Archivo: adminProducts.js
 
-// Verificar autenticación al cargar el dashboard
-document.addEventListener('DOMContentLoaded', async () => {
-  // Verificar si hay token de autenticación
-  const token = obtenerCookie('token');
-  if (!token) {
-    console.log('No hay token, redirigiendo al login...');
-    window.location.href = '/index.html';
-    return;
-  }
-
-  // Verificar que el token sea válido
-  try {
-    // Determinar la URL base según el entorno
-    const baseUrl = location.hostname === 'localhost' 
-      ? '' // En desarrollo local, usar proxy de Vite
-      : 'https://pagina-back-oki.onrender.com'; // En producción, usar URL directa
-
-    const verifyUrl = `${baseUrl}/admin/verify`;
-    console.log('Verificando token en:', verifyUrl);
-
-    const response = await fetch(verifyUrl, {
-      method: 'GET',
-      credentials: 'include'
-    });
-
-    if (!response.ok) {
-      console.log('Token inválido, redirigiendo al login...');
-      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      window.location.href = '/index.html';
-      return;
-    }
-
-    console.log('Usuario autenticado correctamente');
-  } catch (error) {
-    console.error('Error al verificar autenticación:', error);
-    window.location.href = '/index.html';
-    return;
-  }
-});
-
-// Función para obtener cookies (duplicada aquí para evitar dependencias)
-function obtenerCookie(nombre) {
-  const name = nombre + "=";
-  const decodedCookie = decodeURIComponent(document.cookie);
-  const ca = decodedCookie.split(';');
-  for(let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return null;
-}
-
 let productosCargados = [];
 let formularioId = 0;
 const arrayList = [];
@@ -75,12 +18,7 @@ userForm?.addEventListener('submit', async (e) => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  // Determinar la URL base según el entorno
-  const baseUrl = location.hostname === 'localhost' 
-    ? '' // En desarrollo local, usar proxy de Vite
-    : 'https://pagina-back-oki.onrender.com'; // En producción, usar URL directa
-
-  const res = await fetch(`${baseUrl}/admin/register`, {
+  const res = await fetch('/admin/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, email, password })
