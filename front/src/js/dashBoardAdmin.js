@@ -5,6 +5,24 @@ let formularioId = 0;
 const arrayList = [];
 let productoIdAEliminar = null;
 
+// Llamada para verificar si el token es válido
+fetch('https://pagina-back-oki.onrender.com/admin/verify', {
+  credentials: 'include'
+})
+.then(res => {
+  if (!res.ok) throw new Error("No autenticado");
+  return res.json();
+})
+.then(data => {
+  console.log("Usuario verificado:", data);
+  // Mostrar el dashboard o continuar
+})
+.catch(err => {
+  console.warn("No autenticado, redirigiendo a login");
+  window.location.href = "index.html"; // o login.html
+});
+
+
 
 const baseApiUrl = location.hostname === 'localhost'
   ? ''
