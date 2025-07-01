@@ -82,8 +82,12 @@ const logout = (req, res) => {
   return res.status(200).json({ message: "Sesión cerrada" });
 };
 
+const verifyToken = (req, res) => {
+  return res.status(200).json({ message: "Token válido", user: req.user });
+};
 module.exports = {
   register,
   login,
-  logout
+  logout,
+  verifyToken
 };
