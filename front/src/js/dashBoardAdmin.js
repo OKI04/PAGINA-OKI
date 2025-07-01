@@ -6,8 +6,6 @@ const arrayList = [];
 let productoIdAEliminar = null;
 
 
-
-
 const baseApiUrl = location.hostname === 'localhost'
   ? ''
   : 'https://pagina-back-oki.onrender.com';
@@ -470,18 +468,20 @@ async function view(id) {
 
 // Editar Producto
 function openEditModal(productId) {
+  const baseApiUrl = location.hostname === 'localhost'
+      ? ''
+      : 'https://pagina-back-oki.onrender.com';
   // Limpiar contenedores
   document.getElementById('editColorContainer').innerHTML = '';
   document.getElementById('editPrintsContainer').innerHTML = '';
   
   // Obtener datos del producto
-  fetch(`/admin/products/one/${productId}`, {
+  fetch(`${baseApiUrl}/admin/products/one/${productId}`, {
     credentials: 'include'
   })
   .then(response => response.json())
   .then(producto => {
 
-    const baseApiUrl = "https://pagina-back-oki.onrender.com";
     console.log(producto);
     let product = producto.product;
     console.log(product);
@@ -584,7 +584,7 @@ document.getElementById('submitEditForm').addEventListener('click', function() {
 
   console.log(productId);
   
-  fetch(`/admin/products/update/${productId}`, {
+  fetch(`${baseApiUrl}/admin/products/update/${productId}`, {
     method: 'PUT',
     body: formData,
     credentials: 'include'
@@ -725,7 +725,7 @@ document.getElementById('submitEditForm').addEventListener('click', function() {
     }
   });
   
-  fetch(`/admin/products/update/${productId}`, {
+  fetch(`${baseApiUrl}/admin/products/update/${productId}`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`

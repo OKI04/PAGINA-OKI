@@ -6,6 +6,10 @@
 let formularioId = 0;
 const arrayList = [];
 
+const baseApiUrl = location.hostname === 'localhost'
+  ? ''
+  : 'https://pagina-back-oki.onrender.com';
+
 /**
  * Inserta un nuevo formulario/card en #formContainer.
  * @param {number} index  Índice consecutivo para el botón de cierre.
@@ -81,7 +85,7 @@ export async function guardarDatos() {
   if (hayError) return;
 
   try {
-    const res = await fetch('/admin/carrusel/products/create/item', {
+    const res = await fetch('${baseApiUrl}/admin/carrusel/products/create/item', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ productos: arrayList }),
