@@ -10,30 +10,39 @@ const baseApiUrl = location.hostname === 'localhost'
   ? ''
   : 'https://pagina-back-oki.onrender.com';
 
-//Crear Usuario
+// Crear Usuario
 const userForm = document.getElementById('formRegister');
+
 userForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const username = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
 
-  const res = await fetch('/admin/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, email, password })
-  });
+  const username = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  if (!res.ok) {
-    const error = await res.json();
-    console.error('Error al registrar:', error);
-    mostrarAlerta('Error al registrar: ' + (error.message || 'Error desconocido'));
-    return;
+  try {
+    const res = await fetch(`${baseApiUrl}/admin/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password }),
+      credentials: 'include' // Muy importante si manejas sesiones (cookies)
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      console.error('Error al registrar:', error);
+      mostrarAlerta('❌ Error al registrar: ' + (error.message || 'Error desconocido'));
+      return;
+    }
+
+    const data = await res.json();
+    console.log('Usuario creado:', data);
+    mostrarAlerta('✅ Usuario registrado exitosamente');
+    userForm.reset(); // Limpia el formulario después del éxito
+  } catch (error) {
+    console.error('Error de red:', error);
+    mostrarAlerta('❌ Error de conexión con el servidor');
   }
-
-  const data = await res.json();
-  console.log('Usuario creado:', data);
-  mostrarAlerta('Usuario registrado exitosamente');
 });
 
 
