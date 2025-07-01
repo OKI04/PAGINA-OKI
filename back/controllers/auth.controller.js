@@ -18,14 +18,19 @@ const register = async (req, res) => {
     });
 
     const userSaved = await newUser.save();
-    const token = await createAccessToken({ id: userSaved._id });
 
-    // Configuración de cookie más permisiva para producción
+    // ✅ Token incluye más información
+    const token = await createAccessToken({
+      id: userSaved._id,
+      email: userSaved.email,
+      username: userSaved.username
+    });
+
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      maxAge: 24 * 60 * 60 * 1000, // 24 horas
+      maxAge: 24 * 60 * 60 * 1000,
       path: '/'
     };
 
@@ -55,7 +60,6 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Usuario no encontrado" });
     }
 
-    console.log("Usuario encontrado, verificando contraseña...");
     const isMatch = await bcrypt.compare(password, userFound.password);
 
     if (!isMatch) {
@@ -63,29 +67,30 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Contraseña incorrecta" });
     }
 
-    console.log("Contraseña correcta, generando token...");
-    const token = await createAccessToken({ id: userFound._id });
+    // ✅ Token incluye más información
+    const token = await createAccessToken({
+      id: userFound._id,
+      email: userFound.email,
+      username: userFound.username
+    });
 
-    // Configuración de cookie más permisiva para producción
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      maxAge: 24 * 60 * 60 * 1000, // 24 horas
+      maxAge: 24 * 60 * 60 * 1000,
       path: '/'
     };
 
-    console.log("Configurando cookie con opciones:", cookieOptions);
     res.cookie('token', token, cookieOptions);
 
-    console.log("Login exitoso para usuario:", email);
-    res.status(200).json({ 
-      message: "Bienvenido", 
-      user: { 
-        id: userFound._id, 
-        email: userFound.email, 
-        username: userFound.username 
-      } 
+    res.status(200).json({
+      message: "Bienvenido",
+      user: {
+        id: userFound._id,
+        email: userFound.email,
+        username: userFound.username
+      }
     });
 
   } catch (error) {
@@ -107,32 +112,27 @@ const logout = (req, res) => {
   };
 
   res.cookie('token', '', cookieOptions);
-
   return res.status(200).json({ message: "Sesión cerrada" });
 };
 
 // =====================================
 // ========== VERIFY TOKEN ============
 // =====================================
-const verifyToken = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
+const verifyToken = (req, res) => {
+  const { id, email, username } = req.user;
 
-    res.status(200).json({ 
-      message: "Token válido", 
-      user: { 
-        id: user._id, 
-        email: user.email, 
-        username: user.username 
-      } 
-    });
-  } catch (error) {
-    console.error("Error en verificación de token:", error);
-    res.status(500).json({ message: "Error en el servidor" });
+  if (!id || !email) {
+    return res.status(401).json({ message: "Token inválido o incompleto" });
   }
+
+  return res.status(200).json({
+    message: "Token válido",
+    user: {
+      id,
+      email,
+      username
+    }
+  });
 };
 
 module.exports = {
