@@ -5,22 +5,42 @@ let formularioId = 0;
 const arrayList = [];
 let productoIdAEliminar = null;
 
-// Llamada para verificar si el token es válido
-fetch('https://pagina-back-oki.onrender.com/admin/verify', {
-  credentials: 'include'
-})
-.then(res => {
-  if (!res.ok) throw new Error("No autenticado");
-  return res.json();
-})
-.then(data => {
-  console.log("Usuario verificado:", data);
-  // Mostrar el dashboard o continuar
-})
-.catch(err => {
-  console.warn("No autenticado, redirigiendo a login");
-  window.location.href = "index.html"; // o login.html
-});
+console.log("🔍 Iniciando verificación de autenticación...");
+
+// Obtener user del localStorage
+const userStr = localStorage.getItem("user");
+const loginTime = localStorage.getItem("loginTime");
+
+if (!userStr || !loginTime) {
+  console.warn("❌ No hay datos en localStorage");
+  window.location.href = "index.html";
+} else {
+  const horasDesdeLogin = (Date.now() - Number(loginTime)) / (1000 * 60 * 60);
+  if (horasDesdeLogin > 24) {
+    console.warn("⏰ Token expirado por horas");
+    window.location.href = "index.html";
+  } else {
+    const usuario = JSON.parse(userStr);
+    console.log("👤 Usuario:", usuario.username);
+
+    // Luego hacer llamada al backend para validar token real
+    fetch('https://pagina-back-oki.onrender.com/admin/verify', {
+      credentials: 'include'
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Token inválido");
+      return res.json();
+    })
+    .then(data => {
+      console.log("✅ Usuario autenticado correctamente");
+      // Aquí puedes mostrar el dashboard
+    })
+    .catch(err => {
+      console.error("❌ Error al verificar token:", err);
+      window.location.href = "index.html";
+    });
+  }
+}
 
 
 
