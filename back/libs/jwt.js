@@ -7,7 +7,7 @@ const createAccessToken = (payload) => {
             payload, 
             TOKEN_SECRET,
             {
-                expiresIn: "10m",
+                expiresIn: "24h",
             },
             (err, token) => {
                 if(err) reject (err)
