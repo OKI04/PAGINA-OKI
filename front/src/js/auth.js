@@ -1,34 +1,21 @@
-// main.js (este será tu único archivo JavaScript, debe incluirse con type="module")
+// src/js/auth.js
 
-/**
- * Obtiene el valor de una cookie por nombre.
- * @param {string} nombre - Nombre de la cookie a buscar.
- * @returns {string|null} - Valor de la cookie o null si no se encuentra.
- */
+// Obtener el valor de una cookie por nombre
 function obtenerCookie(nombre) {
   const name = nombre + "=";
   const decodedCookie = decodeURIComponent(document.cookie);
   const ca = decodedCookie.split(';');
   for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1);
-    }
+    let c = ca[i].trim();
     if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
+      return c.substring(name.length);
     }
   }
   return null;
 }
 
-/**
- * Verifica si el usuario está autenticado revisando la existencia del token.
- * Si no está autenticado, redirige a la página de login.
- * @returns {boolean} - true si está autenticado, false si no.
- */
-function verificarAutenticacionSimple() {
- 
-}
+// Verificar autenticación básica mediante cookie
+function verificarAutenticacionSimple() {}
 
 // Ejecutar la verificación cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
