@@ -734,19 +734,6 @@ background-color: var(--main-bg-color); /* Color de fondo base */
     margin-top: 2px;            /* Separación superior pequeña */
 }
 
-.remove-button {
-    background: none;           /* Sin fondo */
-    border: none;               /* Sin borde */
-    font-size: 1.3em;           /* Tamaño visible para la “X” */
-    font-weight: bold;          /* Texto en negrita */
-    cursor: pointer;            /* Mano al pasar el mouse */
-    color: #333;                /* Gris oscuro */
-    padding: 5px 10px;          /* Relleno para hacerlo clickeable */
-}
-
-.remove-button:hover {
-    color: var(--main-bg-color); /* Cambia de color al pasar el mouse */
-}
     /* Sección del Formulario */
     .quote-form .form-grid {
     display: grid;                             /* Usa grid layout */
@@ -837,437 +824,157 @@ background-color: var(--main-bg-color); /* Color de fondo base */
 
 
 /* Estilos para pantallas pequeñas (≤480px de ancho) */
-/* 📱 ESTILOS RESPONSIVOS PARA PANTALLAS PEQUEÑAS (200px - 600px) */
 @media (min-width: 200px) and (max-width: 600px) {
-  
-  /* 🔄 MODAL PRINCIPAL */
-  .modal {
-    padding: 20px; /* Reduce padding en móviles */
-    overflow-y: auto; /* Permite scroll completo */
-  }
-  
   .modal-body {
-    flex-direction: column; /* Cambia a disposición vertical */
-    max-width: 95vw; /* Casi todo el ancho de la pantalla */
-    max-height: 90vh; /* Altura máxima ajustada */
-    padding: 20px; /* Reduce padding interno */
-    gap: 15px; /* Espacio entre elementos */
-    position: relative; /* Posicionamiento relativo para móviles */
-    top: auto; /* Resetea posición fija */
-    left: auto;
-    transform: none; /* Elimina transformación de centrado */
-    margin: 20px auto; /* Centrado simple */
-  }
-  
-  /* 🖼️ SECCIÓN DE IMÁGENES */
+  top: 50%;                       /* Posiciona el borde superior del modal al 50% del alto de la ventana. */
+  left: 50%;                      /* Posiciona el borde izquierdo al 50% del ancho de la ventana. */
+  transform: translate(-50%, -50%); /* Mueve el modal hacia arriba y la izquierda la mitad de su tamaño para centrarlo perfectamente. */
+  flex-direction: column;         /* Los elementos hijos se apilan verticalmente. */
+  align-items: stretch;           /* Los elementos hijos se estiran para ocupar el ancho disponible. */
+  width: 100%;                    /* El modal ocupa todo el ancho posible del contenedor padre. */
+  max-width: 100%;                /* Evita que sobrepase el 100% del ancho del contenedor o pantalla. */
+  height: auto;                   /* El alto se adapta al contenido. */
+  min-height: 90vh;               /* Asegura que el modal tenga al menos el 90% del alto de la ventana. */
+  overflow-y: auto;               /* Agrega scroll vertical si el contenido excede el alto del modal. */
+  box-sizing: border-box;         /* Incluye padding y border dentro del ancho y alto especificados. */
+}
+
   .left-column {
-    width: 100%; /* Ocupa todo el ancho */
-    flex-direction: column; /* Imagen principal arriba, miniaturas abajo */
-    gap: 15px;
+    flex-direction: row; /* Muestra las miniaturas en fila horizontal */
+    justify-content: center; /* Centra el contenido dentro del contenedor */
+    flex-wrap: wrap; /* Permite que las miniaturas bajen de línea si no caben */
+    gap: 60px; /* Espacio entre las miniaturas */
   }
-  
-  .main-image {
-    width: 100%;
-    max-height: 300px; /* Altura máxima reducida */
-    order: 1; /* Imagen principal primero */
-  }
-  
-  .main-image img {
-    max-height: 250px; /* Reduce altura máxima */
-    width: 100%;
-    object-fit: contain;
-  }
-  
-  /* 🏷️ GALERÍA DE MINIATURAS */
   .thumbnail-gallery {
-    flex-direction: row; /* Horizontal en móviles */
-    justify-content: center; /* Centra las miniaturas */
-    gap: 8px; /* Espacio reducido */
-    order: 2; /* Miniaturas después de imagen principal */
-    flex-wrap: wrap; /* Permite que se envuelvan */
+    flex-direction: row; /* Galería de miniaturas en línea horizontal */
+    width: auto; /* Ancho automático según el contenido */
+    justify-content: center; /* Centra las imágenes */
   }
-  
   .thumbnail-gallery img {
-    width: 50px; /* Tamaño reducido */
-    height: 50px;
-    object-fit: cover; /* Asegura proporción */
+    display: none;
   }
-  
-  /* ⬅️➡️ FLECHAS DE NAVEGACIÓN */
-  .nav-arrow {
-    width: 32px; /* Tamaño reducido */
-    height: 32px;
-    font-size: 16px;
+  .main-image {
+    width: 100%; /* Imagen principal ocupa todo el ancho */
   }
-  
-  .prev-arrow { left: 5px; }
-  .next-arrow { right: 5px; }
-  
-  /* 📝 COLUMNA DE INFORMACIÓN */
+  .main-image img {
+    min-width: 100%; /* Ancho mínimo del 100% del contenedor */
+    min-height: auto; /* Altura mínima automática (no fuerza valor específico) */
+    max-height: 460px; /* Altura máxima de la imagen principal */
+  }
   .right-column {
-    width: 100%; /* Ocupa todo el ancho */
-    gap: 15px; /* Espacio reducido */
-    order: 3; /* Información al final */
+    width: 100%; /* La columna derecha ocupa todo el ancho disponible */
   }
-  
-  /* 💰 INFORMACIÓN DEL PRODUCTO */
-  .info-producto {
-    text-align: center; /* Centra información en móviles */
-    margin-bottom: 10px;
-    padding-bottom: 10px;
+
+.btn-comprar {
+  font-size: 13px;                        /* Texto un poco más grande */
+  height: 30px;                           /* Mayor altura para mejor presencia visual */
+  width: 100%;
+
+}
+
+  .btn-vermas,
+  .btn-seguir {
+    border-radius: 2px solid black; /* Borde negro sólido de 1px */
+    margin-top: 0px; /* Separación superior */
+    width: 100%; /* Los botones ocupan todo el ancho disponible */
+    font-size: 13px;                        /* Texto un poco más grande */
+    justify-content: center;
+    height: 30PX;
   }
-  
-  #modal-nombre {
-    font-size: 16px; /* Tamaño reducido */
-    margin-bottom: 5px;
-  }
-  
-  .referencia {
-    font-size: 12px; /* Tamaño más pequeño */
-  }
-  
-  .precio {
-    font-size: 16px; /* Tamaño ajustado */
-    margin: 8px 0;
-  }
-  
-  /* 🎨 SELECTORES DE COLOR Y ESTAMPADO */
-  .color-selector,
-  .estampado-selector {
-    justify-content: center; /* Centra opciones */
-    gap: 15px; /* Espacio entre opciones */
-    flex-wrap: wrap; /* Permite envolver */
-  }
-  
-  .color-option,
-  .estampado-option {
-    width: 35px; /* Tamaño ligeramente mayor para touch */
-    height: 35px;
-  }
-  
-  /* 👕 SELECTOR DE TALLAS */
-  .talla-btn {
-    width: 35px; /* Tamaño mayor para touch */
-    height: 35px;
-    margin: 3px; /* Espacio reducido */
-    font-size: 14px; /* Texto legible */
-  }
-  
-  /* 🛒 SECCIÓN DE COMPRA */
-  .cantidad-contenedor {
-    flex-direction: column; /* Vertical en móviles */
-    gap: 10px;
-    align-items: stretch; /* Estirar elementos */
-  }
-  
+
   .cantidad {
-    justify-content: center; /* Centra selector cantidad */
-    width: 150px; /* Ancho fijo */
-    margin: 0 auto; /* Centrado */
+    justify-content: center; /* Centra horizontalmente el contenedor de botones de cantidad */
   }
-  
-  .cantidad button {
-    width: 30px; /* Tamaño mayor para touch */
-    height: 35px;
-    font-size: 16px;
-  }
-  
-  #cantidad {
-    min-width: 40px; /* Área mayor para el número */
-    font-size: 16px;
-  }
-  
-  /* 🛍️ BOTONES DE ACCIÓN */
-  .btn-comprar {
-    width: 100%; /* Ocupa todo el ancho */
-    height: 45px; /* Altura mayor para touch */
-    font-size: 14px;
-    padding: 0 15px;
-    margin-top: 10px;
-  }
-  
-  .btn-vermas {
-    width: 100%;
-    height: 45px;
-    font-size: 14px;
-    padding: 0 15px;
-  }
-  
-  .btnSeguirComprando {
-    width: 100%;
-    height: 45px;
-    font-size: 14px;
-    padding: 0 15px;
-  }
-  
-  /* ❌ BOTÓN CERRAR */
-  #btnCerrarCompra {
-    top: 10px;
-    right: 15px;
-    font-size: 24px; /* Tamaño mayor para touch */
-    padding: 5px;
-  }
-  
-  /* 📄 MODAL DE DESCRIPCIÓN */
-  .descripcion {
-    padding: 10px;
-  }
-  
-  .descripcion-content {
-    width: 95%;
-    max-width: none;
-    padding: 20px 15px;
-    margin: 20px auto;
-  }
-  
-  .close-btn {
-    font-size: 24px;
-    top: 10px;
-    right: 15px;
-    padding: 5px;
-  }
-  
-  /* 🛒 CARRITO DE COMPRAS */
-  .cart-container {
-    padding: 5px;
-    margin-left: 10px;
-  }
-  
-  .comprar-button {
-    padding: 8px 12px;
-    font-size: 16px;
-    margin-right: 10px;
-  }
-  
+
   .comprar-button img {
-    width: 24px;
-    height: 24px;
-  }
-  
-  /* 🛍️ MODAL DEL CARRITO */
+  width: 25px; /* Define el ancho de la imagen */
+  height: 25px; /* Define la altura de la imagen */
+}
+
+  /* El carrito ocupa toda la pantalla tipo “drawer” */
   .modal-carrito {
-    width: 90vw; /* Más ancho en móviles */
-    right: -90vw; /* Ajusta posición inicial */
+    width: 80vw;
+    right: -80vw;
   }
-  
-  .modal-carrito.show {
-    right: 0;
-  }
-  
-  .modal-header {
-    padding: 12px 15px;
-    flex-wrap: wrap; /* Permite envolver contenido */
-  }
-  
-  .close {
-    font-size: 28px;
-    padding: 5px;
-  }
-  
-  /* 🛒 ITEMS DEL CARRITO */
-  .cart-item {
-    flex-direction: column; /* Vertical en móviles */
-    align-items: flex-start;
-    gap: 8px;
-    padding: 15px 10px;
-  }
-  
-  .cart-item img {
-    width: 60px;
-    align-self: center; /* Centra imagen */
-  }
-  
-  .cart-item-info {
-    text-align: center;
-    width: 100%;
-  }
-  
-  .cart-item-info h3 {
-    font-size: 14px;
-    margin-bottom: 3px;
-  }
-  
-  .cart-item-info p {
-    font-size: 12px;
-    margin: 1px 0;
-  }
-  
-  .delete-item {
-    font-size: 20px;
-    padding: 10px;
-    align-self: center;
-  }
-  
-  /* 💳 FOOTER DEL CARRITO */
+
+  .modal-header,
   .footer-carrito {
-    flex-direction: column;
-    gap: 10px;
-    padding: 15px 10px;
-  }
-  
-  .btn-cotizar {
-    width: 100%;
-    height: 45px;
-    font-size: 16px;
-    padding: 0 15px;
-  }
-  
-  /* ✅ MODAL DE CONFIRMACIÓN */
-  .confirmacion-contenido {
-    width: 90%;
-    max-width: 350px;
-    padding: 20px 15px;
-    margin: 20px;
-  }
-  
-  #btnCerrarConfirmacion {
-    font-size: 24px;
-    top: 8px;
-    right: 15px;
-    padding: 5px;
-  }
-  
-  /* ⚠️ MODAL DE ERROR */
-  .modal-content {
-    width: 90%;
-    max-width: 350px;
-    padding: 20px 15px;
-  }
-  
-  #modalErrorMensaje {
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-  
-  #btnCerrarError {
-    width: 100%;
-    height: 45px;
-    font-size: 14px;
-    padding: 0 15px;
-  }
-  
-  /* 💼 MODAL DE COTIZACIÓN */
-  .modal-container {
-    width: 95%;
-    max-width: none;
-    padding: 15px;
-    margin: 10px;
-    max-height: 85vh;
-  }
-  
-  .close-modal-btn {
-    font-size: 1.5em;
-    top: 8px;
-    right: 12px;
-    padding: 5px;
-  }
-  
-  /* 📋 LISTA DE PRODUCTOS */
-  .product-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 10px;
-  }
-  
-  .product-info {
-    width: 100%;
+    gap: 0px;
     text-align: center;
   }
-  
-  .product-info-main {
-    font-size: 14px;
-  }
-  
-  .product-subtitle {
-    font-size: 12px;
-  }
-  
-  .remove-button {
-    font-size: 18px;
-    padding: 8px;
-    align-self: center;
-  }
-  
-  /* 📝 FORMULARIO DE COTIZACIÓN */
-  .quote-form .form-grid {
-    grid-template-columns: 1fr; /* Una sola columna */
-    gap: 15px;
-  }
-  
-  .form-group-full {
-    grid-column: 1; /* Resetea span de columnas */
-  }
-  
-  .quote-form label {
-    font-size: 14px;
-    margin-bottom: 5px;
-  }
-  
+
+  /* Reduce paddings y tamaños para que todo quepa bien */
+  .modal-header,
+  .footer-carrito,
+  .cart-item,
   .quote-form input[type="text"],
   .quote-form input[type="email"] {
-    padding: 12px; /* Más padding para touch */
-    font-size: 16px; /* Evita zoom en iOS */
-    border-radius: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
-  
-  .submit-button {
-    width: 100%;
-    height: 45px;
-    font-size: 16px;
-    margin: 20px 0 10px 0;
-    padding: 0 15px;
+.btn-comprar {
+  font-size: 13px;                        /* Texto un poco más grande */
+  height: 30px;                           /* Mayor altura para mejor presencia visual */
+  width: 100%;
+
+}
+
+  .btn-vermas,
+  .btn-cotizar,
+  .btn-seguir {
+    margin-top: 0px; /* Separación superior */
+    width: 100%; /* Los botones ocupan todo el ancho disponible */
+    font-size: 13px;                        /* Texto un poco más grande */
+    justify-content: center;
+    height: 30PX;
   }
-  
-  /* 💚 BOTÓN DE WHATSAPP */
+
+  /* Miniaturas aún más pequeñas */
+  .cart-item img {
+    width: 70px;
+  }
+
+  /* Botón WhatsApp a ancho completo */
   .whatsapp-container {
-    margin-top: 15px;
+    margin-top: .5rem;
   }
-  
   .whatsapp-link {
     width: 100%;
     justify-content: center;
-    padding: 12px 20px;
-    border-radius: 6px;
   }
-  
-  .whatsapp-icon {
-    width: 28px;
-    height: 28px;
+
+  /* Formulario de cotización en una sola columna */
+  .quote-form .form-grid {
+    grid-template-columns: 1fr;
   }
-  
-  .whatsapp-text {
-    font-size: 16px;
+
+  /* Modal de confirmación/errores algo más pequeño */
+  .confirmacion-contenido,
+  .modal-content,
+  .modal-container {
+    width: 90%;
+    max-width: 320px;
   }
-  
-  /* 🎯 UTILIDADES GENERALES PARA MÓVILES */
-  
-  /* Mejora la experiencia táctil */
-  button, .btn-comprar, .btn-vermas, .btn-cotizar {
-    min-height: 44px; /* Mínimo recomendado para touch */
-    touch-action: manipulation; /* Mejora respuesta táctil */
+  .close {
+  font-size: 30px; /* Tamaño del ícono de cerrar */
+}
+
+
+  .modal-container {
+    position: relative;
+    top: 50%;                  /* Centro vertical */
+  left: 55%;                 /* Centro horizontal */
+  transform: translate(-55%, -45%);  /* Ajuste perfecto al centro */
   }
-  
-  /* Evita zoom accidental en inputs */
-  input[type="text"], input[type="email"] {
-    font-size: 16px !important;
+    .talla-btn {
+    background-color: var(--main-contenedor4-color);
+    color: var(--main-text-color);
+    border: 2px solid var(--main-contenedor3-color);
   }
-  
-  /* Scroll suave en modales */
-  .modal-body, .modal-container, .descripcion-content {
-    -webkit-overflow-scrolling: touch;
+
+  .talla-btn.selected {
+    background-color: black !important;
+    border-color: black !important;
+    color: white !important;
   }
-  
-  /* Oculta scrollbar en algunos casos */
-  .modal-body::-webkit-scrollbar,
-  .modal-container::-webkit-scrollbar {
-    width: 3px;
-  }
-  
-  .modal-body::-webkit-scrollbar-thumb,
-  .modal-container::-webkit-scrollbar-thumb {
-    background-color: rgba(0,0,0,0.3);
-    border-radius: 3px;
-  }
-  
 }

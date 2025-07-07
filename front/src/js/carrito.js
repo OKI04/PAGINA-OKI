@@ -165,8 +165,9 @@ function Contizacion() {
               Talla: ${item.talla} | Cant: ${item.cantidad} | Precio: $${item.precio.toLocaleString("es-CO")} |
               <b>Total: $${item.total.toLocaleString("es-CO")}</b>
             </span>
+            <button class="delete-item" onclick="eliminarItem(${index})">X</button>
+
           </div>
-          <button class="remove-button" onclick="eliminarProductoCotizacion(${index})" aria-label="Eliminar producto">X</button>
         </li>`;
     });
   }
