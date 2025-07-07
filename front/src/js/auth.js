@@ -27,15 +27,7 @@ function obtenerCookie(nombre) {
  * @returns {boolean} - true si está autenticado, false si no.
  */
 function verificarAutenticacionSimple() {
-  const token = obtenerCookie('token');
-
-  if (!token) {
-    // No hay token, redirigir al login
-    window.location.href = 'dashboardAdmin.html';
-    return false;
-  }
-
-  return true;
+ 
 }
 
 // Ejecutar la verificación cuando el DOM esté listo
