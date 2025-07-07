@@ -26,11 +26,13 @@ window.addEventListener("click", function(event) {
   const modalConfirmacion = document.getElementById('modalConfirmacion');
   const modalProducto = document.getElementById('modalProducto');
   const modalCarrito = document.getElementById("modalCarrito");
+  const modalCotizacion = document.getElementById("modalCotizacion");
 
   if (event.target === modalError) modalError.style.display = "none";
   if (event.target === modalConfirmacion) cerrarModal();
   if (event.target === modalProducto) modalProducto.style.display = 'none';
   if (event.target === modalCarrito) modalCarrito.style.display = "none";
+  if (event.target === modalCotizacion) cerrarCotizacion();
 });
 
 // -----------------------------
@@ -137,7 +139,6 @@ function actualizarContadorCarrito() {
 }
 
 // ----------------------------
-// -----------------------------
 function mostrarErrorModal(mensaje) {
   document.getElementById("modalErrorMensaje").textContent = mensaje;
   document.getElementById("modalError").style.display = "flex";
@@ -149,9 +150,14 @@ function cerrarModalError() {
 
 // -----------------------------
 function Contizacion() {
-  const modal = document.getElementById("modalCotizacion");
-  const lista = modal.querySelector(".product-list");
+  const modalCotizacion = document.getElementById("modalCotizacion");
+  const lista = modalCotizacion.querySelector(".product-list");
   lista.innerHTML = "";
+
+  const modalCarrito = document.getElementById("modalCarrito");
+  if (modalCarrito) {
+    modalCarrito.style.display = "none";
+  }
 
   if (carrito.length === 0) {
     lista.innerHTML = `<li class="product-item"><div class="product-info"><span>No hay productos en el carrito.</span></div></li>`;
@@ -173,7 +179,7 @@ function Contizacion() {
   }
 
   actualizarTotalPagar();
-  modal.style.display = "block";
+  modalCotizacion.style.display = "block";
 }
 
 // -----------------------------
@@ -217,17 +223,32 @@ function enviarCotizacion() {
     return;
   }
 
-  let mensaje = `📦 *COTIZACIÓN DE PRODUCTOS*\n\n👤 *Nombre:* ${nombre}\n🏢 *Empresa:* ${empresa}\n🏠 *Dirección:* ${direccion}\n📞 *Teléfono:* ${telefono}\n📧 *Correo:* ${correo}\n\n🛒 *Detalle de productos:*\n\n`;
-  mensaje += `| Producto      | Ref     | Color/Estampado      | Talla | Cant | Precio | Total    |\n`;
-  mensaje += `|------------------------------------------------------------------|\n`;
+  let mensaje = `📦 *COTIZACIÓN DE PRODUCTOS*\n\n`;
+  mensaje += `👤 *Nombre:* ${nombre}\n`;
+  mensaje += `🏢 *Empresa:* ${empresa}\n`;
+  mensaje += `🏠 *Dirección:* ${direccion}\n`;
+  mensaje += `📞 *Teléfono:* ${telefono}\n`;
+  mensaje += `📧 *Correo:* ${correo}\n\n`;
 
-  carrito.forEach(item => {
-    const colorOEstampado = item.color !== 'Sin seleccionar' ? `Codigo Color: ${item.color}` : `Codigo Estampado: ${item.estampado}`;
-    mensaje += `| ${item.nombre.padEnd(14)} | ${item.referencia.padEnd(7)} | ${colorOEstampado.padEnd(20)} | ${item.talla.padEnd(5)} | ${String(item.cantidad).padEnd(4)} | $${item.precio.toLocaleString("es-CO")} | $${item.total.toLocaleString("es-CO")} |\n`;
+  mensaje += `🛒 *Productos solicitados:*\n`;
+
+  carrito.forEach((item, index) => {
+    const colorOEstampado = item.color !== 'Sin seleccionar'
+      ? `🎨 Color: ${item.color}`
+      : `🖼️ Estampado: ${item.estampado}`;
+
+    mensaje += `\n🔹 *Producto ${index + 1}*\n`;
+    mensaje += `📌 Referencia: ${item.referencia}\n`;
+    mensaje += `📦 Nombre: ${item.nombre}\n`;
+    mensaje += `${colorOEstampado}\n`;
+    mensaje += `📏 Talla: ${item.talla}\n`;
+    mensaje += `🔢 Cantidad: ${item.cantidad}\n`;
+    mensaje += `💵 Precio unitario: $${item.precio.toLocaleString("es-CO")}\n`;
+    mensaje += `💰 Subtotal: $${item.total.toLocaleString("es-CO")}\n`;
   });
 
   const total = carrito.reduce((sum, item) => sum + item.total, 0);
-  mensaje += `\n💰 *Total a pagar:* $${total.toLocaleString("es-CO")}`;
+  mensaje += `\n💵 *Total a pagar:* $${total.toLocaleString("es-CO")}`;
 
   const numero = "573227534241";
   const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;

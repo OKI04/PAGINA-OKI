@@ -675,9 +675,9 @@ background-color: var(--main-bg-color); /* Color de fondo base */
 .modal-container {
   background: white;                 /* Fondo blanco para el contenido del modal */
   padding: 20px;                     /* Espacio interno */
-  top: 50%;                  /* Centro vertical */
+  top: 60%;                  /* Centro vertical */
   left: 50%;                 /* Centro horizontal */
-  transform: translate(-50%, -50%);  /* Ajuste perfecto al centro */
+  transform: translate(-50%, -60%);  /* Ajuste perfecto al centro */
   width: 90%;                        /* Ancho responsivo */
   max-width: 600px;                  /* Ancho máximo */
   max-height: 80vh;                  /* Alto máximo relativo al viewport */
