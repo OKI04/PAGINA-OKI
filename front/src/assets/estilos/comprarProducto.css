@@ -983,10 +983,6 @@ background-color: var(--main-bg-color); /* Color de fondo base */
 @media (min-width: 200px) and (max-width: 500px) {
   .btn-cotizar {
     width: 100%;                  /* Ocupa todo el ancho del contenedor */
-    font-size: 16px;              /* Texto un poco más pequeño para móvil */
-    padding: 12px;                /* Espacio interno más cómodo */
-    border-radius: 6px;           /* Bordes suaves */
-    box-sizing: border-box;       /* Para respetar el padding dentro del ancho */
   }
 }
 
