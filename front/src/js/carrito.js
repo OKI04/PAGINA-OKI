@@ -211,7 +211,7 @@ function enviarCotizacion() {
   const telefono = document.getElementById("telefono").value.trim();
   const correo = document.getElementById("correo").value.trim();
 
-  if (!nombre || !empresa || !direccion || !telefono || !correo) {
+  if (!nombre || !direccion || !telefono || !correo) {
     alert("Completa todos los campos.");
     return;
   }
