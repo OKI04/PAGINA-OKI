@@ -920,7 +920,6 @@ background-color: var(--main-bg-color); /* Color de fondo base */
 }
 
   .btn-vermas,
-  .btn-cotizar,
   .btn-seguir {
     margin-top: 0px; /* Separación superior */
     width: 100%; /* Los botones ocupan todo el ancho disponible */
@@ -968,13 +967,34 @@ background-color: var(--main-bg-color); /* Color de fondo base */
   }
     .talla-btn {
     background-color: var(--main-contenedor4-color);
-    color: var(--main-text-color);
+    color: black !important;
     border: 2px solid var(--main-contenedor3-color);
   }
 
   .talla-btn.selected {
-    background-color: black !important;
+    background-color: var(--main-contenedor4-color); 
     border-color: black !important;
-    color: white !important;
+    color: var(--main-text-color);
+  }
+  .delete-item {
+  color: black;
+}
+}
+@media (min-width: 200px) and (max-width: 500px) {
+  .btn-cotizar {
+    width: 100%;                  /* Ocupa todo el ancho del contenedor */
+    font-size: 16px;              /* Texto un poco más pequeño para móvil */
+    padding: 12px;                /* Espacio interno más cómodo */
+    background-color: black;      /* Fondo negro para mejor contraste */
+    color: white;                 /* Texto blanco */
+    border: none;                 /* Sin borde visual */
+    border-radius: 6px;           /* Bordes suaves */
+    box-sizing: border-box;       /* Para respetar el padding dentro del ancho */
+  }
+
+  .btn-cotizar:hover {
+    background-color: #333;       /* Efecto hover más tenue en móvil */
+    color: white;
   }
 }
+
