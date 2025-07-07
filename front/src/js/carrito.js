@@ -26,13 +26,11 @@ window.addEventListener("click", function(event) {
   const modalConfirmacion = document.getElementById('modalConfirmacion');
   const modalProducto = document.getElementById('modalProducto');
   const modalCarrito = document.getElementById("modalCarrito");
-  const modalCotizacion = document.getElementById("modalCotizacion");
 
   if (event.target === modalError) modalError.style.display = "none";
   if (event.target === modalConfirmacion) cerrarModal();
   if (event.target === modalProducto) modalProducto.style.display = 'none';
   if (event.target === modalCarrito) modalCarrito.style.display = "none";
-  if (event.target === modalCotizacion) cerrarCotizacion();
 });
 
 // -----------------------------
@@ -139,6 +137,7 @@ function actualizarContadorCarrito() {
 }
 
 // ----------------------------
+// -----------------------------
 function mostrarErrorModal(mensaje) {
   document.getElementById("modalErrorMensaje").textContent = mensaje;
   document.getElementById("modalError").style.display = "flex";
@@ -154,6 +153,7 @@ function Contizacion() {
   const lista = modalCotizacion.querySelector(".product-list");
   lista.innerHTML = "";
 
+  // Cerrar el modal del carrito si está abierto
   const modalCarrito = document.getElementById("modalCarrito");
   if (modalCarrito) {
     modalCarrito.style.display = "none";
@@ -259,3 +259,4 @@ function enviarCotizacion() {
   actualizarContadorCarrito();
   cerrarCotizacion();
 }
+
