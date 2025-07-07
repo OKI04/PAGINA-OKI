@@ -19,10 +19,13 @@ const register = async (req, res) => {
         const userSaved = await newUser.save();
         const token = await createAccessToken({id: userSaved._id});
 
-        res.cookie('token', token);
-        res.status(200).json({
-            message: "user created successfully"
-        });
+         res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 24
+    });
 
     } catch (error) {
         console.log(error);
