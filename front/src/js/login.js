@@ -1,6 +1,10 @@
 const form = document.getElementById('loginForm');
 const errorMsg = document.getElementById('errorMsg');
 const submitBtn = form.querySelector('button[type="submit"]');
+const baseApiUrl = location.hostname === 'localhost'
+  ? ''
+  : 'https://pagina-back-oki.onrender.com';
+
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
@@ -12,7 +16,7 @@ form.addEventListener('submit', async event => {
   submitBtn.disabled = true;
 
   try {
-    const res = await fetch('/admin/login', {
+    const res = await fetch(`${baseApiUrl}/admin/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
