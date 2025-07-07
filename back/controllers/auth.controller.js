@@ -31,31 +31,32 @@ const register = async (req, res) => {
 }
 
 const login = async (req, res) => {
+  const { email, password } = req.body;
 
-    const {email, password} = req.body;
+  try {
+    const userFound = await User.findOne({ email });
+    if (!userFound) return res.status(400).json({ message: "User not found" });
 
-    try {
+    const isMatch = await bcrypt.compare(password, userFound.password);
+    if (!isMatch) return res.status(400).json({ message: "Incorrect password" });
 
-        const userFound = await User.findOne({email});
+    const token = await createAccessToken({ id: userFound._id });
 
-        if(!userFound) return res.status(400).json({message: "User not found"});
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 24
+    });
 
-        const isMatch = await bcrypt.compare(password, userFound.password);
+    res.status(200).json({ message: "Welcome" });
 
-        if(!isMatch) return res.status(400).json({message: "Incorrect password"});
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-        const token = await createAccessToken({id: userFound._id});
-
-        res.cookie('token', token);
-        res.status(200).json({
-            message: "Welcome"
-        });
-
-    } catch (error) {
-        console.log(error);
-    }
-    
-}
 
 const logout = (req, res) => {
     res.cookie('token', "", {expires: new Date(0)})
