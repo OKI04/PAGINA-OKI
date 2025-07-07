@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const AuthController = require("../controllers/auth.controller");
+const validateToken = require("../middlewares/validateToken");
 
-// Registro y login públicos
-router.post("/register", AuthController.register);
+router.post("/register", validateToken.authRequired ,AuthController.register);
 router.post("/login", AuthController.login);
-
-// Logout sí requiere estar autenticado (opcional)
 router.post("/logout", AuthController.logout);
 
 module.exports = router;
