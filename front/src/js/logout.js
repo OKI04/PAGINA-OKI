@@ -1,11 +1,15 @@
 const salir = document.getElementById("logout");
 salir.addEventListener('click', async () => {
+const baseApiUrl = location.hostname === 'localhost'
+  ? ''
+  : 'https://pagina-back-oki.onrender.com';
+
 
     console.log("Saliendo");
 
     try {
 
-        const res = await fetch('/admin/logout', {
+        const res = await fetch(`${baseApiUrl}/admin/logout`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include'
