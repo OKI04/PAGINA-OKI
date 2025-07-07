@@ -31,7 +31,7 @@ function verificarAutenticacionSimple() {
 
   if (!token) {
     // No hay token, redirigir al login
-    window.location.href = 'dashboarAdmin.html';
+    window.location.href = 'dashboardAdmin.html';
     return false;
   }
 
