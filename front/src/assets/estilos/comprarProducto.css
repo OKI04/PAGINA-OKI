@@ -704,6 +704,7 @@ background-color: var(--main-bg-color); /* Color de fondo base */
     color: #000;                /* Cambia a negro al pasar el mouse */
 }
 .product-list {
+    border-radius: 10px;
     margin-bottom: 20px;        /* Espacio inferior con otros elementos */
     padding: 0;                 /* Sin padding interno */
     list-style-type: none;      /* Quita los puntos de lista */
@@ -886,6 +887,7 @@ background-color: var(--main-bg-color); /* Color de fondo base */
 
   .btn-vermas,
   .btn-seguir {
+    border-radius: 2px solid black; /* Borde negro sólido de 1px */
     margin-top: 0px; /* Separación superior */
     width: 100%; /* Los botones ocupan todo el ancho disponible */
     font-size: 13px;                        /* Texto un poco más grande */
