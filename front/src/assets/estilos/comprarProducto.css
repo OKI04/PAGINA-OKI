@@ -972,9 +972,9 @@ background-color: var(--main-bg-color); /* Color de fondo base */
   }
 
   .talla-btn.selected {
-    background-color: var(--main-contenedor4-color); 
-    border-color: black !important;
-    color: var(--main-text-color);
+   border-color: black; /* Borde negro cuando está seleccionada */
+  background-color: var(--main-contenedor3-color); /* Fondo dorado */
+  color: var(--main-text-color); /* Texto blanco */
   }
   .delete-item {
   color: black;
@@ -985,16 +985,8 @@ background-color: var(--main-bg-color); /* Color de fondo base */
     width: 100%;                  /* Ocupa todo el ancho del contenedor */
     font-size: 16px;              /* Texto un poco más pequeño para móvil */
     padding: 12px;                /* Espacio interno más cómodo */
-    background-color: black;      /* Fondo negro para mejor contraste */
-    color: white;                 /* Texto blanco */
-    border: none;                 /* Sin borde visual */
     border-radius: 6px;           /* Bordes suaves */
     box-sizing: border-box;       /* Para respetar el padding dentro del ancho */
-  }
-
-  .btn-cotizar:hover {
-    background-color: #333;       /* Efecto hover más tenue en móvil */
-    color: white;
   }
 }
 
