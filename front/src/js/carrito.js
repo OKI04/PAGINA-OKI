@@ -136,7 +136,6 @@ function actualizarContadorCarrito() {
   contador.style.display = carrito.length > 0 ? "inline-block" : "none";
 }
 
-// ----------------------------
 // -----------------------------
 function mostrarErrorModal(mensaje) {
   document.getElementById("modalErrorMensaje").textContent = mensaje;
@@ -149,15 +148,9 @@ function cerrarModalError() {
 
 // -----------------------------
 function Contizacion() {
-  const modalCotizacion = document.getElementById("modalCotizacion");
-  const lista = modalCotizacion.querySelector(".product-list");
+  const modal = document.getElementById("modalCotizacion");
+  const lista = modal.querySelector(".product-list");
   lista.innerHTML = "";
-
-  // Cerrar el modal del carrito si está abierto
-  const modalCarrito = document.getElementById("modalCarrito");
-  if (modalCarrito) {
-    modalCarrito.style.display = "none";
-  }
 
   if (carrito.length === 0) {
     lista.innerHTML = `<li class="product-item"><div class="product-info"><span>No hay productos en el carrito.</span></div></li>`;
@@ -173,13 +166,13 @@ function Contizacion() {
               <b>Total: $${item.total.toLocaleString("es-CO")}</b>
             </span>
           </div>
-          <button class="remove-button" onclick="eliminarProductoCotizacion(${index})">X</button>
+          <button class="remove-button" onclick="eliminarProductoCotizacion(${index})" aria-label="Eliminar producto">X</button>
         </li>`;
     });
   }
 
   actualizarTotalPagar();
-  modalCotizacion.style.display = "block";
+  modal.style.display = "block";
 }
 
 // -----------------------------
@@ -259,4 +252,3 @@ function enviarCotizacion() {
   actualizarContadorCarrito();
   cerrarCotizacion();
 }
-
